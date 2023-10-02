@@ -1,0 +1,34 @@
+# Python artifacts
+*.pyc
+*.pyo
+__pycache__/
+*.egg-info
+dist/
+*.log
+api/venv/
+*.db.sqlite3
+*.sqlite3
+
+# React / Node artifacts
+frontend/node_modules/
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+frontend/.cache
+frontend/build/
+frontend/public/assets
+
+# IDEs / Editors
+.vscode/
+.idea/
+*.code-workspace
+*.iml
+*.swp
+*.swo
+
+# OS-specific artifacts
+.DS_Store
+Thumbs.db
+
