@@ -1,0 +1,18 @@
+{
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "python.analysis.extraPaths": [
+        "./venv/lib/python3.11/site-packages"
+    ],
+    "python.defaultInterpreterPath": "/Users/mym2/liberlife/api/venv/bin/python",
+    "workbench.colorCustomizations": {
+        "sideBarSectionHeader.background": "#2c73bf"
+    },
+    "python.testing.pytestArgs": [
+        "api"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+
+}
