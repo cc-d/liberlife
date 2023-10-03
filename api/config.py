@@ -1,3 +1,6 @@
+HOST = 'localhost'
+PORT = '8999'
+
 DB_NAME = 'liblifedb'
 DB_USER, DB_PASS = 'pguser', 'pgpass'
 DB_HOST = 'localhost'
