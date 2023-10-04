@@ -4,7 +4,7 @@
       "name": "Python: FastAPI",
       "type": "python",
       "module": "uvicorn",
-      "args": ["--port=8999","api.main:app", "--reload"],
+      "args": ["--port=8999","api.app.main:app"  , "--reload"],
       "env": {
         "PYTHONPATH": "${workspaceFolder}"
     },
