@@ -1,6 +1,6 @@
 FROM node:20
-WORKDIR /app
+WORKDIR /frontend
 COPY ./package*.json ./
-RUN npm install
-COPY . /app
+RUN npm install --loglevel verbose
+COPY . /frontend
 CMD ["npm", "start"]

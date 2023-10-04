@@ -1,0 +1,35 @@
+version: "3"
+services:
+  db:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=pguser
+      - POSTGRES_PASSWORD=pgpass
+      - POSTGRES_DB=liblifedb
+  api:
+    build:
+      context: ./api
+    ports:
+      - "8999:8999"
+    depends_on:
+      - db
+    environment:
+      - LIBLIFE_DB_HOST=db
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8999
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3999:3999"
+    depends_on:
+      - api
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+      - frontend
