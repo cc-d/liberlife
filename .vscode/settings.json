@@ -4,7 +4,7 @@
         "editor.formatOnSave": true,
     },
     "python.analysis.extraPaths": [
-        "./venv/lib/python3.11/site-packages"
+        "./api/venv/lib/python3.11/site-packages"
     ],
     "python.defaultInterpreterPath": "/Users/mym2/liberlife/api/venv/bin/python",
     "workbench.colorCustomizations": {
