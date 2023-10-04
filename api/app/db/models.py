@@ -1,11 +1,14 @@
-from sqlalchemy import create_engine, Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Integer, String, Column
+from sqlalchemy.orm import declarative_base, Mapped
 
 Base = declarative_base()
 
 
 class User(Base):
-    __tablename__ = "users"
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String(100), unique=True, index=True, nullable=False)
-    hpassword = Column(String(100), unique=False, index=False, nullable=False)
+    __tablename__ = 'users'
+
+    id: Mapped[int] = Column(
+        Integer, primary_key=True, index=True, autoincrement=True
+    )
+    username: Mapped[str] = Column(String(50), unique=True, index=True)
+    hpassword: Mapped[str] = Column(String(100))
