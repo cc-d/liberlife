@@ -3,9 +3,9 @@ from datetime import timedelta
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-import config
-from schemas import TokenData, UserDB, UserToken
-from utils import encode_jwt, decode_jwt, hash_pass, verify_pass
+import api.config as config
+from ..schemas import TokenData, UserDB, UserToken
+from ..utils import encode_jwt, decode_jwt, hash_pass, verify_pass
 
 
 urouter = APIRouter(prefix='/u', tags=['users'])

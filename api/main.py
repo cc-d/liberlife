@@ -3,13 +3,14 @@ from fastapi import FastAPI, Depends, APIRouter
 import api.config as config
 from .db import get_db
 from .middleware import apply_cors_middleware, CSPMiddleware
+from .routes import ROUTERS
 
 app = FastAPI(docs_url='/docs', redoc_url='/redoc')
 app = apply_cors_middleware(app)
 
 router = APIRouter()
 
-app.include_router(router, prefix='/api')
+app.include_router(router)
 
 
 @router.get('/')
@@ -29,3 +30,7 @@ if (__name__) == "__main__":
         f"uvicorn main:app --host {config.HOST} --port {config.PORT} --reload"
     )
     subprocess.run(uvcmd, shell=True)
+
+
+for rter in ROUTERS:
+    app.include_router(rter[0], prefix=rter[1])
