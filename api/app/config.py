@@ -26,6 +26,10 @@ DB_PORT = evar('LIBLIFE_DB_PORT', 5432)
 DBMS = 'postgresql'
 DATABASE_URL = f'{DBMS}://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
 
+ASYNC_DATABASE_URL = (
+    f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+)
+
 
 JWT_KEY = '5h4itueghriuggegiferuffgrewukfgrw'
 JWT_ALGO = 'HS256'

@@ -1,8 +1,6 @@
-from typing import Optional
 from sqlalchemy import Integer, String
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-
-Base = DeclarativeBase()
+from sqlalchemy.orm import Mapped, mapped_column
+from .session import Base  # Adjust the import based on your folder structure
 
 
 class User(Base):
@@ -12,4 +10,4 @@ class User(Base):
         Integer, primary_key=True, index=True, autoincrement=True
     )
     username: Mapped[str] = mapped_column(String(50), unique=True, index=True)
-    hpassword: Mapped[str] = mapped_column(String(255))
+    hpassword: Mapped[str] = mapped_column(String(100))
