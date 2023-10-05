@@ -29,4 +29,4 @@ def decode_jwt(token: str):
     return jwt.decode(token, config.JWT_KEY, algorithms=[config.JWT_ALGO])
 
 
-oauth_scheme = OAuth2PasswordBearer(tokenUrl="u/token")
+oauth_scheme = OAuth2PasswordBearer(tokenUrl="u/login")

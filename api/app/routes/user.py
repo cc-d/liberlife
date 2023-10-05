@@ -20,19 +20,18 @@ router = APIRouter(prefix='/u', tags=['user'])
 
 @router.post("/register", response_model=UserSchema.UserOut)
 async def register(
-    user: UserSchema.UserIn, db: AsyncSession = Depends(get_adb)
+    data: UserSchema.UserIn, db: AsyncSession = Depends(get_adb)
 ):
-    print(user, user, user, '@@')
     existing_user = await db.execute(
-        select(User).where(User.username == user.username)
+        select(User).where(User.username == data.username)
     )
     if existing_user.scalar() is not None:
         raise HTTPException(
             status_code=400, detail="Username already registered"
         )
 
-    hashed_password = hash_pass(user.password)
-    new_user = User(username=user.username, hpassword=hashed_password)
+    hashed_password = hash_pass(data.password)
+    new_user = User(username=data.username, hpassword=hashed_password)
 
     db.add(new_user)
     await async_commit_refresh(db, new_user)
@@ -41,13 +40,10 @@ async def register(
 
 
 @router.post("/login", response_model=UserSchema.Token)
-async def login(
-    form: OAuth2PasswordRequestForm = Depends(),
-    db: AsyncSession = Depends(get_adb),
-):
-    user = await db.execute(select(User).where(User.username == form.username))
+async def login(data: UserSchema.UserIn, db: AsyncSession = Depends(get_adb)):
+    user = await db.execute(select(User).where(User.username == data.username))
     user = user.scalar()
-    if not user or not verify_pass(form.password, user.hpassword):
+    if not user or not verify_pass(data.password, user.hpassword):
         raise HTTPException(
             status_code=400, detail="Incorrect username or password"
         )
