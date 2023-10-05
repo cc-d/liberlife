@@ -1,1 +1,1 @@
-from . import user as UserSchema
+from . import user

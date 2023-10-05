@@ -4,7 +4,7 @@ FRONTDIR="$ROOTDIR/frontend"
 APIDIR="$ROOTDIR/api"
 
 alias gentypes="npx openapi-typescript-codegen generate \
---exportSchemas true --input http://localhost:8888/openapi.json \
+--exportSchemas true --input http://localhost:8999/openapi.json \
 --output $FRONTDIR/src/api/"
 
 dc () {

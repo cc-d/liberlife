@@ -1,12 +1,24 @@
 from pydantic import BaseModel
+from typing import Optional
 
 
-class User(BaseModel):
+class UserBase(BaseModel):
     username: str
 
 
-class UserDB(User):
+class UserIn(UserBase):
+    password: str
+
+
+class UserOut(UserBase):
+    id: int
+
+
+class UserDB(UserOut):
     hpassword: str
+
+    class Config:
+        from_attributes = True
 
 
 class Token(BaseModel):

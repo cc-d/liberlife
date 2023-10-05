@@ -1,11 +1,9 @@
 from datetime import datetime, timedelta
-
 import bcrypt
 import jwt
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
-
 from .. import config
 
 
@@ -29,3 +27,6 @@ def encode_jwt(data: dict, expires: timedelta = None):
 
 def decode_jwt(token: str):
     return jwt.decode(token, config.JWT_KEY, algorithms=[config.JWT_ALGO])
+
+
+oauth_scheme = OAuth2PasswordBearer(tokenUrl="u/token")

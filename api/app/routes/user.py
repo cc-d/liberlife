@@ -1,31 +1,71 @@
-from datetime import timedelta
-
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 
-from .. import config
-from ..schemas.user import Token, UserDB, UserToken
-from ..utils.security import encode_jwt, decode_jwt, hash_pass, verify_pass
+from ..schemas import user as UserSchema
+from ..db import get_adb
+from ..db.models import User
+from ..db.common import async_commit_refresh
+from ..utils.security import (
+    verify_pass,
+    hash_pass,
+    encode_jwt,
+    decode_jwt,
+    oauth_scheme,
+)
+
+router = APIRouter(prefix='/u', tags=['user'])
 
 
-urouter = APIRouter(prefix='/u', tags=['users'])
+@router.post("/register", response_model=UserSchema.UserOut)
+async def register(
+    user: UserSchema.UserIn, db: AsyncSession = Depends(get_adb)
+):
+    print(user, user, user, '@@')
+    existing_user = await db.execute(
+        select(User).where(User.username == user.username)
+    )
+    if existing_user.scalar() is not None:
+        raise HTTPException(
+            status_code=400, detail="Username already registered"
+        )
+
+    hashed_password = hash_pass(user.password)
+    new_user = User(username=user.username, hpassword=hashed_password)
+
+    db.add(new_user)
+    await async_commit_refresh(db, new_user)
+
+    return new_user
 
 
-@urouter.post('/token', response_model=Token)
-async def login(form: OAuth2PasswordRequestForm = Depends()):
-    usr_db = UserDB(
-        username=form.username, hpassword=hash_pass(form.password)
-    )  # Placeholder
-    if not usr_db:
+@router.post("/login", response_model=UserSchema.Token)
+async def login(
+    form: OAuth2PasswordRequestForm = Depends(),
+    db: AsyncSession = Depends(get_adb),
+):
+    user = await db.execute(select(User).where(User.username == form.username))
+    user = user.scalar()
+    if not user or not verify_pass(form.password, user.hpassword):
         raise HTTPException(
             status_code=400, detail="Incorrect username or password"
         )
-    if not verify_pass(form.password, usr_db.hpassword):
-        raise HTTPException(
-            status_code=400, detail="Incorrect username or password"
-        )
 
-    token_exp = timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = encode_jwt(data={"sub": usr_db.username}, expires=token_exp)
-
+    access_token = encode_jwt(data={"sub": user.username})
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@router.get("/me", response_model=UserSchema.UserBase)
+async def me(
+    token: str = Depends(oauth_scheme), db: AsyncSession = Depends(get_adb)
+):
+    user_data = decode_jwt(token)
+    user = await db.execute(
+        select(User).where(User.username == user_data["sub"])
+    )
+    user = user.scalar()
+    if not user:
+        raise HTTPException(status_code=400, detail="User not found")
+
+    return user

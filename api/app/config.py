@@ -33,4 +33,4 @@ ASYNC_DATABASE_URL = (
 
 JWT_KEY = '5h4itueghriuggegiferuffgrewukfgrw'
 JWT_ALGO = 'HS256'
-JWT_EXPIRE_SECS = 60 * 30
+JWT_EXPIRE_SECS = 60 * 60 * 24 * 7  # 1 week

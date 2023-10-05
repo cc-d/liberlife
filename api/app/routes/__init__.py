@@ -1,4 +1,3 @@
-from .user import urouter
+from .user import router as urouter
 
-# routers and prefix
-ROUTERS = [(urouter, '/u')]
+ROUTERS = [urouter]

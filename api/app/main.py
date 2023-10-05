@@ -6,7 +6,6 @@ sys.path.append(abspath('..'))
 
 from fastapi import FastAPI, Depends, APIRouter
 from . import config
-from .db.main import get_db
 from .utils.middleware import apply_cors_middleware, CSPMiddleware
 from .routes import ROUTERS
 
@@ -38,4 +37,4 @@ if (__name__) == "__main__":
 
 
 for rter in ROUTERS:
-    app.include_router(rter[0], prefix=rter[1])
+    app.include_router(rter)

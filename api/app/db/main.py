@@ -1,11 +1,31 @@
-import asyncpg
-from asyncpg.connection import Connection
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-
-from ..config import DATABASE_URL
+from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from .session import SessionLocal, AsyncSessionLocal
 
 
-async def get_db() -> Connection:
-    adb = await asyncpg.connect(DATABASE_URL)
+def get_sync_db() -> Session:
+    """
+    Get a synchronous database session.
+
+    Returns:
+        Session: A synchronous database session.
+    """
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+async def get_async_db() -> AsyncSession:
+    """
+    Get an asynchronous database session.
+
+    Returns:
+        AsyncSession: An asynchronous database session.
+    """
+    db = AsyncSessionLocal()
+    try:
+        yield db
+    finally:
+        await db.close()
