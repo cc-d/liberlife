@@ -11,7 +11,7 @@ from pydantic import ValidationError
 
 async def get_current_user(
     token: str = Depends(oauth_scheme), db: AsyncSession = Depends(get_adb)
-) -> UserSchema.UserOut:
+) -> UserSchema.UserDB:
     try:
         # Decode the token. This function should check token's signature and expiration time.
         # If everything's good, it returns the user data. Otherwise, it raises an exception.

@@ -1,10 +1,12 @@
 import React, { ReactNode } from "react";
 import { Container, Typography, Box } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import apios from "../../apios";
-import LogRegForm from "./LogRegForm";
+import LogRegForm, { LogRegFormState } from "./LogRegForm";
 
 const LogRegPage: React.FC = () => {
-  const handleLogin = async (data: { username: string; password: string }) => {
+  const nav = useNavigate();
+  const handleLogin = async (data: LogRegFormState) => {
     try {
       const response = await apios.post("/u/login", {
         username: data.username,
@@ -12,18 +14,14 @@ const LogRegPage: React.FC = () => {
       });
       if (response.data && response.data.access_token) {
         localStorage.setItem("token", response.data.access_token);
-        // Navigate to the dashboard or home page after successful login
+        nav("/login");
       }
     } catch (error) {
       console.error("Error during login:", error);
-      // Handle error, e.g. show a notification or message to the user
     }
   };
 
-  const handleRegister = async (data: {
-    username: string;
-    password: string;
-  }) => {
+  const handleRegister = async (data: LogRegFormState) => {
     try {
       const response = await apios.post("/u/register", {
         username: data.username,

@@ -3,10 +3,14 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type UserOut = {
+import type { TaskUpdateOut } from './TaskUpdateOut';
+
+export type TaskOut = {
     id: number;
     created_on: string;
     updated_on: string;
-    username: string;
+    text: string;
+    user_id: number;
+    updates?: Array<TaskUpdateOut>;
 };
 

@@ -1,5 +1,8 @@
+from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional
+
+from .common import DBCommon
 
 
 class UserBase(BaseModel):
@@ -10,8 +13,8 @@ class UserIn(UserBase):
     password: str
 
 
-class UserOut(UserBase):
-    id: int
+class UserOut(UserBase, DBCommon):
+    pass
 
 
 class UserDB(UserOut):
@@ -24,7 +27,3 @@ class UserDB(UserOut):
 class Token(BaseModel):
     access_token: str
     token_type: str
-
-
-class UserToken(BaseModel):
-    username: str

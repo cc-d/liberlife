@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $UserOut = {
+export const $TaskOut = {
     properties: {
         id: {
             type: 'number',
@@ -16,9 +16,19 @@ export const $UserOut = {
             type: 'string',
             isRequired: true,
         },
-        username: {
+        text: {
             type: 'string',
             isRequired: true,
+        },
+        user_id: {
+            type: 'number',
+            isRequired: true,
+        },
+        updates: {
+            type: 'array',
+            contains: {
+                type: 'TaskUpdateOut',
+            },
         },
     },
 } as const;

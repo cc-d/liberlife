@@ -1,26 +1,26 @@
 from pydantic import BaseModel
 from datetime import datetime
 from typing import List, Optional
-from .task_progress import TaskProgressOut
+from .common import DBCommon
+from .user import UserOut, UserDB
+from .task_updates import TaskUpdateOut, TaskUpdateDB
 
 
 class TaskBase(BaseModel):
     text: str
-    goal_id: int
-    is_active: Optional[bool] = True
 
 
 class TaskIn(TaskBase):
     pass
 
 
-class TaskOut(TaskBase):
-    id: int
-    created_on: datetime
-    updated_on: datetime
-    progress: List[TaskProgressOut]
+class TaskOut(TaskIn, DBCommon):
+    user_id: int
+    updates: List['TaskUpdateOut'] = []
 
 
 class TaskDB(TaskOut):
+    user: UserDB
+
     class Config:
-        from_attributes = True
+        orm_mode = True

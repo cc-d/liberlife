@@ -3,10 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type UserOut = {
-    id: number;
-    created_on: string;
-    updated_on: string;
-    username: string;
+export type TaskUpdateIn = {
+    text: string;
+    task_id: number;
 };
 

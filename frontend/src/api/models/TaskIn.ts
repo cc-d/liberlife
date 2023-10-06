@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type UserBase = {
-    username: string;
+export type TaskIn = {
+    text: string;
 };
 

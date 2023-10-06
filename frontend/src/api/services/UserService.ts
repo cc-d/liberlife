@@ -2,8 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { Body_oauth_login_u_oauth_login_post } from '../models/Body_oauth_login_u_oauth_login_post';
 import type { Token } from '../models/Token';
-import type { UserBase } from '../models/UserBase';
 import type { UserIn } from '../models/UserIn';
 import type { UserOut } from '../models/UserOut';
 
@@ -34,19 +34,43 @@ export class UserService {
     }
 
     /**
-     * Login
-     * @param requestBody
+     * Oauth Login
+     * @param formData
      * @returns Token Successful Response
      * @throws ApiError
      */
-    public static loginULoginPost(
-        requestBody: UserIn,
+    public static oauthLoginUOauthLoginPost(
+        formData: Body_oauth_login_u_oauth_login_post,
+    ): CancelablePromise<Token> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/u/oauth_login',
+            formData: formData,
+            mediaType: 'application/x-www-form-urlencoded',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Json Login
+     * @param username
+     * @param password
+     * @returns Token Successful Response
+     * @throws ApiError
+     */
+    public static jsonLoginULoginPost(
+        username: string,
+        password: string,
     ): CancelablePromise<Token> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/u/login',
-            body: requestBody,
-            mediaType: 'application/json',
+            query: {
+                'username': username,
+                'password': password,
+            },
             errors: {
                 422: `Validation Error`,
             },
@@ -55,10 +79,10 @@ export class UserService {
 
     /**
      * Me
-     * @returns UserBase Successful Response
+     * @returns UserOut Successful Response
      * @throws ApiError
      */
-    public static meUMeGet(): CancelablePromise<UserBase> {
+    public static meUMeGet(): CancelablePromise<UserOut> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/u/me',

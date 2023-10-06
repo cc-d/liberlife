@@ -2,10 +2,14 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $UserBase = {
+export const $TaskUpdateIn = {
     properties: {
-        username: {
+        text: {
             type: 'string',
+            isRequired: true,
+        },
+        task_id: {
+            type: 'number',
             isRequired: true,
         },
     },

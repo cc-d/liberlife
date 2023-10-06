@@ -9,6 +9,9 @@ alias gentypes="npx openapi-typescript-codegen generate \
 
 alias uvistart="uvicorn --port=8999 api.app.main:app --reload"
 
+alias gptfindpy="find $APIDIR -type f -name '*.py' -not -path '*venv*' -not -path '*alembic*'"
+
+
 dc () {
     if [ "$1" = "rebuild" ]; then
         docker compose stop
@@ -23,6 +26,12 @@ dc () {
 npmapi() {
     gentypes
     cd $FRONTDIR && npm start
+}
+
+automigrate() {
+    cd $APIDIR
+    alembic revision --autogenerate && alembic upgrade head
+    cd -
 }
 
 alias psqldb="psql -U pguser -h 127.0.0.1 -p 5432 liblifedb"

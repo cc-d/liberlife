@@ -1,18 +1,18 @@
 import React, { useState, ChangeEvent, MouseEvent } from 'react';
-import { TextField, Button, Typography, Box } from '@mui/material';
+import { TextField, Button, Box } from '@mui/material';
 
-interface LogRegFormState {
+export interface LogRegFormState {
   username: string;
   password: string;
 }
 
 interface LogRegFormProps {
   isRegister?: boolean;
-  onSubmit: (data: LogRegFormState) => void;
+  onSubmit: (data: LogRegFormState) => Promise<void>;
 }
 
 const LogRegForm: React.FC<LogRegFormProps> = ({ isRegister = false, onSubmit }) => {
-  const [state, setState] = useState<LogRegFormState>({ username: '', password: '' });
+  const [state, setState] = useState({username: '', password: '' });
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setState({
