@@ -1,9 +1,9 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
 
-import LoginPage from './pages/LoginPage';
+import LogRegPage from './pages/LogRegPage';
 
 const darkTheme = createTheme({
   palette: {
@@ -16,10 +16,9 @@ function App() {
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <Router>
-        <Switch>
-          <Route path="/login" exact component={LoginPage} />
-          {/* Add more routes as needed */}
-        </Switch>
+        <Routes>
+          <Route path="/login" element={<LogRegPage />} />
+        </Routes>
       </Router>
     </ThemeProvider>
   );

@@ -1,4 +1,4 @@
-async def async_commit_refresh(db, instance):
+async def async_addcomref(db, instance):
     """ASYNC Utility function to add an instance to the
     database, commit changes, and refresh the instance.
     """
@@ -7,7 +7,7 @@ async def async_commit_refresh(db, instance):
     await db.refresh(instance)
 
 
-def sync_commit_refresh(db, instance):
+def sync_addcomref(db, instance):
     """SYNC Utility function to add an instance to the
     database, commit changes, and refresh the instance.
     """

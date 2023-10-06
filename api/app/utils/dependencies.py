@@ -1,17 +1,26 @@
+from jwt.exceptions import PyJWTError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from fastapi import HTTPException, status, Depends
+from fastapi import HTTPException, status, Depends, Request
 from ..db.models import User
-from ..db.main import get_db
+from ..schemas import user as SchUser
+from ..crud.user import get_user_from_username
+from ..utils.security import oauth_scheme, decode_jwt
 
 
-async def get_user_by_id(
-    user_id: int, session: AsyncSession = Depends(get_db)
-) -> User:
-    result = await session.execute(select(User).filter_by(id=user_id))
-    user = result.scalar_one_or_none()
-    if not user:
+async def get_current_user(request: Request) -> SchUser.UserDB:
+    token = request.headers.get("Authorization")
+    if token and "Bearer" in token:
+        token = token.split(" ")[1]
+
+    payload = decode_jwt(token)
+    username = payload.get("sub")
+
+    if username is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No username in sub field of jwt",
         )
+
+    user = await get_user_from_username(username, must_exist=True)
     return user

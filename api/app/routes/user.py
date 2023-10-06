@@ -1,12 +1,17 @@
+from typing import Optional, Union
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+
+from logfunc import logf
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from ..schemas import user as UserSchema
 from ..db import get_adb
 from ..db.models import User
-from ..db.common import async_commit_refresh
+from ..db.common import async_addcomref
+from ..crud.user import get_user_from_username
+from ..utils.dependencies import get_current_user
 from ..utils.security import (
     verify_pass,
     hash_pass,
@@ -15,6 +20,7 @@ from ..utils.security import (
     oauth_scheme,
 )
 
+
 router = APIRouter(prefix='/u', tags=['user'])
 
 
@@ -22,31 +28,39 @@ router = APIRouter(prefix='/u', tags=['user'])
 async def register(
     data: UserSchema.UserIn, db: AsyncSession = Depends(get_adb)
 ):
-    existing_user = await db.execute(
-        select(User).where(User.username == data.username)
-    )
-    if existing_user.scalar() is not None:
-        raise HTTPException(
-            status_code=400, detail="Username already registered"
-        )
+    user = get_user_from_username(data.username, must_exist=False, db=db)
+    hpass = hash_pass(data.password)
+    new_user = User(username=data.username, hpassword=hpass)
 
-    hashed_password = hash_pass(data.password)
-    new_user = User(username=data.username, hpassword=hashed_password)
-
-    db.add(new_user)
-    await async_commit_refresh(db, new_user)
+    await async_addcomref(db, new_user)
 
     return new_user
 
 
-@router.post("/login", response_model=UserSchema.Token)
-async def login(data: UserSchema.UserIn, db: AsyncSession = Depends(get_adb)):
-    user = await db.execute(select(User).where(User.username == data.username))
-    user = user.scalar()
-    if not user or not verify_pass(data.password, user.hpassword):
+@router.post("/oauth_login", response_model=UserSchema.Token)
+async def oauth_login(
+    data: OAuth2PasswordRequestForm = Depends(),
+    db: AsyncSession = Depends(get_adb),
+):
+    user = await get_user_from_username(data.username, must_exist=True, db=db)
+
+    if not verify_pass(data.password, user.hpassword):
         raise HTTPException(
             status_code=400, detail="Incorrect username or password"
         )
+
+    access_token = encode_jwt(data={"sub": user.username})
+    return {"access_token": access_token, "token_type": "bearer"}
+
+
+@router.post("/login", response_model=UserSchema.Token)
+async def json_login(
+    username: str, password: str, db: AsyncSession = Depends(get_adb)
+):
+    user = await get_user_from_username(username, must_exist=True, db=db)
+
+    if not verify_pass(password, user.hpassword):
+        raise HTTPException(status_code=400, detail="incorrect password")
 
     access_token = encode_jwt(data={"sub": user.username})
     return {"access_token": access_token, "token_type": "bearer"}
