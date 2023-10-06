@@ -66,16 +66,9 @@ async def json_login(
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@router.get("/me", response_model=UserSchema.UserBase)
-async def me(
-    token: str = Depends(oauth_scheme), db: AsyncSession = Depends(get_adb)
-):
-    user_data = decode_jwt(token)
-    user = await db.execute(
-        select(User).where(User.username == user_data["sub"])
-    )
-    user = user.scalar()
-    if not user:
+@router.get("/me", response_model=UserSchema.UserOut)
+async def me(cur_user=Depends(get_current_user)):
+    if not cur_user:
         raise HTTPException(status_code=400, detail="User not found")
 
-    return user
+    return cur_user

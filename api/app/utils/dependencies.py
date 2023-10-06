@@ -1,26 +1,27 @@
-from jwt.exceptions import PyJWTError
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
-from fastapi import HTTPException, status, Depends, Request
-from ..db.models import User
-from ..schemas import user as SchUser
+from jwt import PyJWTError
+from fastapi import Depends, HTTPException
+from .security import decode_jwt, oauth_scheme
+from ..schemas import user as UserSchema
+from ..db import get_adb, AsyncSession
 from ..crud.user import get_user_from_username
-from ..utils.security import oauth_scheme, decode_jwt
+
+from fastapi import Depends, HTTPException, Security
+from pydantic import ValidationError
 
 
-async def get_current_user(request: Request) -> SchUser.UserDB:
-    token = request.headers.get("Authorization")
-    if token and "Bearer" in token:
-        token = token.split(" ")[1]
-
-    payload = decode_jwt(token)
-    username = payload.get("sub")
-
-    if username is None:
+async def get_current_user(
+    token: str = Depends(oauth_scheme), db: AsyncSession = Depends(get_adb)
+) -> UserSchema.UserOut:
+    try:
+        # Decode the token. This function should check token's signature and expiration time.
+        # If everything's good, it returns the user data. Otherwise, it raises an exception.
+        payload = decode_jwt(token)
+        user = payload.get("sub")
+    except (PyJWTError, ValidationError):
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="No username in sub field of jwt",
+            status_code=401, detail="Could not validate credentials"
         )
 
-    user = await get_user_from_username(username, must_exist=True)
+    user = await get_user_from_username(user, must_exist=True, db=db)
+
     return user

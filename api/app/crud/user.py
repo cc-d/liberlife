@@ -14,7 +14,7 @@ async def get_user_from_username(
     username: str,
     must_exist: Optional[bool] = None,
     db: AsyncSession = Depends(get_adb),
-) -> User:
+) -> SchUser.UserDB:
     user = await db.execute(select(User).where(User.username == username))
     user = user.scalar_one_or_none()
 
