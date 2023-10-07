@@ -94,6 +94,27 @@ export class GoalService {
     }
 
     /**
+     * Delete Goal
+     * @param goalId
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static deleteGoalGoalsGoalIdDelete(
+        goalId: number,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/goals/{goal_id}',
+            path: {
+                'goal_id': goalId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
      * Add Task To Goal
      * @param goalId
      * @param requestBody

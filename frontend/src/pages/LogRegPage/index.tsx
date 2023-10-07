@@ -20,9 +20,8 @@ const LogRegPage: React.FC = () => {
       if (response.data && response.data.access_token) {
         localStorage.setItem("token", response.data.access_token);
         login(data.username, response.data.access_token); // <-- Pass the token here
-        navigate('/');
-    }
-
+        navigate("/");
+      }
     } catch (error) {
       console.error("Error during login:", error);
     }

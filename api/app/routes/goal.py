@@ -70,6 +70,22 @@ async def update_goal(
     return goal
 
 
+@router.delete("/{goal_id}")
+async def delete_goal(
+    goal: Goal = Depends(get_goal_from_id),
+    cur_user=Depends(get_current_user),
+    db: AsyncSession = Depends(get_adb),
+):
+    if goal.user_id != cur_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="You are not authorized to delete this goal.",
+        )
+    await db.delete(goal)
+    await db.commit()
+    return {"detail": "Goal deleted successfully"}
+
+
 @router.post("/{goal_id}/tasks", response_model=GoalSchema.GoalTaskOut)
 async def add_task_to_goal(
     task_in: GoalSchema.GoalTaskIn,

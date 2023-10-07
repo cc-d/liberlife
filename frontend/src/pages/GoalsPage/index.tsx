@@ -98,46 +98,61 @@ const GoalsPage: React.FC = () => {
     }
   };
 
-
-
   const handleAddTaskToGoal = async (goalId: number, taskText: string) => {
     try {
-        const response = await apios.post(`/goals/${goalId}/tasks`, { text: taskText });
-        if (response.data) {
-            setGoals(goals.map(goal => {
-                if (goal.id === goalId) {
-                    if (goal.tasks) {
-                        goal.tasks.push(response.data);
-                    } else {
-                        goal.tasks = [response.data];
-                    }
-                }
-                return goal;
-            }));
-        }
+      const response = await apios.post(`/goals/${goalId}/tasks`, {
+        text: taskText,
+      });
+      if (response.data) {
+        setGoals(
+          goals.map((goal) => {
+            if (goal.id === goalId) {
+              if (goal.tasks) {
+                goal.tasks.push(response.data);
+              } else {
+                goal.tasks = [response.data];
+              }
+            }
+            return goal;
+          })
+        );
+      }
     } catch (error) {
-        console.error("Error adding task:", error);
+      console.error("Error adding task:", error);
     }
-};
+  };
+  const handleGoalDelete = async (goalId: number) => {
+    try {
+      const response = await apios.delete(`/goals/${goalId}`);
+      if (response.status === 200 || response.status === 204) {
+        // Assuming a successful delete returns 200 or 204 status
+        setGoals(goals.filter((goal) => goal.id !== goalId));
+      }
+    } catch (error) {
+      console.error("Error deleting goal:", error);
+    }
+  };
 
   return (
-    <Box sx={{ maxWidth: 600, margin: "0 auto", mt: 5 }}>
+    <Box sx={{
 
-        <TextField
-          variant="outlined"
-          placeholder="New goal..."
-          value={newGoalText}
-          onChange={(e) => setNewGoalText(e.target.value)}
-          sx={{ mr: 2 }}
-        />
-        <Button variant="contained" color="primary" onClick={handleAddGoal}>
-          Create Goal
-        </Button>
-        <List>
-                {goals.map((goal) => (
-                    <GoalItem key={goal.id} goal={goal} onTaskToggle={toggleTaskCompletion} onTaskAdd={handleAddTaskToGoal} />
-                ))}
-            </List>
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+     }
+    }>
+      <Box>
+      <TextField
+        variant="outlined"
+        placeholder="New goal..."
+        value={newGoalText}
+        onChange={(e) => setNewGoalText(e.target.value)}
+        sx={{ mr: 2 }}
+      />
+      <Button variant="contained" color="primary" onClick={handleAddGoal}>
+        Create Goal
+      </Button>
+      </Box>
 
       <List>
         {goals.map((goal) => (
@@ -145,6 +160,7 @@ const GoalsPage: React.FC = () => {
             key={goal.id}
             goal={goal}
             onTaskToggle={toggleTaskCompletion}
+            onGoalDelete={handleGoalDelete}
             onTaskAdd={handleAddTaskToGoal}
           />
         ))}
