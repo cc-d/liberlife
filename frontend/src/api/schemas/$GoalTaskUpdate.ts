@@ -8,14 +8,5 @@ export const $GoalTaskUpdate = {
             type: 'boolean',
             isRequired: true,
         },
-        text: {
-            type: 'any-of',
-            contains: [{
-                type: 'string',
-            }, {
-                type: 'null',
-            }],
-            isRequired: true,
-        },
     },
 } as const;

@@ -1,5 +1,7 @@
-import { ListItem, Box } from "@mui/material";
+import React from "react";
+import { Box, Checkbox, Typography } from "@mui/material";
 import { GoalTaskOut } from "../../api";
+
 export const GoalTaskItem: React.FC<{
   task: GoalTaskOut;
   goalId: number;
@@ -7,10 +9,21 @@ export const GoalTaskItem: React.FC<{
 }> = ({ task, goalId, onToggle }) => {
   return (
     <Box
+      display="flex"
+      alignItems="center"
       onClick={() => onToggle(goalId, task.id, task.completed)}
-      style={{ textDecoration: task.completed ? "line-through" : "none" }}
+      sx={{ cursor: "pointer", mb: 1 }}
     >
-      {task.text}
+      <Checkbox checked={task.completed} />
+      <Box
+        component="span"
+        sx={{
+          textDecoration: task.completed ? "line-through" : "none",
+          flexGrow: 1,
+        }}
+      >
+        <Typography>{task.text}</Typography>
+      </Box>
     </Box>
   );
 };

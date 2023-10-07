@@ -24,7 +24,7 @@ const GoalsPage: React.FC = () => {
   const auth = useContext(AuthContext);
 
   useEffect(() => {
-    if (!auth?.user) {
+    if (!auth?.userLoading && !auth?.user) {
       navigate("/login");
       return;
     }
@@ -163,7 +163,8 @@ const GoalsPage: React.FC = () => {
           flexDirection: "row",
           flexWrap: "wrap",
           justifyContent: "left",
-
+          mr: 1,
+          mb: 1,
         }}
       >
         {goals.map((goal) => (
