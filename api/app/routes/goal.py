@@ -21,9 +21,18 @@ async def create_goal(
     cur_user: GoalSchema.UserOut = Depends(get_current_user),
     db: AsyncSession = Depends(get_adb),
 ):
-    new_goal = Goal(**goal.model_dump(), user_id=cur_user.id)
+    new_goal = Goal(text=goal.text, user_id=cur_user.id)
     await async_addcomref(db, new_goal)
-    return new_goal
+
+    return {
+        'id': new_goal.id,
+        'text': new_goal.text,
+        'user_id': new_goal.user_id,
+        'created_on': new_goal.created_on,
+        'updated_on': new_goal.updated_on,
+        'tasks': [],
+        'user': cur_user,
+    }
 
 
 @router.get("/", response_model=List[GoalSchema.GoalOut])
