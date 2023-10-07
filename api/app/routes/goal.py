@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import joinedload, selectinload
@@ -15,7 +15,7 @@ from ..utils.dependencies import get_current_user
 router = APIRouter(prefix='/goals', tags=['goal'])
 
 
-@router.post("/", response_model=GoalSchema.GoalOut)
+@router.post('', response_model=GoalSchema.GoalOut)
 async def create_goal(
     goal: GoalSchema.GoalIn,
     cur_user: GoalSchema.UserOut = Depends(get_current_user),
@@ -30,7 +30,7 @@ async def create_goal(
     )
 
 
-@router.get("/", response_model=List[GoalSchema.GoalOut])
+@router.get('', response_model=List[GoalSchema.GoalOut])
 async def list_goals(
     cur_user=Depends(get_current_user), db: AsyncSession = Depends(get_adb)
 ):
@@ -60,7 +60,7 @@ async def get_goal(
 async def update_goal(
     goal: Goal = Depends(get_goal_from_id),
     cur_user=Depends(get_current_user),
-    goal_in: GoalSchema.GoalIn = Depends(GoalSchema.GoalIn),
+    goal_in: GoalSchema.GoalIn = Body(...),
     db: AsyncSession = Depends(get_adb),
 ):
     if goal.user_id != cur_user.id:

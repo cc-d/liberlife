@@ -2,6 +2,7 @@ from jwt import PyJWTError
 from fastapi import Depends, HTTPException, status
 from logfunc import logf
 from sqlalchemy.future import select
+from sqlalchemy.orm import joinedload, selectinload
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from typing import Optional, Union
 
@@ -13,7 +14,9 @@ from ..schemas.user import UserDB
 async def get_goal_from_id(
     goal_id: int, db: AsyncSession = Depends(get_adb)
 ) -> Optional[Goal]:
-    goal = await db.execute(select(Goal).where(Goal.id == goal_id))
+    goal = await db.execute(
+        select(Goal).where(Goal.id == goal_id).options(selectinload(Goal.tasks))
+    )
     goal = goal.scalar_one_or_none()
     return goal
 

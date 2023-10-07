@@ -9,12 +9,12 @@ from pydantic import BaseModel
 from .. import config
 
 
-@logf(level='debug', log_args=False)
+@logf(log_args=False)
 def verify_pass(plain_pass, hashed_pass):
     return bcrypt.checkpw(plain_pass.encode(), hashed_pass.encode())
 
 
-@logf(level='debug', log_args=False)
+@logf(log_args=False)
 def hash_pass(password):
     return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 

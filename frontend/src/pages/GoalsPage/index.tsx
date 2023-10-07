@@ -134,6 +134,22 @@ const GoalsPage: React.FC = () => {
     }
   };
 
+  const handleGoalUpdate = async (goalId: number, updatedText: string) => {
+    try {
+      const response = await apios.put(`/goals/${goalId}`, { text: updatedText });
+      if (response.status === 200) {
+        setGoals((prevGoals) =>
+          prevGoals.map((g) => (g.id === goalId ? { ...g, text: updatedText } : g))
+        );
+        return true;
+      }
+    } catch (error) {
+      console.error("Error updating goal:", error);
+    }
+    return false;
+  };
+
+
   return (
     <Container maxWidth="xl">
       <Box
@@ -174,6 +190,7 @@ const GoalsPage: React.FC = () => {
             onTaskToggle={toggleTaskCompletion}
             onGoalDelete={handleGoalDelete}
             onTaskAdd={handleAddTaskToGoal}
+            onGoalUpdate={handleGoalUpdate}
           />
         ))}
       </Box>

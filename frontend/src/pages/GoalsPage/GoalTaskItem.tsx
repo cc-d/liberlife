@@ -6,7 +6,8 @@ export const GoalTaskItem: React.FC<{
   task: GoalTaskOut;
   goalId: number;
   onToggle: Function;
-}> = ({ task, goalId, onToggle }) => {
+  maxElementWidth: string;
+}> = ({ task, goalId, onToggle, maxElementWidth }) => {
   return (
     <Box
       display="flex"
@@ -20,6 +21,8 @@ export const GoalTaskItem: React.FC<{
         sx={{
           textDecoration: task.completed ? "line-through" : "none",
           flexGrow: 1,
+          maxWidth: maxElementWidth,
+          overflowWrap: "anywhere",
         }}
       >
         <Typography>{task.text}</Typography>

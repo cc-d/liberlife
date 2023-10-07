@@ -22,7 +22,7 @@ export class GoalService {
     public static listGoalsGoalsGet(): CancelablePromise<Array<GoalOut>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/goals/',
+            url: '/goals',
         });
     }
 
@@ -37,7 +37,7 @@ export class GoalService {
     ): CancelablePromise<GoalOut> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/goals/',
+            url: '/goals',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
