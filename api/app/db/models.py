@@ -44,7 +44,9 @@ class Goal(Base):
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
     user = relationship("User", back_populates="goals")
-    tasks = relationship("GoalTask", back_populates="goal")
+    tasks = relationship(
+        "GoalTask", back_populates="goal", cascade="all, delete-orphan"
+    )
 
 
 class GoalTask(Base):
