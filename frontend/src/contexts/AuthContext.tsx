@@ -2,9 +2,10 @@ import React, { createContext, useContext, useState } from 'react';
 
 interface AuthContextType {
   user: string | null;
-  login: (username: string) => void;
+  login: (username: string, token: string) => void; // <-- Add the token parameter here
   logout: () => void;
 }
+
 
 interface AuthProviderProps {
     children: React.ReactNode;
@@ -13,11 +14,19 @@ interface AuthProviderProps {
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<string | null>(null);
+  // Check if a token exists in localStorage upon initialization
+  const [user, setUser] = useState<string | null>(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      // Optionally, you can decode the token and fetch user info if encoded in the token
+      return "userFromToken";  // Replace with your logic, if any
+    }
+    return null;
+  });
 
-  const login = (username: string) => {
+  const login = (username: string, token: string) => {
     setUser(username);
-    // You can set token to local storage or anything else here if needed
+    localStorage.setItem('token', token);
   };
 
   const logout = () => {

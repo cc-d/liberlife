@@ -30,5 +30,4 @@ class GoalOut(GoalIn, DBCommon):
 
 
 class GoalTaskUpdate(BaseModel):
-    text: Optional[str] = 'text'
-    completed: Optional[bool] = False
+    completed: bool = False
