@@ -1,18 +1,26 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { AppBar, Toolbar, Typography, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../contexts/AuthContext';
 
-interface NavBarProps {
-  user: string | null;
-}
-
-const NavBar: React.FC<NavBarProps> = ({ user }) => {
+const NavBar: React.FC = () => {
   const navigate = useNavigate();
+  const auth = useContext(AuthContext);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');  // Clear the token
-    navigate('/login');  // Redirect to login page
+    auth?.logout();
+    navigate('/login');
   };
+
+  useEffect(() => {
+    if (!auth || !auth.user) {
+      navigate('/login');
+    }
+  }, [auth, navigate]);
+
+  if (!auth || !auth.user) {
+    return null;
+  }
 
   return (
     <AppBar position="static">
@@ -20,12 +28,10 @@ const NavBar: React.FC<NavBarProps> = ({ user }) => {
         <Typography variant="h6" style={{ flexGrow: 1 }}>
           AppName
         </Typography>
-        {user && <Typography>{user}</Typography>}
-        {user && (
-          <Button color="inherit" onClick={handleLogout}>
-            Logout
-          </Button>
-        )}
+        <Typography>{auth.user}</Typography>
+        <Button color="inherit" onClick={handleLogout}>
+          Logout
+        </Button>
       </Toolbar>
     </AppBar>
   );

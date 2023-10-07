@@ -18,7 +18,7 @@ const darkTheme = createTheme({
 
 
 function App() {
-  const user = localStorage.getItem('token') ? 'Username' : null;  // Placeholder logic for demo purposes
+
 
   return (
     <AuthProvider>
@@ -28,7 +28,7 @@ function App() {
       <CssBaseline />
 
       <Router>
-      {user && window.location.pathname !== '/login' && <NavBar user={user} />}
+      <NavBar />
         <Routes>
           <Route path="/" element={<GoalsPage />} />
           <Route path="/login" element={<LogRegPage />} />
