@@ -1,4 +1,4 @@
-import { ListItem } from "@mui/material";
+import { ListItem, Box } from "@mui/material";
 import { GoalTaskOut } from "../../api";
 export const GoalTaskItem: React.FC<{
   task: GoalTaskOut;
@@ -6,12 +6,11 @@ export const GoalTaskItem: React.FC<{
   onToggle: Function;
 }> = ({ task, goalId, onToggle }) => {
   return (
-    <ListItem
-      key={task.id}
+    <Box
       onClick={() => onToggle(goalId, task.id, task.completed)}
       style={{ textDecoration: task.completed ? "line-through" : "none" }}
     >
       {task.text}
-    </ListItem>
+    </Box>
   );
 };

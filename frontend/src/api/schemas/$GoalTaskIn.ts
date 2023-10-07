@@ -6,6 +6,10 @@ export const $GoalTaskIn = {
     properties: {
         text: {
             type: 'string',
+            isRequired: true,
+        },
+        completed: {
+            type: 'boolean',
         },
     },
 } as const;

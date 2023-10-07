@@ -22,15 +22,16 @@ export const $GoalTaskOut = {
                 type: 'null',
             }],
         },
-        text: {
-            type: 'string',
+        completed: {
+            type: 'boolean',
+            isRequired: true,
         },
         goal_id: {
             type: 'number',
             isRequired: true,
         },
-        completed: {
-            type: 'boolean',
+        text: {
+            type: 'string',
             isRequired: true,
         },
     },

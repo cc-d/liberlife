@@ -7,6 +7,7 @@ import {
   ListItem,
   Typography,
   IconButton,
+  Container,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -100,10 +101,10 @@ const GoalsPage: React.FC = () => {
 
   const handleAddTaskToGoal = async (goalId: number, taskText: string) => {
     try {
-      const response = await apios.post(`/goals/${goalId}/tasks`, {
+      const response = await apios.post<GoalTaskOut>(`/goals/${goalId}/tasks`, {
         text: taskText,
       });
-      if (response.data) {
+      if (response.status === 200 && response.data && response.data !== null) {
         setGoals(
           goals.map((goal) => {
             if (goal.id === goalId) {
@@ -134,27 +135,37 @@ const GoalsPage: React.FC = () => {
   };
 
   return (
-    <Box sx={{
-
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-     }
-    }>
-      <Box>
-      <TextField
-        variant="outlined"
-        placeholder="New goal..."
-        value={newGoalText}
-        onChange={(e) => setNewGoalText(e.target.value)}
-        sx={{ mr: 2 }}
-      />
-      <Button variant="contained" color="primary" onClick={handleAddGoal}>
-        Create Goal
-      </Button>
+    <Container maxWidth="xl">
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          mt: 2,
+          mb: 2,
+        }}
+      >
+        <TextField
+          variant="outlined"
+          placeholder="New goal..."
+          value={newGoalText}
+          onChange={(e) => setNewGoalText(e.target.value)}
+          sx={{ mr: 2 }}
+        />
+        <Button variant="contained" color="primary" onClick={handleAddGoal}>
+          Create Goal
+        </Button>
       </Box>
 
-      <List>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          flexWrap: "wrap",
+          justifyContent: "left",
+
+        }}
+      >
         {goals.map((goal) => (
           <GoalItem
             key={goal.id}
@@ -164,8 +175,8 @@ const GoalsPage: React.FC = () => {
             onTaskAdd={handleAddTaskToGoal}
           />
         ))}
-      </List>
-    </Box>
+      </Box>
+    </Container>
   );
 };
 

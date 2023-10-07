@@ -28,13 +28,20 @@ export const GoalItem: React.FC<{
   };
 
   return (
-    <Box key={goal.id}>
+    <Box key={goal.id}
+
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+
+      }}
+    >
       <Box
-        display="inline-flex"
-        justifyContent="space-between"
-        alignItems="center"
+        sx={{
+          display: "flex",
+        }}
       >
-        <Typography variant="h6" display="inline">
+        <Typography variant="h6" display="flex">
           {goal.text}
         </Typography>
         <IconButton onClick={() => onGoalDelete(goal.id)} size="small">
@@ -42,6 +49,7 @@ export const GoalItem: React.FC<{
         </IconButton>
       </Box>
 
+        <Box>
       <TextField
         variant="outlined"
         size="small"
@@ -53,8 +61,9 @@ export const GoalItem: React.FC<{
       <IconButton onClick={handleAddTask} size="small">
         <AddIcon fontSize="inherit" />
       </IconButton>
+      </Box>
 
-      <List>
+      <Box>
         {goal.tasks &&
           goal.tasks.map((task) => (
             <GoalTaskItem
@@ -64,7 +73,7 @@ export const GoalItem: React.FC<{
               onToggle={onTaskToggle}
             />
           ))}
-      </List>
+      </Box>
     </Box>
   );
 };
