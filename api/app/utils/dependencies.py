@@ -1,9 +1,11 @@
 from jwt import PyJWTError
 from fastapi import Depends, HTTPException
+from sqlalchemy.future import select
 from .security import decode_jwt, oauth_scheme
-from ..schemas import user as UserSchema
+from ..schemas import user as UserSchema, goal as GoalSchema
 from ..db import get_adb, AsyncSession
 from ..crud.user import get_user_from_username
+
 
 from fastapi import Depends, HTTPException, Security
 from pydantic import ValidationError

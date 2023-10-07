@@ -7,6 +7,7 @@ from typing import Optional, Union
 from ..db import get_adb
 from ..db.models import User
 from ..schemas import user as SchUser
+
 from ..utils.security import decode_jwt, oauth_scheme
 
 
@@ -34,7 +35,7 @@ async def get_user_from_username(
 
 async def get_user_from_id(
     user_id: int, db: AsyncSession = Depends(get_adb)
-) -> User:
+) -> Optional[User]:
     user = await db.execute(select(User).where(User.id == user_id))
     user = user.scalar_one_or_none()
     return user

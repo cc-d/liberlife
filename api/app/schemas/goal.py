@@ -13,25 +13,22 @@ class GoalIn(GoalBase):
     pass
 
 
-class GoalOut(GoalIn, DBCommon):
-    id: int
-    user_id: int
-    user: UserOut
-
-
-class GoalTaskBase(BaseModel):
-    pass
-
-
-class GoalTaskIn(GoalTaskBase):
-    goal_id: int
+class GoalTaskIn(BaseModel):
+    text: str = 'new task'
 
 
 class GoalTaskOut(GoalTaskIn, DBCommon):
+    goal_id: int
     id: int
     completed: bool
-    goal: GoalOut
 
 
-class GoalTaskUpdate(GoalTaskBase):
-    completed: bool
+class GoalOut(GoalIn, DBCommon):
+    user_id: int
+    user: UserOut
+    tasks: List[GoalTaskOut] = []
+
+
+class GoalTaskUpdate(BaseModel):
+    text: Optional[str] = 'text'
+    completed: Optional[bool] = False

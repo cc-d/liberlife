@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $GoalOut = {
+export const $GoalTaskOut = {
     properties: {
         id: {
             type: 'number',
@@ -24,21 +24,14 @@ export const $GoalOut = {
         },
         text: {
             type: 'string',
-            isRequired: true,
         },
-        user_id: {
+        goal_id: {
             type: 'number',
             isRequired: true,
         },
-        user: {
-            type: 'UserOut',
+        completed: {
+            type: 'boolean',
             isRequired: true,
-        },
-        tasks: {
-            type: 'array',
-            contains: {
-                type: 'GoalTaskOut',
-            },
         },
     },
 } as const;

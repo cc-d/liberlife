@@ -56,6 +56,7 @@ class GoalTask(Base):
     goal_id: Mapped[int] = mapped_column(
         Integer, ForeignKey('goals.id'), nullable=False
     )
+    text: Mapped[str] = mapped_column(Text, nullable=False, default='new task')
     completed: Mapped[bool] = mapped_column(Boolean, default=False)
 
     created_on: Mapped[DateTime] = mapped_column(

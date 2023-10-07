@@ -7,7 +7,7 @@ alias gentypes="npx openapi-typescript-codegen generate \
 --exportSchemas true --input http://localhost:8999/openapi.json \
 --output $FRONTDIR/src/api/"
 
-alias uvistart="uvicorn --port=8999 api.app.main:app --reload"
+alias uvistart=". api/venv/bin/activate && uvicorn --port=8999 api.app.main:app --reload"
 
 alias gptfindpy="find $APIDIR -type f -name '*.py' -not -path '*venv*' -not -path '*alembic*'"
 

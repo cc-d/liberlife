@@ -3,16 +3,12 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { GoalTaskOut } from './GoalTaskOut';
-import type { UserOut } from './UserOut';
-
-export type GoalOut = {
+export type GoalTaskOut = {
     id: number;
     created_on: string;
     updated_on?: (string | null);
-    text: string;
-    user_id: number;
-    user: UserOut;
-    tasks?: Array<GoalTaskOut>;
+    text?: string;
+    goal_id: number;
+    completed: boolean;
 };
 
