@@ -3,9 +3,14 @@ import { Container, Typography, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import apios from "../../apios";
 import LogRegForm, { LogRegFormState } from "./LogRegForm";
+import { useAuth } from "../../contexts/AuthContext";
 
 const LogRegPage: React.FC = () => {
   const nav = useNavigate();
+
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
   const handleLogin = async (data: LogRegFormState) => {
     try {
       const response = await apios.post("/u/login", {
@@ -14,7 +19,8 @@ const LogRegPage: React.FC = () => {
       });
       if (response.data && response.data.access_token) {
         localStorage.setItem("token", response.data.access_token);
-        nav("/login");
+        login(data.username);
+        navigate('/');
       }
     } catch (error) {
       console.error("Error during login:", error);

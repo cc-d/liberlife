@@ -11,10 +11,16 @@ export const $UserOut = {
         created_on: {
             type: 'string',
             isRequired: true,
+            format: 'date-time',
         },
         updated_on: {
-            type: 'string',
-            isRequired: true,
+            type: 'any-of',
+            contains: [{
+                type: 'string',
+                format: 'date-time',
+            }, {
+                type: 'null',
+            }],
         },
         username: {
             type: 'string',

@@ -31,7 +31,7 @@ def apply_cors_middleware(
     allowed_methods: list[str] = ['*'],
     allowed_headers: list[str] = ['*'],
     allow_credentials: bool = True,
-    expose_headers: list[str] = [],
+    expose_headers: list[str] = ['*'],
 ) -> ASGIApp:
     """
     Apply CORS middleware to the ASGI app with specified options.

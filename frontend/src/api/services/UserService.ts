@@ -55,22 +55,18 @@ export class UserService {
 
     /**
      * Json Login
-     * @param username
-     * @param password
+     * @param requestBody
      * @returns Token Successful Response
      * @throws ApiError
      */
     public static jsonLoginULoginPost(
-        username: string,
-        password: string,
+        requestBody: UserIn,
     ): CancelablePromise<Token> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/u/login',
-            query: {
-                'username': username,
-                'password': password,
-            },
+            body: requestBody,
+            mediaType: 'application/json',
             errors: {
                 422: `Validation Error`,
             },

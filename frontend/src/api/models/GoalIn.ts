@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type TaskIn = {
+export type GoalIn = {
     text: string;
 };
 

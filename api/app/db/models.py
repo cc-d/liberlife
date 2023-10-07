@@ -23,11 +23,11 @@ class User(Base):
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
 
-    tasks = relationship("Task", back_populates="user")
+    goals = relationship("Goal", back_populates="user")
 
 
-class Task(Base):
-    __tablename__ = 'tasks'
+class Goal(Base):
+    __tablename__ = 'goals'
 
     id: Mapped[int] = mapped_column(
         Integer, primary_key=True, index=True, autoincrement=True
@@ -43,20 +43,20 @@ class Task(Base):
     updated_on: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
-    user = relationship("User", back_populates="tasks")
-    updates = relationship("TaskUpdate", back_populates="task")
+    user = relationship("User", back_populates="goals")
+    tasks = relationship("GoalTask", back_populates="goal")
 
 
-class TaskUpdate(Base):
-    __tablename__ = 'task_updates'
+class GoalTask(Base):
+    __tablename__ = 'goal_tasks'
 
     id: Mapped[int] = mapped_column(
         Integer, primary_key=True, index=True, autoincrement=True
     )
-    task_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey('tasks.id'), nullable=False
+    goal_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey('goals.id'), nullable=False
     )
-    text: Mapped[str] = mapped_column(Text, nullable=False)
+    completed: Mapped[bool] = mapped_column(Boolean, default=False)
 
     created_on: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
@@ -64,4 +64,4 @@ class TaskUpdate(Base):
     updated_on: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
-    task = relationship("Task", back_populates="updates")
+    goal = relationship("Goal", back_populates="tasks")

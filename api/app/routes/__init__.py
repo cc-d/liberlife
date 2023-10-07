@@ -1,5 +1,4 @@
 from .user import router as urouter
-from .task import router as trouter
-from .task_updates import router as turouter
+from .goal import router as trouter
 
-ROUTERS = [urouter, trouter, turouter]
+ROUTERS = [urouter, trouter]

@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $TaskUpdateOut = {
+export const $GoalOut = {
     properties: {
         id: {
             type: 'number',
@@ -11,17 +11,27 @@ export const $TaskUpdateOut = {
         created_on: {
             type: 'string',
             isRequired: true,
+            format: 'date-time',
         },
         updated_on: {
-            type: 'string',
-            isRequired: true,
+            type: 'any-of',
+            contains: [{
+                type: 'string',
+                format: 'date-time',
+            }, {
+                type: 'null',
+            }],
         },
         text: {
             type: 'string',
             isRequired: true,
         },
-        task_id: {
+        user_id: {
             type: 'number',
+            isRequired: true,
+        },
+        user: {
+            type: 'UserOut',
             isRequired: true,
         },
     },

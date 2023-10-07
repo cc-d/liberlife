@@ -55,11 +55,11 @@ async def oauth_login(
 
 @router.post("/login", response_model=UserSchema.Token)
 async def json_login(
-    username: str, password: str, db: AsyncSession = Depends(get_adb)
+    data: UserSchema.UserIn, db: AsyncSession = Depends(get_adb)
 ):
-    user = await get_user_from_username(username, must_exist=True, db=db)
+    user = await get_user_from_username(data.username, must_exist=True, db=db)
 
-    if not verify_pass(password, user.hpassword):
+    if not verify_pass(data.password, user.hpassword):
         raise HTTPException(status_code=400, detail="incorrect password")
 
     access_token = encode_jwt(data={"sub": user.username})

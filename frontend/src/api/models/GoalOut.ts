@@ -3,14 +3,14 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { TaskUpdateOut } from './TaskUpdateOut';
+import type { UserOut } from './UserOut';
 
-export type TaskOut = {
+export type GoalOut = {
     id: number;
     created_on: string;
-    updated_on: string;
+    updated_on?: (string | null);
     text: string;
     user_id: number;
-    updates?: Array<TaskUpdateOut>;
+    user: UserOut;
 };
 
