@@ -1,9 +1,5 @@
 import React, { useState } from "react";
-import {
-  Box,
-
-  Divider,
-} from "@mui/material";
+import { Box, Divider } from "@mui/material";
 import { GoalOut } from "../../api";
 import { GoalHeader } from "./GoalHeader";
 import { GoalTasks } from "./GoalTasks";
@@ -56,6 +52,23 @@ export const GoalItem: React.FC<GoalItemProps> = ({
     setIsEditing(false);
   };
 
+  const latestUpdatedOn = (goal: any): Date => {
+    if (!goal?.tasks && goal.tasks?.length > 0) {
+      return new Date(goal.updated_on);
+    }
+
+    console.log("latest", goal);
+    let mostRecent = new Date(goal.updated_on);
+
+    if (!goal.task && goal.tasks?.length > 0) {
+      return goal.tasks
+        .map((task: any) => new Date(task.updated_on))
+        .sort((a: Date, b: Date) => b.getTime() - a.getTime())[0];
+    }
+
+    return mostRecent;
+  };
+
   return (
     <Box
       sx={{
@@ -64,24 +77,24 @@ export const GoalItem: React.FC<GoalItemProps> = ({
         borderRadius: 1,
         margin: 0.5,
         border: "1px solid #303030",
-        display: "flex",        // This turns it into a flex container
-        flexDirection: "column",  // Stack children vertically
+        display: "flex", // This turns it into a flex container
+        flexDirection: "column", // Stack children vertically
       }}
     >
-<GoalHeader
-  goal={goal}
-  isEditing={isEditing}
-  editedText={editedText}
-  setEditedText={setEditedText}
-  handleSave={handleSave}
-  handleCancel={handleCancel}
-  handleMenuClick={handleMenuClick}
-  handleMenuClose={handleMenuClose}
-  startEdit={startEdit}
-  handleDelete={() => onGoalDelete(goal.id)}
-  anchorEl={anchorEl}
-  maxElementWidth={maxElementWidth}
-/>
+      <GoalHeader
+        goal={goal}
+        isEditing={isEditing}
+        editedText={editedText}
+        setEditedText={setEditedText}
+        handleSave={handleSave}
+        handleCancel={handleCancel}
+        handleMenuClick={handleMenuClick}
+        handleMenuClose={handleMenuClose}
+        startEdit={startEdit}
+        handleDelete={() => onGoalDelete(goal.id)}
+        anchorEl={anchorEl}
+        maxElementWidth={maxElementWidth}
+      />
 
       <Divider
         sx={{
@@ -102,17 +115,11 @@ export const GoalItem: React.FC<GoalItemProps> = ({
         onToggle={onTaskToggle}
         maxElementWidth={maxElementWidth}
         onTaskDelete={onTaskDelete}
-
       />
-      <Box sx={{ display: "flex", justifyContent: "flex-end",
-    }}>
-        {goal && goal?.updated_on && (
-          <Box sx={{ color: "#777777", fontSize: "0.8em" }}>
-            Last updated: {new Date(goal.updated_on).toLocaleDateString()}
-          </Box>
-        )}
-
-
+      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <Box sx={{ color: "#777777", fontSize: "0.8em" }}>
+          Last updated: {latestUpdatedOn(goal).toLocaleDateString()}
+        </Box>
       </Box>
     </Box>
   );
