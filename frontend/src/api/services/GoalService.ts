@@ -70,13 +70,13 @@ export class GoalService {
     /**
      * Update Goal
      * @param goalId
-     * @param text
+     * @param requestBody
      * @returns GoalOut Successful Response
      * @throws ApiError
      */
     public static updateGoalGoalsGoalIdPut(
         goalId: number,
-        text: string,
+        requestBody: GoalIn,
     ): CancelablePromise<GoalOut> {
         return __request(OpenAPI, {
             method: 'PUT',
@@ -84,9 +84,8 @@ export class GoalService {
             path: {
                 'goal_id': goalId,
             },
-            query: {
-                'text': text,
-            },
+            body: requestBody,
+            mediaType: 'application/json',
             errors: {
                 422: `Validation Error`,
             },

@@ -1,39 +1,35 @@
 import React, { useState } from "react";
 import {
   Box,
-  Typography,
   IconButton,
-  TextField,
   Menu,
   MenuItem,
   Divider,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AddIcon from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
-import CancelIcon from "@mui/icons-material/Cancel";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { GoalOut } from "../../api";
-import { GoalTaskItem } from "./GoalTaskItem";
+import { GoalHeader } from "./GoalHeader";
+import { GoalTasks } from "./GoalTasks";
 
-export const GoalItem: React.FC<{
+interface GoalItemProps {
   goal: GoalOut;
-  onTaskToggle: Function;
+  onTaskToggle: (goalId: number, taskId: number, isCompleted: boolean) => void;
   onGoalDelete: Function;
   onTaskAdd: Function;
   onGoalUpdate: Function;
-}> = ({ goal, onTaskToggle, onGoalDelete, onTaskAdd, onGoalUpdate }) => {
+}
+
+export const GoalItem: React.FC<GoalItemProps> = ({
+  goal,
+  onTaskToggle,
+  onGoalDelete,
+  onTaskAdd,
+  onGoalUpdate,
+}) => {
   const [newTaskText, setNewTaskText] = useState<string>("");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editedText, setEditedText] = useState<string>("");
-
-  const handleAddTask = () => {
-    if (newTaskText.trim()) {
-      onTaskAdd(goal.id, newTaskText);
-      setNewTaskText("");
-    }
-  };
+  const maxElementWidth = "400px";
 
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -60,109 +56,64 @@ export const GoalItem: React.FC<{
     setIsEditing(false);
   };
 
-  const maxElementWidth = "400px";
-
   return (
     <Box
       sx={{
         backgroundColor: "#151515",
-        padding: 1,
+        padding: 0.5,
         borderRadius: 1,
         margin: 0.5,
         border: "1px solid #303030",
+        display: "flex",        // This turns it into a flex container
+        flexDirection: "column",  // Stack children vertically
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        {isEditing ? (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              mb: 1,
-              flexGrow: 1,
-            }}
-          >
-            <TextField
-              value={editedText}
-              onChange={(e) => setEditedText(e.target.value)}
-              sx={{
+<GoalHeader
+  goal={goal}
+  isEditing={isEditing}
+  editedText={editedText}
+  setEditedText={setEditedText}
+  handleSave={handleSave}
+  handleCancel={handleCancel}
+  handleMenuClick={handleMenuClick}
+  handleMenuClose={handleMenuClose}
+  startEdit={startEdit}
+  handleDelete={() => onGoalDelete(goal.id)}
+  anchorEl={anchorEl}
+  maxElementWidth={maxElementWidth}
+/>
 
-                flexGrow: 1,
-                maxWidth: maxElementWidth,
-              }}
-            />
-            <IconButton onClick={handleSave}>
-              <EditIcon />
-            </IconButton>
-            <IconButton onClick={handleCancel}>
-              <CancelIcon />
-            </IconButton>
-          </Box>
-        ) : (
-          <>
-            <Typography variant="h6" noWrap>
-              {goal.text}
-            </Typography>
-            <IconButton onClick={handleMenuClick}>
-              <MoreVertIcon />
-            </IconButton>
-            <Menu
-              anchorEl={anchorEl}
-              keepMounted
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
-            >
-              <MenuItem onClick={startEdit}>Edit</MenuItem>
-              <MenuItem onClick={() => onGoalDelete(goal.id)}>Delete</MenuItem>
-            </Menu>
-          </>
-        )}
-      </Box>
       <Divider
         sx={{
           backgroundColor: "#303030",
         }}
       />
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          mt: 1,
+      <GoalTasks
+        newTaskText={newTaskText}
+        setNewTaskText={setNewTaskText}
+        handleAddTask={() => {
+          if (newTaskText.trim()) {
+            onTaskAdd(goal.id, newTaskText);
+            setNewTaskText("");
+          }
         }}
-      >
-        <TextField
-          variant="outlined"
-          size="small"
-          value={newTaskText}
-          onChange={(e) => setNewTaskText(e.target.value)}
-          placeholder="Add task..."
-          sx={{ flexGrow: 1, marginRight: 1 }}
-        />
-        <IconButton onClick={handleAddTask}>
-          <AddIcon />
-        </IconButton>
-      </Box>
-      <Box mt={2}>
-        {goal.tasks &&
-          goal.tasks.map((task) => (
-            <GoalTaskItem
-              key={task.id}
-              task={task}
-              goalId={goal.id}
-              onToggle={onTaskToggle}
-              maxElementWidth={maxElementWidth}
-            />
-          ))}
+        tasks={goal.tasks || []}
+        goalId={goal.id}
+        onToggle={onTaskToggle}
+        maxElementWidth={maxElementWidth}
+      />
+      <Box sx={{ display: "flex", justifyContent: "flex-end",
+    }}>
+        {goal && goal?.updated_on && (
+          <Box sx={{ color: "#777777", fontSize: "0.8em" }}>
+            Last updated: {new Date(goal.updated_on).toLocaleDateString()}
+          </Box>
+        )}
+
+
       </Box>
     </Box>
   );
 };
+
+export default GoalItem;

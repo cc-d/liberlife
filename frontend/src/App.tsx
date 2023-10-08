@@ -7,12 +7,21 @@ import LogRegPage from './pages/LogRegPage';
 import GoalsPage from './pages/GoalsPage';
 import NavBar from './components/NavBar';
 
+export const primaryColor = '#2E8B57'; // SeaGreen
+export const secondaryColor = '#006400'; // DarkGreen
 
-const darkTheme = createTheme({
+export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
+    primary: {
+      main: primaryColor,// SeaGreen
+    },
+    secondary: {
+      main: secondaryColor, // DarkGreen
+    },
   },
 });
+
 
 // ... other imports
 

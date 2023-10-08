@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Checkbox, Typography } from "@mui/material";
 import { GoalTaskOut } from "../../api";
+import { primaryColor, secondaryColor } from "../../App";
 
 export const GoalTaskItem: React.FC<{
   task: GoalTaskOut;
@@ -13,7 +14,15 @@ export const GoalTaskItem: React.FC<{
       display="flex"
       alignItems="center"
       onClick={() => onToggle(goalId, task.id, task.completed)}
-      sx={{ cursor: "pointer", mb: 1 }}
+      sx={{
+
+        cursor: "pointer", mb: 1,
+        "&:hover": {
+          backgroundColor: "#303030",
+        },
+
+    }}
+
     >
       <Checkbox checked={task.completed} />
       <Box

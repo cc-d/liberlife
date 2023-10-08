@@ -8,6 +8,7 @@ import {
   Typography,
   IconButton,
   Container,
+  Divider,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -16,6 +17,7 @@ import { GoalOut, GoalTaskOut } from "../../api";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 import { GoalItem } from "./GoalItem";
+import GoalBoard from "./GoalBoard";
 
 const GoalsPage: React.FC = () => {
   const [goals, setGoals] = useState<GoalOut[]>([]);
@@ -123,6 +125,11 @@ const GoalsPage: React.FC = () => {
     }
   };
   const handleGoalDelete = async (goalId: number) => {
+    // prompt user if they are sure and only delete if so
+    const confirmed = window.confirm("Are you sure you want to delete this goal?");
+    if (!confirmed) {
+      return;
+    }
     try {
       const response = await apios.delete(`/goals/${goalId}`);
       if (response.status === 200 || response.status === 204) {
@@ -151,50 +158,24 @@ const GoalsPage: React.FC = () => {
 
 
   return (
-    <Container maxWidth="xl">
-      <Box
+    <Container
+        maxWidth={false}
         sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          mt: 2,
-          mb: 2,
+          m: 0,
         }}
       >
-        <TextField
-          variant="outlined"
-          placeholder="New goal..."
-          value={newGoalText}
-          onChange={(e) => setNewGoalText(e.target.value)}
-          sx={{ mr: 2 }}
-        />
-        <Button variant="contained" color="primary" onClick={handleAddGoal}>
-          Create Goal
-        </Button>
-      </Box>
+      <GoalBoard
+        goals={goals}
+        newGoalText={newGoalText}
+        setNewGoalText={setNewGoalText}
+        handleAddGoal={handleAddGoal}
+        toggleTaskCompletion={toggleTaskCompletion}
+        handleGoalDelete={handleGoalDelete}
+        handleAddTaskToGoal={handleAddTaskToGoal}
+        handleGoalUpdate={handleGoalUpdate}
+      />
+      </Container>
 
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          flexWrap: "wrap",
-          justifyContent: "left",
-          mr: 1,
-          mb: 1,
-        }}
-      >
-        {goals.map((goal) => (
-          <GoalItem
-            key={goal.id}
-            goal={goal}
-            onTaskToggle={toggleTaskCompletion}
-            onGoalDelete={handleGoalDelete}
-            onTaskAdd={handleAddTaskToGoal}
-            onGoalUpdate={handleGoalUpdate}
-          />
-        ))}
-      </Box>
-    </Container>
   );
 };
 
