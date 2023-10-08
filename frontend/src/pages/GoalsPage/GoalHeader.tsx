@@ -49,7 +49,7 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-
+        ml: 0.5,
       }}
     >
               <Box
@@ -84,7 +84,7 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
   {goal.text}
 </Typography>
 
-          <IconButton onClick={handleMenuClick} sx={{m: 0, p: 0}}>
+          <IconButton onClick={handleMenuClick}>
             <MoreVertIcon />
           </IconButton>
           <Menu

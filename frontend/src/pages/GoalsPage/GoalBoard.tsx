@@ -16,6 +16,7 @@ interface GoalBoardProps {
   handleGoalDelete: (goalId: number) => void;
   handleAddTaskToGoal: (goalId: number, taskText: string) => void;
   handleGoalUpdate: (goalId: number, updatedText: string) => Promise<boolean>;
+  handleDeleteTask: (goalId: number, taskId: number) => void;
 }
 
 const GoalBoard: React.FC<GoalBoardProps> = ({
@@ -27,7 +28,9 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
   handleGoalDelete,
   handleAddTaskToGoal,
   handleGoalUpdate,
+  handleDeleteTask,
 }) => {
+
   return (
     <Box>
       <Box
@@ -97,6 +100,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
             onGoalDelete={handleGoalDelete}
             onTaskAdd={handleAddTaskToGoal}
             onGoalUpdate={handleGoalUpdate}
+            onTaskDelete={handleDeleteTask}
           />
         ))}
       </Box>

@@ -1,7 +1,9 @@
 import React from "react";
-import { Box, Checkbox, Typography } from "@mui/material";
+import { Box, Checkbox, Typography, IconButton } from "@mui/material";
 import { GoalTaskOut } from "../../api";
 import { primaryColor, secondaryColor } from "../../App";
+import DeleteIcon from "@mui/icons-material/Delete";
+
 
 export const GoalTaskItem: React.FC<{
   task: GoalTaskOut;
@@ -36,6 +38,14 @@ export const GoalTaskItem: React.FC<{
       >
         <Typography>{task.text}</Typography>
       </Box>
+      <IconButton
+        onClick={(e) => {
+          e.stopPropagation(); // This prevents the parent onClick from being called
+
+        }}
+      >
+        <DeleteIcon />
+      </IconButton>
     </Box>
   );
 };

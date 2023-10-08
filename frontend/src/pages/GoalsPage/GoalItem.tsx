@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import {
   Box,
-  IconButton,
-  Menu,
-  MenuItem,
+
   Divider,
 } from "@mui/material";
 import { GoalOut } from "../../api";
@@ -16,6 +14,7 @@ interface GoalItemProps {
   onGoalDelete: Function;
   onTaskAdd: Function;
   onGoalUpdate: Function;
+  onTaskDelete: (goalId: number, taskId: number) => void;
 }
 
 export const GoalItem: React.FC<GoalItemProps> = ({
@@ -23,6 +22,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
   onTaskToggle,
   onGoalDelete,
   onTaskAdd,
+  onTaskDelete,
   onGoalUpdate,
 }) => {
   const [newTaskText, setNewTaskText] = useState<string>("");
@@ -101,6 +101,8 @@ export const GoalItem: React.FC<GoalItemProps> = ({
         goalId={goal.id}
         onToggle={onTaskToggle}
         maxElementWidth={maxElementWidth}
+        onTaskDelete={onTaskDelete}
+
       />
       <Box sx={{ display: "flex", justifyContent: "flex-end",
     }}>

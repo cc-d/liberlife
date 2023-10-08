@@ -156,6 +156,44 @@ const GoalsPage: React.FC = () => {
     return false;
   };
 
+  const handleDeleteTask = async (goalId: number, taskId: number) => {
+    if (!auth || !auth?.userLoading && !auth?.user) {
+      navigate("/login");
+      return;
+    }
+    try {
+      // Call the DELETE endpoint for the task.
+      // I'm assuming the endpoint URL structure based on your provided routes for goals. Modify if it's different.
+      const response = await apios.delete(`/goals/${goalId}/tasks/${taskId}`);
+
+      if (response.status === 200 || response.status === 204) {
+        // If successful, update the goals state to remove the task.
+        setGoals((prevGoals) =>
+          prevGoals.map((goal) => {
+            if (goal.id === goalId) {
+              return {
+                ...goal,
+                tasks: goal.tasks?.filter((task) => task.id !== taskId) || [],
+              };
+            }
+            return goal;
+          })
+        );
+      } else {
+        console.error("Error deleting task:", response.data);
+      }
+    } catch (error: any) {
+      const axiosError = error;
+      if (axiosError.response && axiosError.response.status === 401) {
+        auth.logout();
+        navigate("/login");
+      } else {
+        console.error("Error deleting task:", error.message);
+      }
+    }
+  };
+
+
 
   return (
     <Container
@@ -173,6 +211,7 @@ const GoalsPage: React.FC = () => {
         handleGoalDelete={handleGoalDelete}
         handleAddTaskToGoal={handleAddTaskToGoal}
         handleGoalUpdate={handleGoalUpdate}
+        handleDeleteTask={handleDeleteTask}
       />
       </Container>
 
