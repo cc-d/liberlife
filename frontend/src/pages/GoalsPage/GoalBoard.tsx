@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography, TextField, Button, Divider } from "@mui/material";
+import { Box, Typography, TextField, Button, Divider, IconButton } from "@mui/material";
 import { GoalOut } from "../../api";
 import { GoalItem } from "./GoalItem";
 
@@ -30,6 +30,29 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
   handleGoalUpdate,
   handleDeleteTask,
 }) => {
+
+  const latestUpdatedOn = (goal: any) => {
+    if (!goal?.tasks && goal.tasks?.length > 0) {
+      return new Date(goal.updated_on);
+    }
+
+    console.log("latest", goal);
+
+    if (!goal.task && goal.tasks?.length > 0) {
+      let mostRecentGoal = new Date(goal.updated_on);
+
+      let mostRecentTask = goal.tasks
+        .map((task: any) => new Date(task.updated_on))
+        .sort((a: Date, b: Date) => b.getTime() - a.getTime())[0];
+
+      if (mostRecentTask.getTime() > mostRecentGoal.getTime()) {
+        return mostRecentTask;
+      }
+    }
+
+  };
+
+
 
   return (
     <Box>
@@ -101,6 +124,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
             onTaskAdd={handleAddTaskToGoal}
             onGoalUpdate={handleGoalUpdate}
             onTaskDelete={handleDeleteTask}
+            mostRecentUpdate={latestUpdatedOn(goal)}
           />
         ))}
       </Box>

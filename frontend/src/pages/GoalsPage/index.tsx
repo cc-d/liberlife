@@ -81,16 +81,21 @@ const GoalsPage: React.FC = () => {
       const response = await apios.put(`/goals/${goalId}/tasks/${taskId}`, {
         completed: !isCompleted,
       });
-      if (response.status === 200) {
+      if (response.data && response.data.updated_on) {
         setGoals(
           goals.map((goal) => {
-            if (goal.id === goalId && typeof goal.tasks !== "undefined") {
-              goal.tasks.map((task) => {
+            if (goal.id === goalId && goal.tasks) {
+              goal.tasks = goal.tasks.map((task) => {
                 if (task.id === taskId) {
-                  task.completed = !isCompleted;
+                  return {
+                    ...task,
+                    completed: !isCompleted,
+                    updated_on: response.data.updated_on,
+                  };
                 }
                 return task;
               });
+              goal.updated_on = response.data.updated_on;
             }
             return goal;
           })
@@ -100,21 +105,23 @@ const GoalsPage: React.FC = () => {
       console.error("Error updating task completion status:", error);
     }
   };
-
   const handleAddTaskToGoal = async (goalId: number, taskText: string) => {
     try {
       const response = await apios.post<GoalTaskOut>(`/goals/${goalId}/tasks`, {
         text: taskText,
       });
-      if (response.status === 200 && response.data && response.data !== null) {
+      if (response.data && response.data.updated_on) {
         setGoals(
           goals.map((goal) => {
             if (goal.id === goalId) {
-              if (goal.tasks) {
-                goal.tasks.push(response.data);
-              } else {
-                goal.tasks = [response.data];
-              }
+              const updatedTasks = goal.tasks
+                ? [...goal.tasks, response.data]
+                : [response.data];
+              return {
+                ...goal,
+                tasks: updatedTasks,
+                updated_on: response.data.updated_on,
+              };
             }
             return goal;
           })
@@ -124,9 +131,12 @@ const GoalsPage: React.FC = () => {
       console.error("Error adding task:", error);
     }
   };
+
   const handleGoalDelete = async (goalId: number) => {
     // prompt user if they are sure and only delete if so
-    const confirmed = window.confirm("Are you sure you want to delete this goal?");
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this goal?"
+    );
     if (!confirmed) {
       return;
     }
@@ -143,10 +153,14 @@ const GoalsPage: React.FC = () => {
 
   const handleGoalUpdate = async (goalId: number, updatedText: string) => {
     try {
-      const response = await apios.put(`/goals/${goalId}`, { text: updatedText });
+      const response = await apios.put(`/goals/${goalId}`, {
+        text: updatedText,
+      });
       if (response.status === 200) {
         setGoals((prevGoals) =>
-          prevGoals.map((g) => (g.id === goalId ? { ...g, text: updatedText } : g))
+          prevGoals.map((g) =>
+            g.id === goalId ? { ...g, text: updatedText } : g
+          )
         );
         return true;
       }
@@ -157,51 +171,42 @@ const GoalsPage: React.FC = () => {
   };
 
   const handleDeleteTask = async (goalId: number, taskId: number) => {
-    if (!auth || !auth?.userLoading && !auth?.user) {
-      navigate("/login");
-      return;
-    }
     try {
-      // Call the DELETE endpoint for the task.
-      // I'm assuming the endpoint URL structure based on your provided routes for goals. Modify if it's different.
       const response = await apios.delete(`/goals/${goalId}/tasks/${taskId}`);
-
-      if (response.status === 200 || response.status === 204) {
-        // If successful, update the goals state to remove the task.
-        setGoals((prevGoals) =>
-          prevGoals.map((goal) => {
+      if (response.data && response.data.updated_on) {
+        setGoals(
+          goals.map((goal) => {
             if (goal.id === goalId) {
+              const updatedTasks = goal.tasks?.filter(
+                (task) => task.id !== taskId
+              );
               return {
                 ...goal,
-                tasks: goal.tasks?.filter((task) => task.id !== taskId) || [],
+                tasks: updatedTasks,
+                updated_on: response.data.updated_on,
               };
             }
             return goal;
           })
         );
       } else {
-        console.error("Error deleting task:", response.data);
+        console.error(
+          "Delete operation successful but unexpected response format: ",
+          response.data
+        );
       }
-    } catch (error: any) {
-      const axiosError = error;
-      if (axiosError.response && axiosError.response.status === 401) {
-        auth.logout();
-        navigate("/login");
-      } else {
-        console.error("Error deleting task:", error.message);
-      }
+    } catch (error) {
+      console.error("Error deleting task:", error);
     }
   };
 
-
-
   return (
     <Container
-        maxWidth={false}
-        sx={{
-          m: 0,
-        }}
-      >
+      maxWidth={false}
+      sx={{
+        m: 0,
+      }}
+    >
       <GoalBoard
         goals={goals}
         newGoalText={newGoalText}
@@ -213,8 +218,7 @@ const GoalsPage: React.FC = () => {
         handleGoalUpdate={handleGoalUpdate}
         handleDeleteTask={handleDeleteTask}
       />
-      </Container>
-
+    </Container>
   );
 };
 

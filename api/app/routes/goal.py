@@ -179,4 +179,13 @@ async def delete_task(
         )
     await db.delete(task)
     await db.commit()
-    return {"detail": "Task deleted successfully"}
+
+    # Fetch the updated goal's timestamp after the task deletion
+    updated_goal = await db.execute(select(Goal).filter(Goal.id == goal.id))
+    updated_goal = updated_goal.scalar()
+
+    # Return the success detail alongside the updated_on timestamp
+    return {
+        "detail": "Task deleted successfully",
+        "updated_on": updated_goal.updated_on,
+    }

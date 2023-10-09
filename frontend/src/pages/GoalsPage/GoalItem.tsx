@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Divider } from "@mui/material";
 import { GoalOut } from "../../api";
 import { GoalHeader } from "./GoalHeader";
@@ -11,6 +11,7 @@ interface GoalItemProps {
   onTaskAdd: Function;
   onGoalUpdate: Function;
   onTaskDelete: (goalId: number, taskId: number) => void;
+  mostRecentUpdate: Date;
 }
 
 export const GoalItem: React.FC<GoalItemProps> = ({
@@ -20,6 +21,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
   onTaskAdd,
   onTaskDelete,
   onGoalUpdate,
+
 }) => {
   const [newTaskText, setNewTaskText] = useState<string>("");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -52,22 +54,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
     setIsEditing(false);
   };
 
-  const latestUpdatedOn = (goal: any): Date => {
-    if (!goal?.tasks && goal.tasks?.length > 0) {
-      return new Date(goal.updated_on);
-    }
 
-    console.log("latest", goal);
-    let mostRecent = new Date(goal.updated_on);
-
-    if (!goal.task && goal.tasks?.length > 0) {
-      return goal.tasks
-        .map((task: any) => new Date(task.updated_on))
-        .sort((a: Date, b: Date) => b.getTime() - a.getTime())[0];
-    }
-
-    return mostRecent;
-  };
 
   return (
     <Box
@@ -118,7 +105,14 @@ export const GoalItem: React.FC<GoalItemProps> = ({
       />
       <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
         <Box sx={{ color: "#777777", fontSize: "0.8em" }}>
-          Last updated: {latestUpdatedOn(goal).toLocaleDateString()}
+          {
+            goal && goal.updated_on
+              ? `${new Date(goal.updated_on)
+                .toLocaleString()
+              }`
+              : ""
+          }
+
         </Box>
       </Box>
     </Box>
