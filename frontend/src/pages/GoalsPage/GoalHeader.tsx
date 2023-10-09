@@ -43,16 +43,16 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
 }) => {
   return (
     <Box>
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        ml: 0.5,
-      }}
-    >
-              <Box
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          ml: 0.5,
+        }}
+      >
+        <Box
           sx={{
             display: "flex",
             flexDirection: "row",
@@ -60,46 +60,45 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
             flexGrow: 1,
           }}
         >
-      {isEditing ? (
-        <>
+          {isEditing ? (
+            <>
+              <TextField
+                value={editedText}
+                onChange={(e) => setEditedText(e.target.value)}
+                sx={{
+                  width: `${Math.min(20, editedText.length)}ch !important`,
+                  flexGrow: 1,
+                }}
+              />
+              <IconButton onClick={handleSave}>
+                <EditIcon />
+              </IconButton>
+              <IconButton onClick={handleCancel}>
+                <CancelIcon />
+              </IconButton>
+            </>
+          ) : (
+            <>
+              <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                {goal.text}
+              </Typography>
 
-          <TextField
-            value={editedText}
-            onChange={(e) => setEditedText(e.target.value)}
-            sx={{
-              width: `${Math.min(20, editedText.length)}ch !important`,
-              flexGrow: 1,
-            }}
-          />
-          <IconButton onClick={handleSave}>
-            <EditIcon />
-          </IconButton>
-          <IconButton onClick={handleCancel}>
-            <CancelIcon />
-          </IconButton>
-          </>
-      ) : (
-        <>
-<Typography variant="h6" sx={{flexGrow: 1}}>
-  {goal.text}
-</Typography>
-
-          <IconButton onClick={handleMenuClick}>
-            <MoreVertIcon />
-          </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            keepMounted
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
-          >
-            <MenuItem onClick={startEdit}>Edit</MenuItem>
-            <MenuItem onClick={handleDelete}>Delete</MenuItem>
-          </Menu>
-        </>
-      )}
+              <IconButton onClick={handleMenuClick}>
+                <MoreVertIcon />
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+              >
+                <MenuItem onClick={startEdit}>Edit</MenuItem>
+                <MenuItem onClick={handleDelete}>Delete</MenuItem>
+              </Menu>
+            </>
+          )}
+        </Box>
       </Box>
-    </Box>
     </Box>
   );
 };

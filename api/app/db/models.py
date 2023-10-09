@@ -36,6 +36,7 @@ class Goal(Base):
         Integer, ForeignKey('users.id'), nullable=False
     )
     text: Mapped[str] = mapped_column(Text)
+    notes: Mapped[str] = mapped_column(Text, nullable=True)
 
     created_on: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
@@ -45,7 +46,10 @@ class Goal(Base):
     )
     user = relationship("User", back_populates="goals")
     tasks = relationship(
-        "GoalTask", back_populates="goal", cascade="all, delete-orphan"
+        "GoalTask",
+        back_populates="goal",
+        cascade="all, delete-orphan",
+        lazy='joined',
     )
 
 

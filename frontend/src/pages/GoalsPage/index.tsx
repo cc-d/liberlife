@@ -151,24 +151,44 @@ const GoalsPage: React.FC = () => {
     }
   };
 
-  const handleGoalUpdate = async (goalId: number, updatedText: string) => {
+  const handleGoalUpdate = async (
+    goalId: number,
+    updatedText?: string,
+    updatedNotes?: string | null
+  ) => {
     try {
-      const response = await apios.put(`/goals/${goalId}`, {
-        text: updatedText,
-      });
+      let endpoint = `/goals/${goalId}`;
+      let payload: any = {};
+
+      if (updatedText !== undefined) {
+        payload.text = updatedText;
+      } else if (updatedNotes !== undefined) {
+        endpoint += `/notes`;
+        payload.notes = updatedNotes;
+      }
+
+      const response = await apios.put(endpoint, payload);
+
       if (response.status === 200) {
         setGoals((prevGoals) =>
-          prevGoals.map((g) =>
-            g.id === goalId ? { ...g, text: updatedText } : g
-          )
+          prevGoals.map((g) => {
+            if (g.id !== goalId) return g;
+            if (updatedText !== undefined) return { ...g, text: updatedText };
+            if (updatedNotes !== undefined) return { ...g, notes: updatedNotes };
+            return g;
+          })
         );
         return true;
       }
     } catch (error) {
-      console.error("Error updating goal:", error);
+      console.error(
+        `Error updating goal ${updatedText ? "text" : "notes"}:`,
+        error
+      );
     }
     return false;
   };
+
 
   const handleDeleteTask = async (goalId: number, taskId: number) => {
     try {

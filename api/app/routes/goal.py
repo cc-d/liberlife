@@ -24,9 +24,7 @@ async def create_goal(
     new_goal = Goal(text=goal.text, user_id=cur_user.id, user=cur_user)
     await async_addcomref(db, new_goal)
     return GoalSchema.GoalOut(
-        **new_goal.__dict__,
-        user=UserSchema.UserOut(**cur_user.__dict__),
-        tasks=[]
+        **new_goal.__dict__, user=UserSchema.UserOut(**cur_user.__dict__)
     )
 
 
@@ -35,12 +33,9 @@ async def list_goals(
     cur_user=Depends(get_current_user), db: AsyncSession = Depends(get_adb)
 ):
     goals = await db.execute(
-        select(Goal)
-        .distinct()
-        .where(Goal.user_id == cur_user.id)
-        .options(selectinload(Goal.tasks))
+        select(Goal).distinct().where(Goal.user_id == cur_user.id)
     )
-    goals = goals.scalars().all()
+    goals = goals.unique().scalars().all()
     return goals
 
 
@@ -90,6 +85,23 @@ async def delete_goal(
     return {"detail": "Goal deleted successfully"}
 
 
+@router.put("/{goal_id}/notes", response_model=GoalSchema.GoalOut)
+async def update_goal_notes(
+    goal_update: GoalSchema.GoalUpdateNotes,
+    goal: Goal = Depends(get_goal_from_id),
+    cur_user=Depends(get_current_user),
+    db: AsyncSession = Depends(get_adb),
+):
+    if goal.user_id != cur_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="You are not authorized to update this goal.",
+        )
+    goal.notes = goal_update.notes
+    await async_addcomref(db, goal)
+    return goal
+
+
 @router.post("/{goal_id}/tasks", response_model=GoalSchema.GoalTaskOut)
 async def add_task_to_goal(
     task_in: GoalSchema.GoalTaskIn,
@@ -103,7 +115,7 @@ async def add_task_to_goal(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="You are not authorized to add tasks to this goal.",
         )
-    new_task = GoalTask(**task_in.dict(), goal_id=goal.id)
+    new_task = GoalTask(**task_in.model_dump(), goal_id=goal.id)
     await async_addcomref(db, new_task)
     return new_task
 

@@ -40,5 +40,13 @@ export const $GoalOut = {
                 type: 'GoalTaskOut',
             },
         },
+        notes: {
+            type: 'any-of',
+            contains: [{
+                type: 'string',
+            }, {
+                type: 'null',
+            }],
+        },
     },
 } as const;

@@ -36,3 +36,8 @@ class GoalOut(GoalIn, DBCommon):
     user_id: int
     user: UserOut
     tasks: List[GoalTaskOut] = []
+    notes: Optional[str] = None
+
+
+class GoalUpdateNotes(BaseModel):
+    notes: Optional[str] = None

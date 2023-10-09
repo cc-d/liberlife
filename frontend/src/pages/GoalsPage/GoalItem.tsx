@@ -1,8 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Box, Divider } from "@mui/material";
+import {
+  Box,
+  Divider,
+  TextField,
+  IconButton,
+  Typography,
+  Button,
+} from "@mui/material";
+import apios from "../../apios";
 import { GoalOut } from "../../api";
 import { GoalHeader } from "./GoalHeader";
 import { GoalTasks } from "./GoalTasks";
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
+import { wrap } from "module";
 
 interface GoalItemProps {
   goal: GoalOut;
@@ -21,13 +32,28 @@ export const GoalItem: React.FC<GoalItemProps> = ({
   onTaskAdd,
   onTaskDelete,
   onGoalUpdate,
-
 }) => {
   const [newTaskText, setNewTaskText] = useState<string>("");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editedText, setEditedText] = useState<string>("");
-  const maxElementWidth = "400px";
+
+  const [isEditingNotes, setIsEditingNotes] = useState<boolean>(false);
+  const [editedNotes, setEditedNotes] = useState<string | null | undefined>(
+    goal.notes
+  );
+  const maxElementWidth = "480px";
+
+  const maxNotesWidth = `calc(${maxElementWidth} - 48px) !important`;
+
+  const handleSaveNotes = async () => {
+    const updatedNotes =
+      editedNotes && editedNotes.trim() !== "" ? editedNotes : null;
+    const goalUpdated = onGoalUpdate(goal.id, undefined, updatedNotes);
+    if (goalUpdated) {
+      setIsEditingNotes(false);
+    }
+  };
 
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -53,8 +79,6 @@ export const GoalItem: React.FC<GoalItemProps> = ({
   const handleCancel = () => {
     setIsEditing(false);
   };
-
-
 
   return (
     <Box
@@ -82,7 +106,6 @@ export const GoalItem: React.FC<GoalItemProps> = ({
         anchorEl={anchorEl}
         maxElementWidth={maxElementWidth}
       />
-
       <Divider
         sx={{
           backgroundColor: "#303030",
@@ -103,16 +126,56 @@ export const GoalItem: React.FC<GoalItemProps> = ({
         maxElementWidth={maxElementWidth}
         onTaskDelete={onTaskDelete}
       />
-      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-        <Box sx={{ color: "#777777", fontSize: "0.8em" }}>
-          {
-            goal && goal.updated_on
-              ? `${new Date(goal.updated_on)
-                .toLocaleString()
-              }`
-              : ""
-          }
+      <Divider
+        sx={{
+          backgroundColor: "#303030",
+        }}
+      />
 
+      <Box
+        sx={{
+          ml: 0.5,
+          mt: 0.25,
+        }}
+      >
+        {isEditingNotes ? (
+          <Box display="flex" alignItems="center">
+            <TextField
+              value={editedNotes || ""}
+              onChange={(e) => setEditedNotes(e.target.value)}
+              multiline
+              sx={{
+                width: maxNotesWidth,
+                flexGrow: 1,
+                mt: 0.25,
+              }}
+            />
+            <IconButton onClick={handleSaveNotes}>
+              <SaveIcon />
+            </IconButton>
+          </Box>
+        ) : (
+          <Box display="flex" alignItems="center">
+            <Typography
+              color={goal && goal.notes ? "textPrimary" : "textSecondary"}
+              sx={{
+                maxWidth: maxNotesWidth,
+                overflowWrap: "break-word",
+              }}
+            >
+              {goal.notes ? goal.notes : "add notes..."}
+            </Typography>
+            <IconButton onClick={() => setIsEditingNotes(true)}>
+              <EditIcon />
+            </IconButton>
+          </Box>
+        )}
+      </Box>
+      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <Box sx={{ opacity: 0.5, fontSize: "0.8em" }}>
+          {goal && goal.updated_on
+            ? `${new Date(goal.updated_on).toLocaleString()}`
+            : ""}
         </Box>
       </Box>
     </Box>
