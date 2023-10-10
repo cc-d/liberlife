@@ -8,7 +8,7 @@
     ],
     "python.defaultInterpreterPath": "/Users/mym2/liberlife/api/venv/bin/python",
     "workbench.colorCustomizations": {
-        "sideBarSectionHeader.background": "#2c73bf"
+        "sideBarSectionHeader.background": "#2E8B57"
     },
     "python.testing.pytestArgs": [
         "api"

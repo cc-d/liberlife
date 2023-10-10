@@ -102,3 +102,5 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
     </Box>
   );
 };
+
+export default GoalHeader;

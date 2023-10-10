@@ -7,14 +7,14 @@ import {
   Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete"; // <-- Import the DeleteIcon
+import DeleteIcon from "@mui/icons-material/Delete";
 import { GoalTaskOut } from "../../api";
 
 interface GoalTasksProps {
   newTaskText: string;
   setNewTaskText: (text: string) => void;
   handleAddTask: () => void;
-  onTaskDelete: (goalId: number, taskId: number) => void; // <-- Modify the type for clarity
+  onTaskDelete: (goalId: number, taskId: number) => void;
   tasks: GoalTaskOut[];
   goalId: number;
   onToggle: (goalId: number, taskId: number, isCompleted: boolean) => void;
@@ -103,3 +103,5 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
     </Box>
   );
 };
+
+export default GoalTasks;

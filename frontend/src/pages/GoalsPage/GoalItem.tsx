@@ -9,11 +9,11 @@ import {
 } from "@mui/material";
 import apios from "../../apios";
 import { GoalOut } from "../../api";
-import { GoalHeader } from "./GoalHeader";
-import { GoalTasks } from "./GoalTasks";
+import GoalHeader  from "./GoalHeader";
+import GoalTasks from "./GoalTasks";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
-import { wrap } from "module";
+import GoalNotes from "./GoalNotes";
 
 interface GoalItemProps {
   goal: GoalOut;
@@ -38,22 +38,10 @@ export const GoalItem: React.FC<GoalItemProps> = ({
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editedText, setEditedText] = useState<string>("");
 
-  const [isEditingNotes, setIsEditingNotes] = useState<boolean>(false);
-  const [editedNotes, setEditedNotes] = useState<string | null | undefined>(
-    goal.notes
-  );
   const maxElementWidth = "480px";
 
   const maxNotesWidth = `calc(${maxElementWidth} - 48px) !important`;
 
-  const handleSaveNotes = async () => {
-    const updatedNotes =
-      editedNotes && editedNotes.trim() !== "" ? editedNotes : null;
-    const goalUpdated = onGoalUpdate(goal.id, undefined, updatedNotes);
-    if (goalUpdated) {
-      setIsEditingNotes(false);
-    }
-  };
 
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -78,6 +66,10 @@ export const GoalItem: React.FC<GoalItemProps> = ({
 
   const handleCancel = () => {
     setIsEditing(false);
+  };
+
+  const handleSaveNotes = async (updatedNotes: string | null) => {
+    onGoalUpdate(goal.id, undefined, updatedNotes);
   };
 
   return (
@@ -138,38 +130,11 @@ export const GoalItem: React.FC<GoalItemProps> = ({
           mt: 0.25,
         }}
       >
-        {isEditingNotes ? (
-          <Box display="flex" alignItems="center">
-            <TextField
-              value={editedNotes || ""}
-              onChange={(e) => setEditedNotes(e.target.value)}
-              multiline
-              sx={{
-                width: maxNotesWidth,
-                flexGrow: 1,
-                mt: 0.25,
-              }}
-            />
-            <IconButton onClick={handleSaveNotes}>
-              <SaveIcon />
-            </IconButton>
-          </Box>
-        ) : (
-          <Box display="flex" alignItems="center">
-            <Typography
-              color={goal && goal.notes ? "textPrimary" : "textSecondary"}
-              sx={{
-                maxWidth: maxNotesWidth,
-                overflowWrap: "break-word",
-              }}
-            >
-              {goal.notes ? goal.notes : "add notes..."}
-            </Typography>
-            <IconButton onClick={() => setIsEditingNotes(true)}>
-              <EditIcon />
-            </IconButton>
-          </Box>
-        )}
+      <GoalNotes
+        notes={goal.notes}
+        maxNotesWidth={maxNotesWidth}
+        onSaveNotes={handleSaveNotes}
+      />
       </Box>
       <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
         <Box sx={{ opacity: 0.5, fontSize: "0.8em" }}>

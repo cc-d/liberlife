@@ -7,6 +7,7 @@ import type { GoalOut } from '../models/GoalOut';
 import type { GoalTaskIn } from '../models/GoalTaskIn';
 import type { GoalTaskOut } from '../models/GoalTaskOut';
 import type { GoalTaskUpdate } from '../models/GoalTaskUpdate';
+import type { GoalUpdateNotes } from '../models/GoalUpdateNotes';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -107,6 +108,31 @@ export class GoalService {
             path: {
                 'goal_id': goalId,
             },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Update Goal Notes
+     * @param goalId
+     * @param requestBody
+     * @returns GoalOut Successful Response
+     * @throws ApiError
+     */
+    public static updateGoalNotesGoalsGoalIdNotesPut(
+        goalId: number,
+        requestBody: GoalUpdateNotes,
+    ): CancelablePromise<GoalOut> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/goals/{goal_id}/notes',
+            path: {
+                'goal_id': goalId,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
             errors: {
                 422: `Validation Error`,
             },
