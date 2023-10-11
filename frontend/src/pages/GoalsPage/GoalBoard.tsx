@@ -47,6 +47,8 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
 
       if (mostRecentTask.getTime() > mostRecentGoal.getTime()) {
         return mostRecentTask;
+      } else {
+        return mostRecentGoal;
       }
     }
 
