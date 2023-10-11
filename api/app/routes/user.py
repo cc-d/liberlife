@@ -28,7 +28,6 @@ router = APIRouter(prefix='/u', tags=['user'])
 async def register(
     data: UserSchema.UserIn, db: AsyncSession = Depends(get_adb)
 ):
-    user = get_user_from_username(data.username, must_exist=False, db=db)
     hpass = hash_pass(data.password)
     new_user = User(username=data.username, hpassword=hpass)
 
