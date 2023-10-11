@@ -24,7 +24,7 @@ from ..utils.security import (
 router = APIRouter(prefix='/u', tags=['user'])
 
 
-@router.post("/register", response_model=UserSchema.UserOut)
+@router.post("/register", response_model=UserSchema.Token)
 async def register(
     data: UserSchema.UserIn, db: AsyncSession = Depends(get_adb)
 ):
@@ -33,7 +33,8 @@ async def register(
 
     await async_addcomref(db, new_user)
 
-    return new_user
+    access_token = encode_jwt(data={"sub": new_user.username})
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
 @router.post("/oauth_login", response_model=UserSchema.Token)

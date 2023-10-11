@@ -33,8 +33,10 @@ const LogRegPage: React.FC = () => {
         username: data.username,
         password: data.password,
       });
-      if (response.status === 200) {
-        // Registration successful, can optionally auto-login or navigate to a confirmation page
+      if (response.data && response.data.access_token) {
+        localStorage.setItem("token", response.data.access_token);
+        login(data.username, response.data.access_token); // <-- Pass the token here
+        navigate("/");
       }
     } catch (error) {
       console.error("Error during registration:", error);
