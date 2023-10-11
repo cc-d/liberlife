@@ -55,18 +55,25 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
 
 
   return (
-    <Box>
+    <Box
+      sx={{
+
+      }}
+    >
       <Box
         sx={{
           display: "flex",
           alignItems: "left",
           justifyContent: "left",
+          flexDirection: "row",
+          m: 1,
         }}
       >
         <Typography
-          variant="h4"
+          variant="h5"
           sx={{
             flexGrow: 1,
+            maxWidth: "200px",
             display: "flex",
             alignItems: "center",
           }}
@@ -79,7 +86,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
           placeholder="New goal..."
           value={newGoalText}
           onChange={(e) => setNewGoalText(e.target.value)}
-          sx={{ mr: 2 }}
+          sx={{ mr: 0 }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               handleAddGoal();
@@ -89,10 +96,11 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
         <Button
           variant="contained"
           color="primary"
-          sx={{ mr: 1 }}
+          size="small"
+          sx={{ mr: 0.25 }}
           onClick={handleAddGoal}
         >
-          Create Goal
+          Create
         </Button>
       </Box>
 

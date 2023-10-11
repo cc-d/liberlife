@@ -38,8 +38,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editedText, setEditedText] = useState<string>("");
 
-  const maxElementWidth = "480px";
-
+  const maxElementWidth = "calc(min(480px, 100vw)) !important";
   const maxNotesWidth = `calc(${maxElementWidth} - 48px) !important`;
 
 
@@ -76,9 +75,9 @@ export const GoalItem: React.FC<GoalItemProps> = ({
     <Box
       sx={{
         backgroundColor: "#151515",
-        padding: 0.5,
+
         borderRadius: 1,
-        margin: 0.5,
+        m: 0.25, p: 0.5,
         border: "1px solid #303030",
         display: "flex", // This turns it into a flex container
         flexDirection: "column", // Stack children vertically

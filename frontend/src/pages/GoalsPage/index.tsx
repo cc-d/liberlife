@@ -224,7 +224,7 @@ const GoalsPage: React.FC = () => {
     <Container
       maxWidth={false}
       sx={{
-        m: 0,
+        m: 0, p: 0,
       }}
     >
       <GoalBoard

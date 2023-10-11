@@ -16,12 +16,12 @@ export class UserService {
     /**
      * Register
      * @param requestBody
-     * @returns UserOut Successful Response
+     * @returns Token Successful Response
      * @throws ApiError
      */
     public static registerURegisterPost(
         requestBody: UserIn,
-    ): CancelablePromise<UserOut> {
+    ): CancelablePromise<Token> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/u/register',
