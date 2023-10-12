@@ -47,7 +47,7 @@ const NavBar: React.FC = () => {
         }}
       >
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          LiberLife
+          life.liberfy.ai
         </Typography>
 
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
