@@ -1,18 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Divider,
-  TextField,
-  IconButton,
-  Typography,
-  Button,
 } from "@mui/material";
-import apios from "../../apios";
 import { GoalOut } from "../../api";
 import GoalHeader  from "./GoalHeader";
 import GoalTasks from "./GoalTasks";
-import EditIcon from "@mui/icons-material/Edit";
-import SaveIcon from "@mui/icons-material/Save";
 import GoalNotes from "./GoalNotes";
 
 interface GoalItemProps {
