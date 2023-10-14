@@ -1,7 +1,6 @@
 import React from "react";
 import { Box, Checkbox, Typography, IconButton } from "@mui/material";
 import { GoalTaskOut } from "../../api";
-import { primaryColor, secondaryColor } from "../../App";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 
