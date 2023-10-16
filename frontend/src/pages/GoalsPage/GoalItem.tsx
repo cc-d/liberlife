@@ -75,6 +75,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
         border: "2px solid #303030",
         display: "flex", // This turns it into a flex container
         flexDirection: "column", // Stack children vertically
+        flexGrow: 1,
       }}
     >
       <GoalHeader
