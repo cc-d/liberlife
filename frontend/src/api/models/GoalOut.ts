@@ -13,7 +13,7 @@ export type GoalOut = {
     text: string;
     user_id: number;
     user: UserOut;
-    tasks?: Array<GoalTaskOut>;
+    tasks: Array<GoalTaskOut>;
     notes?: (string | null);
 };
 

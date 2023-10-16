@@ -72,7 +72,7 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({ notes, maxNotesWidth, onSa
         onChange={(e) => setEditedNotes(e.target.value)}
         multiline
         sx={{
-          width: maxNotesWidth,
+
           flexGrow: 1,
           mt: 0.25,
         }}
@@ -89,7 +89,6 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({ notes, maxNotesWidth, onSa
           overflowWrap: "break-word",
           whiteSpace: "pre-wrap",
           flexGrow: 1,
-            width: maxNotesWidth,
         }}
       >
         {notes ? renderFormattedNotes(notes) : "add notes..."}

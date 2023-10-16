@@ -39,6 +39,7 @@ export const $GoalOut = {
             contains: {
                 type: 'GoalTaskOut',
             },
+            isRequired: true,
         },
         notes: {
             type: 'any-of',

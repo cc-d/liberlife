@@ -67,11 +67,12 @@ export const GoalItem: React.FC<GoalItemProps> = ({
   return (
     <Box
       sx={{
-        backgroundColor: "#151515",
 
+        minWidth: maxElementWidth,
         borderRadius: 1,
-        m: 0.25, p: 0.5,
-        border: "1px solid #303030",
+        m: 0.5, p: 0.5,
+        // sea green
+        border: "2px solid #303030",
         display: "flex", // This turns it into a flex container
         flexDirection: "column", // Stack children vertically
       }}
@@ -104,8 +105,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
             setNewTaskText("");
           }
         }}
-        tasks={goal.tasks || []}
-        goalId={goal.id}
+        goal={goal}
         onToggle={onTaskToggle}
         maxElementWidth={maxElementWidth}
         onTaskDelete={onTaskDelete}
