@@ -68,7 +68,6 @@ export const GoalItem: React.FC<GoalItemProps> = ({
     <Box
       sx={{
 
-        minWidth: maxElementWidth,
         borderRadius: 1,
         m: 0.5, p: 0.5,
         // sea green
