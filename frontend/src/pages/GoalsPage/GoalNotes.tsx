@@ -10,51 +10,68 @@ interface GoalNotesProps {
 }
 
 const renderFormattedNotes = (notes: string) => {
-    let i = 0;
-    const elements: JSX.Element[] = [];
+  let i = 0;
+  const elements: JSX.Element[] = [];
 
-    while (i < notes.length) {
-      const startLinkText = notes.indexOf('[', i);
-      const endLinkText = notes.indexOf(']', startLinkText + 1);  // Ensure we're looking after the start
-      const startLinkURL = notes.indexOf('(', endLinkText + 1);  // Ensure we're looking after the end of link text
-      const endLinkURL = notes.indexOf(')', startLinkURL + 1);  // Ensure we're looking after the start of link URL
+  while (i < notes.length) {
+    const startLinkText = notes.indexOf("[", i);
+    const endLinkText = notes.indexOf("]", startLinkText + 1); // Ensure we're looking after the start
+    const startLinkURL = notes.indexOf("(", endLinkText + 1); // Ensure we're looking after the end of link text
+    const endLinkURL = notes.indexOf(")", startLinkURL + 1); // Ensure we're looking after the start of link URL
 
-      // If any of the tags aren't found, break the loop
-      if (startLinkText === -1 || endLinkText === -1 || startLinkURL === -1 || endLinkURL === -1) {
-        break;
-      }
-
-      // Push any text before the link
-      if (startLinkText > i) {
-        elements.push(<span key={i}>{notes.substring(i, startLinkText)}</span>);
-      }
-
-      // Extract the link text and URL
-      const linkText = notes.substring(startLinkText + 1, endLinkText);
-      const linkURL = notes.substring(startLinkURL + 1, endLinkURL);
-
-      // Push the link element
-      elements.push(
-        <Link href={linkURL} key={endLinkText} target="_blank" rel="noopener noreferrer">
-          {linkText}
-        </Link>
-      );
-
-      i = endLinkURL + 1;
+    // If any of the tags aren't found, break the loop
+    if (
+      startLinkText === -1 ||
+      endLinkText === -1 ||
+      startLinkURL === -1 ||
+      endLinkURL === -1
+    ) {
+      break;
     }
 
-    // Add any remaining text after the last link
-    if (i < notes.length) {
-      elements.push(<span key={i}>{notes.substring(i)}</span>);
+    // Push any text before the link
+    if (startLinkText > i) {
+      elements.push(<span key={i}>{notes.substring(i, startLinkText)}</span>);
     }
 
-    return elements;
-  };
+    // Extract the link text and URL
+    const linkText = notes.substring(startLinkText + 1, endLinkText);
+    const linkURL = notes.substring(startLinkURL + 1, endLinkURL);
 
+    // Push the link element
+    elements.push(
+      <Link
+        href={linkURL}
+        key={endLinkText}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {linkText}
+      </Link>
+    );
 
-export const GoalNotes: React.FC<GoalNotesProps> = ({ notes, maxNotesWidth, onSaveNotes }) => {
+    i = endLinkURL + 1;
+  }
+
+  // Add any remaining text after the last link
+  if (i < notes.length) {
+    elements.push(
+      <span key={i}>{notes.substring(i).replaceAll("\n\n\n", "\n")}</span>
+    );
+  }
+
+  return elements;
+};
+
+export const GoalNotes: React.FC<GoalNotesProps> = ({
+  notes,
+  maxNotesWidth,
+  onSaveNotes,
+}) => {
   const [isEditingNotes, setIsEditingNotes] = useState<boolean>(false);
-  const [editedNotes, setEditedNotes] = useState<string | null | undefined>(notes);
+  const [editedNotes, setEditedNotes] = useState<string | null | undefined>(
+    notes
+  );
 
   const handleSaveNotes = () => {
     const updatedNotes =
@@ -63,8 +80,6 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({ notes, maxNotesWidth, onSa
     setIsEditingNotes(false);
   };
 
-
-
   return isEditingNotes ? (
     <Box display="flex" alignItems="center">
       <TextField
@@ -72,7 +87,6 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({ notes, maxNotesWidth, onSa
         onChange={(e) => setEditedNotes(e.target.value)}
         multiline
         sx={{
-
           flexGrow: 1,
           mt: 0.25,
         }}
