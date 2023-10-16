@@ -31,7 +31,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editedText, setEditedText] = useState<string>("");
 
-  const maxElementWidth = "calc(min(480px, 100vw)) !important";
+  const maxElementWidth = "calc(min(100px, 100vw)) !important";
   const maxNotesWidth = `calc(${maxElementWidth} - 48px) !important`;
 
 
@@ -124,7 +124,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
         }}
       >
       <GoalNotes
-        notes={goal.notes}
+        goal={goal}
         maxNotesWidth={maxNotesWidth}
         onSaveNotes={handleSaveNotes}
       />

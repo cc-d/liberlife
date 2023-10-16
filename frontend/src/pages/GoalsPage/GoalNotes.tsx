@@ -1,17 +1,19 @@
 import React, { useState } from "react";
 import { Box, Typography, TextField, IconButton, Link } from "@mui/material";
+import { GoalOut } from "../../api";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 
 interface GoalNotesProps {
-  notes: string | null | undefined;
+  goal: GoalOut;
   maxNotesWidth: string;
   onSaveNotes: (notes: string | null) => void;
 }
 
-const renderFormattedNotes = (notes: string) => {
+const renderFormattedNotes = (goal: GoalOut) => {
   let i = 0;
   const elements: JSX.Element[] = [];
+  const notes = goal?.notes || "";
 
   while (i < notes.length) {
     const startLinkText = notes.indexOf("[", i);
@@ -64,53 +66,57 @@ const renderFormattedNotes = (notes: string) => {
 };
 
 export const GoalNotes: React.FC<GoalNotesProps> = ({
-  notes,
+  goal,
   maxNotesWidth,
   onSaveNotes,
 }) => {
   const [isEditingNotes, setIsEditingNotes] = useState<boolean>(false);
   const [editedNotes, setEditedNotes] = useState<string | null | undefined>(
-    notes
+    goal?.notes || ""
   );
 
   const handleSaveNotes = () => {
-    const updatedNotes =
-      editedNotes && editedNotes.trim() !== "" ? editedNotes : null;
+    const updatedNotes = editedNotes && editedNotes.trim() ? editedNotes : null;
     onSaveNotes(updatedNotes);
     setIsEditingNotes(false);
   };
 
   return isEditingNotes ? (
-    <Box display="flex" alignItems="center">
-      <TextField
-        value={editedNotes || ""}
-        onChange={(e) => setEditedNotes(e.target.value)}
-        multiline
-        sx={{
-          flexGrow: 1,
-          mt: 0.25,
-        }}
-      />
-      <IconButton onClick={handleSaveNotes}>
-        <SaveIcon />
-      </IconButton>
-    </Box>
+    <>
+      <Box display="flex" alignItems="center">
+        <TextField
+          value={editedNotes || ""}
+          onChange={(e) => setEditedNotes(e.target.value)}
+          multiline
+          sx={{
+            flexGrow: 1,
+            mt: 0.25,
+            minWidth: "400px",
+          }}
+        />
+        <IconButton onClick={handleSaveNotes}>
+          <SaveIcon />
+        </IconButton>
+      </Box>
+    </>
   ) : (
-    <Box display="flex" alignItems="center">
-      <Typography
-        color={notes ? "textPrimary" : "textSecondary"}
-        sx={{
-          overflowWrap: "break-word",
-          whiteSpace: "pre-wrap",
-          flexGrow: 1,
-        }}
-      >
-        {notes ? renderFormattedNotes(notes) : "add notes..."}
-      </Typography>
-      <IconButton onClick={() => setIsEditingNotes(true)}>
-        <EditIcon />
-      </IconButton>
-    </Box>
+    <>
+      <Box display="flex" alignItems="center">
+        <Typography
+          color={goal?.notes ? "textPrimary" : "textSecondary"}
+          sx={{
+            overflowWrap: "break-word",
+            whiteSpace: "pre-wrap",
+            flexGrow: 1,
+          }}
+        >
+          {goal?.notes ? renderFormattedNotes(goal) : "add notes..."}
+        </Typography>
+        <IconButton onClick={() => setIsEditingNotes(true)}>
+          <EditIcon />
+        </IconButton>
+      </Box>
+    </>
   );
 };
 
