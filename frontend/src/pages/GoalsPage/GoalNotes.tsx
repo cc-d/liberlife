@@ -88,10 +88,12 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
           value={editedNotes || ""}
           onChange={(e) => setEditedNotes(e.target.value)}
           multiline
+          fullWidth
+          rows={5}
           sx={{
             flexGrow: 1,
             mt: 0.25,
-            minWidth: "400px",
+            width: '500px',
           }}
         />
         <IconButton onClick={handleSaveNotes}>
