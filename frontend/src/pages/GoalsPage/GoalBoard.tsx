@@ -1,4 +1,5 @@
 import React from "react";
+import useTheme from "@mui/material/styles/useTheme";
 import {
   Box,
   Typography,
@@ -37,6 +38,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
   handleGoalUpdate,
   handleDeleteTask,
 }) => {
+  const theme = useTheme();
   const latestUpdatedOn = (goal: any) => {
     if (!goal?.tasks && goal.tasks?.length > 0) {
       return new Date(goal.updated_on);
@@ -60,18 +62,20 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
   };
 
   return (
-    <Box sx={{}}>
+    <Box sx={{
+      backgroundColor: 'black',
+    }}>
       <Box
         sx={{
           display: "flex",
           alignItems: "left",
           justifyContent: "left",
           flexDirection: "row",
-          m: 1,
+          p: 0.5,
         }}
       >
         <Typography
-          variant="h5"
+          variant="h4"
           sx={{
             flexGrow: 1,
             maxWidth: "200px",
@@ -87,18 +91,23 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
           placeholder="New goal..."
           value={newGoalText}
           onChange={(e) => setNewGoalText(e.target.value)}
-          sx={{ mr: 0 }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               handleAddGoal();
             }
           }}
+          sx={{
+            p: 0.5,
+          }}
         />
         <Button
           variant="contained"
           color="primary"
-          size="small"
-          sx={{ mr: 0.25 }}
+
+          sx={{
+            maxHeight: "56px",
+            mt: 0.5,
+          }}
           onClick={handleAddGoal}
         >
           Create

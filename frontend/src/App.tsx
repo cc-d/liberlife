@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 import { AuthProvider } from "./contexts/AuthContext";
+import { Box } from "@mui/system";
 import LogRegPage from "./pages/LogRegPage";
 import GoalsPage from "./pages/GoalsPage";
 import NavBar from "./components/NavBar";
@@ -19,14 +20,23 @@ export const darkTheme = createTheme({
     secondary: {
       main: secondaryColor, // DarkGreen
     },
+    background: {
+      default: '#121212',  // Dark background color
+      paper: '#1E1E1E',    // Dark paper background
+    },
+
   },
 });
 
-// ... other imports
 
 function App() {
   document.title = "life.liberfy.ai";
   return (
+    <Box
+      sx={{
+        backgroundColor: darkTheme.palette.background.default,
+      }}
+      >
     <AuthProvider>
       <ThemeProvider theme={darkTheme}>
         <CssBaseline />
@@ -40,6 +50,7 @@ function App() {
         </Router>
       </ThemeProvider>
     </AuthProvider>
+    </Box>
   );
 }
 

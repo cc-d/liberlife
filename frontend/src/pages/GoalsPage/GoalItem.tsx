@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import useTheme from "@mui/material/styles/useTheme";
 import {
   Box,
   Divider,
@@ -33,8 +34,8 @@ export const GoalItem: React.FC<GoalItemProps> = ({
 
   const maxElementWidth = "98vw !important";
   const maxNotesWidth = `calc(${maxElementWidth} - 48px) !important`;
-
-
+  const theme = useTheme();
+  const backgroundColor = theme.palette.background.default
 
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -68,14 +69,13 @@ export const GoalItem: React.FC<GoalItemProps> = ({
   return (
     <Box
       sx={{
-
         borderRadius: 1,
-        m: 0.5, p: 0.5,
-        // sea green
-        border: "2px solid #303030",
+        border: `2px solid ${theme.palette.divider}`,
+        p: 0.5, m: 0.25,
         display: "flex", // This turns it into a flex container
         flexDirection: "column", // Stack children vertically
         flexGrow: 1,
+        backgroundColor: `#111111`,
       }}
     >
       <GoalHeader

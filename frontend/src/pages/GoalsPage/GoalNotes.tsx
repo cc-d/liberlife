@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTheme } from '@mui/material/styles';
 import { Box, Typography, TextField, IconButton, Link } from "@mui/material";
 import { GoalOut } from "../../api";
 import EditIcon from "@mui/icons-material/Edit";
@@ -33,7 +34,9 @@ const renderFormattedNotes = (goal: GoalOut) => {
 
     // Push any text before the link
     if (startLinkText > i) {
-      elements.push(<span key={i}>{notes.substring(i, startLinkText)}</span>);
+      elements.push(
+        <span key={i}>{removeNewlines(notes.substring(i, startLinkText))}</span>
+      );
     }
 
     // Extract the link text and URL
@@ -57,12 +60,22 @@ const renderFormattedNotes = (goal: GoalOut) => {
 
   // Add any remaining text after the last link
   if (i < notes.length) {
-    elements.push(
-      <span key={i}>{notes.substring(i).replaceAll("\n\n\n", "\n")}</span>
-    );
+    elements.push(<span key={i}>{removeNewlines(notes.substring(i))}</span>);
   }
 
   return elements;
+};
+
+const removeNewlines = (
+  text: string,
+  removeChars: string = "\n\n",
+  replaceChars: string = "\n"
+) => {
+  let newText = text.replaceAll("\r\n", "\n");
+  while (newText.includes(removeChars)) {
+    newText = newText.replaceAll(removeChars, "\n");
+  }
+  return newText;
 };
 
 export const GoalNotes: React.FC<GoalNotesProps> = ({
@@ -70,6 +83,7 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
   maxNotesWidth,
   onSaveNotes,
 }) => {
+
   const [isEditingNotes, setIsEditingNotes] = useState<boolean>(false);
   const [editedNotes, setEditedNotes] = useState<string | null | undefined>(
     goal?.notes || ""
@@ -81,44 +95,75 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
     setIsEditingNotes(false);
   };
 
-  return isEditingNotes ? (
-    <>
-      <Box display="flex" alignItems="center">
-        <TextField
-          value={editedNotes || ""}
-          onChange={(e) => setEditedNotes(e.target.value)}
-          multiline
-          fullWidth
-          rows={5}
+  const editBoxHeight = editedNotes?.split("\n").length || 1;
+
+  const theme = useTheme();
+
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
+      {isEditingNotes ? (
+        <Box
           sx={{
-            flexGrow: 1,
-            mt: 0.25,
-            width: '500px',
-          }}
-        />
-        <IconButton onClick={handleSaveNotes}>
-          <SaveIcon />
-        </IconButton>
-      </Box>
-    </>
-  ) : (
-    <>
-      <Box display="flex" alignItems="center">
-        <Typography
-          color={goal?.notes ? "textPrimary" : "textSecondary"}
-          sx={{
-            overflowWrap: "break-word",
-            whiteSpace: "pre-wrap",
-            flexGrow: 1,
+            display: "flex",
+            alignItems: "stretch",
+            flexDirection: "row",
           }}
         >
-          {goal?.notes ? renderFormattedNotes(goal) : "add notes..."}
-        </Typography>
-        <IconButton onClick={() => setIsEditingNotes(true)}>
-          <EditIcon />
-        </IconButton>
-      </Box>
-    </>
+          <TextField
+            value={editedNotes || ""}
+            onChange={(e) => setEditedNotes(e.target.value)}
+            multiline
+            fullWidth
+            rows={editBoxHeight}
+            sx={{
+              flexGrow: 1,
+            }}
+          />
+          <IconButton
+            onClick={handleSaveNotes}
+            sx={{
+              alignSelf: "stretch",
+              display: "flex",
+              alignItems: "center",
+              borderRadius: 0,
+            }}
+          >
+            <SaveIcon />
+          </IconButton>
+        </Box>
+      ) : (
+        <Box
+          display="flex"
+          alignItems="stretch"
+          sx={{
+            m: 0,
+            p: 0,
+          }}
+        >
+          <Typography
+            color={goal?.notes ? "textPrimary" : "textSecondary"}
+            sx={{
+              overflowWrap: "break-word",
+              whiteSpace: "pre-wrap",
+              flexGrow: 1,
+            }}
+          >
+            {goal?.notes ? renderFormattedNotes(goal) : "add notes..."}
+          </Typography>
+          <IconButton
+            onClick={() => setIsEditingNotes(true)}
+            sx={{
+              alignSelf: "stretch",
+              display: "flex",
+              alignItems: "center",
+              borderRadius: 0,
+            }}
+          >
+            <EditIcon />
+          </IconButton>
+        </Box>
+      )}
+    </Box>
   );
 };
 
