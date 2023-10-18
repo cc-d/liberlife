@@ -7,6 +7,7 @@ import { Box } from "@mui/system";
 import LogRegPage from "./pages/LogRegPage";
 import GoalsPage from "./pages/GoalsPage";
 import NavBar from "./components/NavBar";
+import './styles.css';
 
 export const primaryColor = "#2E8B57"; // SeaGreen
 export const secondaryColor = "#006400"; // DarkGreen
