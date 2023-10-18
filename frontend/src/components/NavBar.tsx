@@ -32,7 +32,6 @@ const NavBar: React.FC = () => {
       sx={{
         boxShadow: 0,
       }}
-
     >
       <Toolbar
         sx={{
@@ -41,9 +40,7 @@ const NavBar: React.FC = () => {
           justifyContent: "space-between",
           backgroundColor: `${theme.palette.background.default}`,
           color: `${theme.palette.text.primary}`,
-
         }}
-
       >
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
           life.liberfy.ai
