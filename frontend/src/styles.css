@@ -1,7 +1,3 @@
-body {
-    background-color: #121212;
-}
-
-html {
-    background-color: #121212;
+body, html {
+    background-color: black;
 }
