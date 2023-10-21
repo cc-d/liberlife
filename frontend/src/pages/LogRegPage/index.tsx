@@ -52,6 +52,7 @@ const LogRegPage: React.FC = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+
         }}
       >
         <Typography component="h1" variant="h5">

@@ -27,7 +27,7 @@ const LogRegForm: React.FC<LogRegFormProps> = ({ isRegister = false, onSubmit })
   };
 
   return (
-    <Box component="form" noValidate sx={{ mt: 1 }}>
+    <Box component="form" noValidate sx={{ mt: 1, }}>
       <TextField
         variant="outlined"
         margin="normal"

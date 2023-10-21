@@ -35,7 +35,7 @@ function App() {
   return (
     <Box
       sx={{
-        backgroundColor: darkTheme.palette.background.default,
+        backgroundColor: 'black',
       }}
       >
     <AuthProvider>
