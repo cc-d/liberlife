@@ -11,7 +11,7 @@ from ..schemas import user as SchUser
 from ..utils.security import decode_jwt, oauth_scheme
 
 
-async def get_user_from_username(
+async def get_from_username(
     username: str,
     must_exist: Optional[bool] = None,
     db: AsyncSession = Depends(get_adb),
@@ -33,7 +33,7 @@ async def get_user_from_username(
     return user
 
 
-async def get_user_from_id(
+async def get_from_id(
     user_id: int, db: AsyncSession = Depends(get_adb)
 ) -> Optional[User]:
     user = await db.execute(select(User).where(User.id == user_id))
