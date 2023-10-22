@@ -25,7 +25,7 @@ dc () {
 
 npmapi() {
     gentypes
-    cd $FRONTDIR && cp '.env.dev' '.env' && npm start
+    cd $FRONTDIR &&  npm start
 }
 
 automigrate() {
