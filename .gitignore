@@ -32,3 +32,5 @@ frontend/public/assets
 .DS_Store
 Thumbs.db
 
+.env
+.pytest_cache

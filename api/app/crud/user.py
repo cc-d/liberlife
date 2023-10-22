@@ -6,16 +6,16 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from typing import Optional, Union
 from ..db import get_adb
 from ..db.models import User
-from ..schemas import user as SchUser
+from ..schemas import user as SchemaUser
 
-from ..utils.security import decode_jwt, oauth_scheme
+from ..utils.security import decode_jwt, oauth_scheme, verify_pass, encode_jwt
 
 
 async def get_from_username(
     username: str,
     must_exist: Optional[bool] = None,
     db: AsyncSession = Depends(get_adb),
-) -> SchUser.UserDB:
+) -> SchemaUser.UserDB:
     user = await db.execute(select(User).where(User.username == username))
     user = user.scalar_one_or_none()
 
@@ -31,6 +31,19 @@ async def get_from_username(
                 detail=f"User with username {username} already exists",
             )
     return user
+
+
+async def get_token_from_login(
+    username: str, password: str, db: AsyncSession = Depends(get_adb)
+) -> SchemaUser.Token:
+    user = await get_from_username(username, must_exist=True, db=db)
+    if not verify_pass(password, user.hpassword):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+        )
+    new_token = encode_jwt(data={"sub": user.username})
+    return {"access_token": new_token, "token_type": "bearer"}
 
 
 async def get_from_id(
