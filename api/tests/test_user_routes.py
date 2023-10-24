@@ -35,7 +35,7 @@ _logreg_user = SchemaUser.UserDB(
 
 @pytest.mark.asyncio
 @patch('api.app.routes.user.async_addcomref', new_callable=AsyncMock)
-@patch('api.app.routes.user.hash_pass', new_callable=AsyncMock)
+@patch('api.app.routes.user.hash_pass', new_callable=Mock)
 async def test_register(mock_hash_pass, mock_addcomref):
     mock_addcomref.return_value = _logreg_user
     mock_hash_pass.return_value = _hpass
@@ -54,12 +54,9 @@ async def test_register(mock_hash_pass, mock_addcomref):
 
 
 @pytest.mark.asyncio
-@patch('api.app.routes.user.async_addcomref', new_callable=AsyncMock)
-@patch('api.app.routes.user.hash_pass', new_callable=AsyncMock)
+@patch('api.app.routes.user.hash_pass', new_callable=Mock)
 @patch('api.app.crud.user.get_from_username', new_callable=AsyncMock)
-async def test_register_duplicate_user(
-    mock_get_from_username, mock_hash_pass, mock_addcomref
-):
+async def test_register_duplicate_user(mock_get_from_username, mock_hash_pass):
     # Simulate a user already exists in the database
     mock_get_from_username.return_value = _logreg_user
     mock_hash_pass.return_value = _hpass
