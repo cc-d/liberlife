@@ -27,25 +27,6 @@ USERDB = SchemaUser.UserDB(
     updated_on=dt.utcnow(),
 )
 
-GOALS = [
-    SchemaGoal.GoalOut(
-        id=1,
-        text="test goal",
-        user_id=USERID,
-        created_on=dt.utcnow(),
-        updated_on=dt.utcnow(),
-        tasks=[],
-    ),
-    SchemaGoal.GoalOut(
-        id=2,
-        text="test goal 2",
-        user_id=USERID,
-        created_on=dt.utcnow(),
-        updated_on=dt.utcnow(),
-        tasks=[],
-    ),
-]
-
 
 def assert_token(resp):
     assert resp.status_code == 200
