@@ -30,23 +30,12 @@ class AuthenticatedTestClient(TestClient):
 
 
 @pytest.fixture(scope="module")
-def create_and_drop_db():
-    # create tables
-    Base.metadata.create_all(bind=sync_engine)
+def adb():
+    # Set up the database for testing
+    Base.metadata.create_all(bind=async_engine)
     yield
-    # drop tables
-    Base.metadata.drop_all(bind=sync_engine)
-
-
-@pytest.fixture(scope="function")
-def authclient(create_and_drop_db):
-    return AuthenticatedTestClient(app)
-
-
-@pytest.fixture(scope="function")
-async def adb(create_and_drop_db):
-    async with AsyncSessionLocal() as session:
-        yield session
+    # Teardown - drop all tables
+    Base.metadata.drop_all(bind=async_engine)
 
 
 @pytest.mark.asyncio
