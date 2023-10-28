@@ -1,5 +1,6 @@
 import pytest
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from fastapi.testclient import TestClient
 from api.app.main import app
 from api.app.db.session import (
@@ -30,15 +31,39 @@ class AuthenticatedTestClient(TestClient):
 
 
 @pytest.fixture(scope="module")
-def adb():
+def create_db():
     # Set up the database for testing
-    Base.metadata.create_all(bind=async_engine)
+    Base.metadata.create_all(bind=sync_engine)
     yield
     # Teardown - drop all tables
-    Base.metadata.drop_all(bind=async_engine)
+    Base.metadata.drop_all(bind=sync_engine)
 
 
+@pytest.fixture(scope="function")
+async def get_adb():
+    async with AsyncSessionLocal() as adb:
+        yield adb
+
+
+# not actually testing anything yet just getting it to work w/ async
 @pytest.mark.asyncio
-async def test_get_user_goals(adb):
-    u = adb.execute(select(User).where(User.username == _comm.USERNAME))
-    print(u)
+async def test_get_user_goals(create_db, get_adb):
+    async with AsyncSessionLocal() as adb:
+        # Create a user
+        user = User(username=_comm.USERNAME, hpassword=_comm.HPASSWORD)
+        await async_addcomref(adb, user)
+        # Create a goal
+        goal = Goal(text='Goal1', user_id=user.id)
+        await async_addcomref(adb, goal)
+        # Create a task
+        task = GoalTask(text='Task1', goal_id=goal.id)
+        await async_addcomref(adb, task)
+
+        # Get the user's goals
+        goals = await adb.execute(
+            select(Goal)
+            .where(Goal.user_id == user.id)
+            .options(selectinload(Goal.tasks))
+        )
+        goals = goals.unique().scalars().all()
+        assert len(goals) == 1
