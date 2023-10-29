@@ -129,8 +129,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
           flexDirection: "row",
           flexWrap: "wrap",
           justifyContent: "left",
-          mr: 1,
-          mb: 1,
+          m: 0.5,
         }}
       >
         {goals.map((goal) => (
