@@ -4,6 +4,7 @@ from datetime import datetime as dt
 from fastapi.testclient import TestClient
 from unittest.mock import AsyncMock, patch, Mock
 
+from api.app.db.session import AsyncSessionLocal, SessionLocal
 from api.app.schemas import user as SchemaUser, goal as SchemaGoal
 from api.app.main import app
 from api.app.utils.security import decode_jwt, hash_pass
@@ -27,6 +28,8 @@ USERDB = SchemaUser.UserDB(
     updated_on=dt.utcnow(),
 )
 
+ADBMOCK = AsyncMock()
+
 
 def assert_token(resp):
     assert resp.status_code == 200
@@ -36,8 +39,3 @@ def assert_token(resp):
     assert "sub" in _decoded
     assert _decoded["sub"] == LOGINJSON["username"]
     assert 'exp' in _decoded
-
-
-@pytest.fixture(scope="function")
-async def curuser():
-    return USERDB
