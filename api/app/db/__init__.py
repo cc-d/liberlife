@@ -1,15 +1,10 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncSession
 from .session import SessionLocal, AsyncSessionLocal
+from contextlib import contextmanager, asynccontextmanager
 
 
 def get_db() -> Session:
-    """
-    Get a synchronous database session.
-
-    Returns:
-        Session: A synchronous database session.
-    """
     db = SessionLocal()
     try:
         yield db
@@ -18,12 +13,6 @@ def get_db() -> Session:
 
 
 async def get_adb() -> AsyncSession:
-    """
-    Get an asynchronous database session.
-
-    Returns:
-        AsyncSession: An asynchronous database session.
-    """
     db = AsyncSessionLocal()
     try:
         yield db
