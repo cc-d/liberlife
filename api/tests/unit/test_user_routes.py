@@ -1,7 +1,7 @@
 import pytest
 from datetime import datetime
 from fastapi.testclient import TestClient
-from unittest.mock import AsyncMock, patch, Mock
+from unittest.mock import AsyncMock, patch, Mock, ANY as MOCKANY
 from api.app.schemas import user as SchemaUser
 from api.app.routes import user as user_routes  # Make sure the path is correct
 from api.app.main import app
@@ -23,7 +23,9 @@ async def test_register(mock_hash_pass, mock_addcomref, mock_fromusername):
     mock_hash_pass.return_value = _comm.HPASSWORD
     response = _client.post("/u/register", json=_comm.LOGINJSON)
 
-    mock_fromusername.assert_called_once()
+    mock_fromusername.assert_called_once_with(
+        _comm.LOGINJSON["username"], must_exist=False, db=MOCKANY
+    )
     mock_hash_pass.assert_called_once_with(_comm.LOGINJSON["password"])
     mock_addcomref.assert_called_once()
 
