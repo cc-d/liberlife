@@ -28,9 +28,11 @@ from ..common import (
     transaction,
     reguser,
 )
+from logfunc import logf
 
 
 @pytest.mark.asyncio
+@logf(use_print=True)
 async def test_register(client, transaction, reguser):
     # User is already registered by the fixture
     heads = await reguser

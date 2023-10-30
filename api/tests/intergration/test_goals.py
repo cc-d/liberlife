@@ -52,16 +52,12 @@ async def test_update_goal(client, transaction, setup_goals):
 @pytest.mark.asyncio
 async def test_delete_goal(client, transaction, setup_goals):
     newgoals, headers, ujson = setup_goals
-    # Explicitly delete all goals
     for goal in newgoals:
         resp = await client.delete(f"/goals/{goal['id']}", headers=headers)
         print(resp, resp.status_code, resp.text)
 
-    # Fetch the remaining goals
     resp = await client.get("/goals", headers=headers)
     remaining_goals = resp.json()
-    print(remaining_goals)  # Print the list of remaining goals after deletion
 
     assert resp.status_code == 200
-    # After deleting all goals, no goals should remain
     assert len(remaining_goals) == 0

@@ -77,7 +77,7 @@ def headers(resp):
     }
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def event_loop(request):
     loop = asyncio.get_event_loop_policy().new_event_loop()
     yield loop
@@ -90,7 +90,7 @@ async def client():
         yield client
 
 
-@pytest_asyncio.fixture(scope="session")
+@pytest_asyncio.fixture(scope="module")
 async def db() -> AsyncSession:
     async with async_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
@@ -100,7 +100,7 @@ async def db() -> AsyncSession:
     await async_engine.dispose()
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 async def transaction(db):
     session = sessionmaker(
         async_engine, class_=AsyncSession, expire_on_commit=False
