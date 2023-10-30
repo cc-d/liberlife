@@ -6,7 +6,7 @@ from ..config import ASYNC_DATABASE_URL, DATABASE_URL
 Base = declarative_base()
 
 # Async engine creation
-async_engine = create_async_engine(ASYNC_DATABASE_URL, echo=True)
+async_engine = create_async_engine(ASYNC_DATABASE_URL, echo=True, future=True)
 
 # Async session local
 AsyncSessionLocal = sessionmaker(
