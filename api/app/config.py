@@ -15,14 +15,14 @@ def evar(name, default=None):
         return var
 
 
-HOST = evar('LIBLIFE_HOST', 'localhost')
-PORT = evar('LIBLIFE_PORT', 8999)
+HOST = evar('LL_HOST', 'localhost')
+PORT = evar('LL_PORT', 8999)
 
 DB_NAME = 'liblifedb'
-DB_USER = evar('LIBLIFE_DB_USER', 'pguser')
-DB_PASS = evar('LIBLIFE_DB_PASS', 'pgpass')
-DB_HOST = evar('LIBLIFE_DB_HOST', 'localhost')
-DB_PORT = evar('LIBLIFE_DB_PORT', 5432)
+DB_USER = evar('LL_DB_USER', 'pguser')
+DB_PASS = evar('LL_DB_PASS', 'pgpass')
+DB_HOST = evar('LL_DB_HOST', 'localhost')
+DB_PORT = evar('LL_DB_PORT', 5432)
 DBMS = 'postgresql'
 DATABASE_URL = f'{DBMS}://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
 
