@@ -67,6 +67,16 @@ def assert_token(resp):
     assert 'exp' in _decoded
 
 
+def headers(resp):
+    assert resp.status_code == 200
+    assert_token(resp)
+    token = resp.json()["access_token"]
+    return {
+        'Authorization': f'Bearer {token}',
+        'Content-Type': 'application/json',
+    }
+
+
 @pytest.fixture(scope="session")
 def event_loop(request):
     loop = asyncio.get_event_loop_policy().new_event_loop()
@@ -74,14 +84,14 @@ def event_loop(request):
     loop.close()
 
 
-@pytest_asyncio.fixture(scope="function")
+@pytest_asyncio.fixture(scope="module")
 async def client():
     async with AsyncClient(app=app, base_url=f"http://test") as client:
         yield client
 
 
-@pytest_asyncio.fixture(scope="function")
-async def session() -> AsyncSession:
+@pytest_asyncio.fixture(scope="session")
+async def db() -> AsyncSession:
     async with async_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     yield
@@ -90,7 +100,7 @@ async def session() -> AsyncSession:
     await async_engine.dispose()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="session")
 async def transaction(db):
     session = sessionmaker(
         async_engine, class_=AsyncSession, expire_on_commit=False
@@ -100,14 +110,37 @@ async def transaction(db):
         await session.rollback()
 
 
-@pytest.fixture(scope="function")
-async def get_headers_user(client, session) -> Union[dict, SchemaUser.UserOut]:
+@pytest.fixture(scope="module")
+async def reguser(client, db):
     resp = await client.post("/u/register", json=LOGINJSON)
     assert_token(resp)
-    token = resp.json()["access_token"]
-    headers = {'Authorization': f'Bearer {token}'}
-    resp = await client.get("/u/me", headers=headers)
+    return headers(resp)
+
+
+@pytest.fixture(scope="module")
+async def getheaders_user(client, transaction, reguser):
+    resp = await client.post("/u/login", json=LOGINJSON)
+    heads = headers(resp)
+    resp = await client.get("/u/me", headers=heads)
     assert resp.status_code == 200
     ujson = resp.json()
     assert ujson["username"] == LOGINJSON["username"]
-    return headers, SchemaUser.UserOut(**ujson)
+    return heads, ujson
+
+
+@pytest.fixture(scope="module")
+def setup_goals(client, getheaders_user, event_loop):
+    # Define the async function inside the fixture
+    async def async_setup_goals():
+        headers, ujson = await getheaders_user
+        newgoals = []
+        for text in GOALS.TEXTS:
+            resp = await client.post(
+                "/goals", json={"text": text}, headers=headers
+            )
+            assert resp.status_code == 200
+            newgoals.append(resp.json())
+        return newgoals, headers, ujson
+
+    # Run the async function using an event loop and return the result
+    return event_loop.run_until_complete(async_setup_goals())

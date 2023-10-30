@@ -8,51 +8,40 @@ from ..common import (
     HPASSWORD,
     event_loop,
     client,
-    session,
     OAUTH_LOGIN_FORM,
     GOALS,
-    get_headers_user,
+    getheaders_user,
+    headers,
+    transaction,
+    reguser,
+    db,
+    setup_goals,
 )
 from .test_user import test_register
 
 
 @pytest.mark.asyncio
-async def test_create_goals(client, session, get_headers_user):
-    headers, ujson = await get_headers_user
-    newgoals = []
-
-    for gt in GOALS.TEXTS:
-        resp = await client.post("/goals", json={'text': gt}, headers=headers)
-        assert resp.status_code == 200
-        newgoals.append(resp.json())
-    return newgoals, headers, ujson
-
-
-@pytest.mark.asyncio
-async def test_list_goals(client, session, get_headers_user):
-    newgoals, headers, ujson = await test_create_goals(
-        client, session, get_headers_user
-    )
+async def test_list_goals(client, transaction, setup_goals):
+    """also tests goal create"""
+    newgoals, headers, ujson = setup_goals
     resp = await client.get("/goals", headers=headers)
     assert resp.status_code == 200
-    assert len(resp.json()) == len(newgoals)
+    goals_from_response = resp.json()
+    print(goals_from_response)  # Print the list of goals
+    assert len(goals_from_response) == len(newgoals)
 
 
 @pytest.mark.asyncio
-async def test_get_goal(client, session, get_headers_user):
-    newgoals, headers, ujson = await test_create_goals(
-        client, session, get_headers_user
-    )
+async def test_get_goal(client, transaction, setup_goals):
+    newgoals, headers, ujson = setup_goals
     resp = await client.get(f"/goals/{newgoals[0]['id']}", headers=headers)
     assert resp.status_code == 200
     assert resp.json() == newgoals[0]
 
 
 @pytest.mark.asyncio
-async def test_update_goal(client, session, get_headers_user):
-    newgoals, headers, ujson = await test_create_goals(
-        client, session, get_headers_user
-    )
+async def test_update_goal(client, transaction, setup_goals):
+    newgoals, headers, ujson = setup_goals
     resp = await client.put(
         f"/goals/{newgoals[0]['id']}", json={'text': 'UPDATED'}, headers=headers
     )
@@ -61,13 +50,18 @@ async def test_update_goal(client, session, get_headers_user):
 
 
 @pytest.mark.asyncio
-async def test_delete_goal(client, session, get_headers_user):
-    newgoals, headers, ujson = await test_create_goals(
-        client, session, get_headers_user
-    )
-    print(newgoals, headers, ujson, sep='\n')
-    resp = await client.delete(f"/goals/{newgoals[0]['id']}", headers=headers)
-    assert resp.status_code == 200
+async def test_delete_goal(client, transaction, setup_goals):
+    newgoals, headers, ujson = setup_goals
+    # Explicitly delete all goals
+    for goal in newgoals:
+        resp = await client.delete(f"/goals/{goal['id']}", headers=headers)
+        print(resp, resp.status_code, resp.text)
+
+    # Fetch the remaining goals
     resp = await client.get("/goals", headers=headers)
+    remaining_goals = resp.json()
+    print(remaining_goals)  # Print the list of remaining goals after deletion
+
     assert resp.status_code == 200
-    assert len(resp.json()) == len(newgoals) - 1
+    # After deleting all goals, no goals should remain
+    assert len(remaining_goals) == 0

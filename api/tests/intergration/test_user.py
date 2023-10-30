@@ -19,60 +19,47 @@ from ..common import (
     HPASSWORD,
     event_loop,
     client,
-    session,
+    db,
     OAUTH_LOGIN_FORM,
     GOALS,
-    get_headers_user,
+    getheaders_user,
     TASKS,
+    headers,
+    transaction,
+    reguser,
 )
 
 
-def _headers(resp):
-    assert resp.status_code == 200
-    assert_token(resp)
-    token = resp.json()["access_token"]
-    return {
-        'Authorization': f'Bearer {token}',
-        'Content-Type': 'application/json',
-    }
+@pytest.mark.asyncio
+async def test_register(client, transaction, reguser):
+    # User is already registered by the fixture
+    heads = await reguser
 
 
 @pytest.mark.asyncio
-async def test_register(client, session):
-    resp = await client.post("/u/register", json=LOGINJSON)
-    return _headers(resp)
-
-
-@pytest.mark.asyncio
-async def test_login(client, session):
-    await test_register(client, session)
+async def test_login(client, transaction, reguser):
     resp = await client.post("/u/login", json=LOGINJSON)
-    return _headers(resp)
 
 
 @pytest.mark.asyncio
-async def test_oauth_login(client, session):
-    await test_register(client, session)
+async def test_oauth_login(client, transaction, reguser):
     resp = await client.post(
         "/u/oauth_login",
         data=OAUTH_LOGIN_FORM,
         headers={'Content-Type': 'application/x-www-form-urlencoded'},
     )
-
-    return _headers(resp)
+    headers(resp)
 
 
 @pytest.mark.asyncio
-async def test_register_duplicate_user(client, session):
-    await test_register(client, session)
+async def test_register_duplicate_user(client, transaction, reguser):
+    # Since the user is already registered, try registering again
     resp = await client.post("/u/register", json=LOGINJSON)
     assert resp.status_code == 400
     assert "exists" in resp.json()["detail"]
 
 
 @pytest.mark.asyncio
-async def test_me(client, session):
-    headers = await test_login(client, session)
-    resp = await client.get("/u/me", headers=headers)
-    assert resp.status_code == 200
-    assert resp.json()["username"] == USERNAME
+async def test_me(client, transaction, getheaders_user):
+    headers, ujson = await getheaders_user
+    assert headers['Authorization'].startswith('Bearer ')
