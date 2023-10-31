@@ -1,1 +1,1 @@
-.env.prod filter=git-crypt diff=git-crypt
+.envs/prod.env filter=git-crypt diff=git-crypt
