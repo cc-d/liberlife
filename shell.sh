@@ -7,17 +7,20 @@ if [ -z "$LIBLIFE_ENV" ]; then
     LIBLIFE_ENV=dev
 fi
 
+
 alias gentypes="npx openapi-typescript-codegen generate \
 --exportSchemas true --input http://localhost:8999/openapi.json \
 --output $FRONTDIR/src/api/"
 
 
 uvistart() {
-    if [ ! -z  "$VIRTUAL_ENV" ]; then
-        echo "venv already created";
+    cd $ROOTDIR
+    if [ ! -z "$VIRTUAL_ENV" ]; then
+        echo "venv already created"
     else
-        . "$APIDIR/venv/bin/activate" && source $ROOTDIR/.envs/$LIBLIFE_ENV.env
+        . "$APIDIR/venv/bin/activate"
     fi
+    source $ROOTDIR/.envs/$LIBLIFE_ENV.env
     uvicorn api.app.main:app --port $API_PORT --host $API_HOST --reload
 }
 
