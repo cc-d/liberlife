@@ -7,10 +7,7 @@ if [ -z "$LIBLIFE_ENV" ]; then
     LIBLIFE_ENV=dev
 fi
 
-
-alias gentypes="npx openapi-typescript-codegen generate \
---exportSchemas true --input http://localhost:8999/openapi.json \
---output $FRONTDIR/src/api/"
+alias gentypes="npx openapi-typescript-codegen generate --exportSchemas true --input http://localhost:8999/openapi.json --output $FRONTDIR/src/api/"
 
 
 uvistart() {
