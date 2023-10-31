@@ -7,6 +7,12 @@ if [ -z "$LIBLIFE_ENV" ]; then
     export LIBLIFE_ENV="dev"
 fi
 
+exportenv() {
+    for _exvar in $(cat $ROOTDIR/.envs/$LIBLIFE_ENV.env); do
+        export $_exvar
+    done
+}
+
 uvistart() {
     cd $ROOTDIR
     if [ ! -z "$VIRTUAL_ENV" ]; then
@@ -14,7 +20,7 @@ uvistart() {
     else
         . "$APIDIR/venv/bin/activate"
     fi
-    source $ROOTDIR/.envs/$LIBLIFE_ENV.env
+    exportenv
     uvicorn api.app.main:app --port $API_PORT --host $API_HOST --reload
 }
 
