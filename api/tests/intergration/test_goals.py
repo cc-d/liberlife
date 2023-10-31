@@ -54,7 +54,6 @@ async def test_delete_goal(client, transaction, setup_goals):
     newgoals, headers, ujson = setup_goals
     for goal in newgoals:
         resp = await client.delete(f"/goals/{goal['id']}", headers=headers)
-        print(resp, resp.status_code, resp.text)
 
     resp = await client.get("/goals", headers=headers)
     remaining_goals = resp.json()
