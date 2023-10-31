@@ -18,9 +18,15 @@ uvistart() {
     uvicorn api.app.main:app --port $API_PORT --host $API_HOST --reload
 }
 
+gentypes() {
+    npx openapi-typescript-codegen generate \
+    --exportSchemas true --input http://localhost:8999/openapi.json \
+    --output "$FRONTDIR/src/api/"
+}
+
 npmapi() {
     cd $FRONTDIR
-    npx openapi-typescript-codegen generate --exportSchemas true --input http://localhost:8999/openapi.json --output "$FRONTDIR/src/api/"
+    gentypes
     cp ../.envs/$LIBLIFE_ENV.env .env
     source $ROOTDIR/.envs/$LIBLIFE_ENV.env
     echo "PORT=$REACT_APP_PORT" >> .env
