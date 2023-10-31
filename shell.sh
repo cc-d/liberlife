@@ -3,22 +3,34 @@ ROOTDIR="$HOME/liberlife"
 FRONTDIR="$ROOTDIR/frontend"
 APIDIR="$ROOTDIR/api"
 
-alias gentypes="npx openapi-typescript-codegen generate \
---exportSchemas true --input http://localhost:8999/openapi.json \
---output $FRONTDIR/src/api/"
-
 if [ -z "$LIBLIFE_ENV" ]; then
     LIBLIFE_ENV=dev
 fi
 
-LIBLIFE_ENVFILE=.env.${LIBLIFE_ENV}
+alias gentypes="npx openapi-typescript-codegen generate \
+--exportSchemas true --input http://localhost:8999/openapi.json \
+--output $FRONTDIR/src/api/"
 
-UVICMD="source $LIBLIFE_ENVFILE && uvicorn --port=8999 api.app.main:app --reload"
 
-alias uvistart=". api/venv/bin/activate && $UVICMD"
+uvistart() {
+    if [ ! -z  "$VIRTUAL_ENV" ]; then
+        echo "venv already created";
+    else
+        . "$APIDIR/venv/bin/activate" && source $ROOTDIR/.envs/$LIBLIFE_ENV.env
+    fi
+    uvicorn api.app.main:app --port $API_PORT --host $API_HOST --reload
+}
 
-alias gptfindpy="find $APIDIR -type f -name '*.py' -not -path '*venv*' -not -path '*alembic*'"
-
+npmapi() {
+    gentypes
+    cd $FRONTDIR
+    cp ../.envs/$LIBLIFE_ENV.env .env
+    source $ROOTDIR/.envs/$LIBLIFE_ENV.env
+    echo "PORT=$REACT_APP_PORT" >> .env
+    echo "HOST=$REACT_APP_HOST" >> .env
+    npm start
+    cd $ROOTDIR
+}
 
 dc () {
     if [ "$1" = "rebuild" ]; then
@@ -30,11 +42,6 @@ dc () {
     fi
 }
 
-
-npmapi() {
-    gentypes
-    cd $FRONTDIR && source .env && npm start
-}
 
 automigrate() {
     cd $APIDIR
