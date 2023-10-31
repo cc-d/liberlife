@@ -7,7 +7,15 @@ alias gentypes="npx openapi-typescript-codegen generate \
 --exportSchemas true --input http://localhost:8999/openapi.json \
 --output $FRONTDIR/src/api/"
 
-alias uvistart=". api/venv/bin/activate && uvicorn --port=8999 api.app.main:app --reload"
+if [ -z "$LIBLIFE_ENV" ]; then
+    LIBLIFE_ENV=dev
+fi
+
+LIBLIFE_ENVFILE=.env.${LIBLIFE_ENV}
+
+UVICMD="source $LIBLIFE_ENVFILE && uvicorn --port=8999 api.app.main:app --reload"
+
+alias uvistart=". api/venv/bin/activate && $UVICMD"
 
 alias gptfindpy="find $APIDIR -type f -name '*.py' -not -path '*venv*' -not -path '*alembic*'"
 
@@ -25,7 +33,7 @@ dc () {
 
 npmapi() {
     gentypes
-    cd $FRONTDIR &&  npm start
+    cd $FRONTDIR && source .env && npm start
 }
 
 automigrate() {

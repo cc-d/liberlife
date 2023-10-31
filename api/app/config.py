@@ -1,9 +1,10 @@
 import os
 from myfuncs import typed_evar as evar
+from logfunc import logf
 
 
-HOST = evar('API_HOST', 'localhost')
-PORT = evar('API_PORT', 8999)
+HOST = evar('API_HOST')
+PORT = evar('API_PORT')
 
 DB_NAME = 'liblifedb'
 DB_USER = evar('DB_USER', 'pguser')
