@@ -4,11 +4,8 @@ FRONTDIR="$ROOTDIR/frontend"
 APIDIR="$ROOTDIR/api"
 
 if [ -z "$LIBLIFE_ENV" ]; then
-    LIBLIFE_ENV=dev
+    export LIBLIFE_ENV="dev"
 fi
-
-alias gentypes="npx openapi-typescript-codegen generate --exportSchemas true --input http://localhost:8999/openapi.json --output $FRONTDIR/src/api/"
-
 
 uvistart() {
     cd $ROOTDIR
@@ -22,8 +19,8 @@ uvistart() {
 }
 
 npmapi() {
-    gentypes
     cd $FRONTDIR
+    npx openapi-typescript-codegen generate --exportSchemas true --input http://localhost:8999/openapi.json --output "$FRONTDIR/src/api/"
     cp ../.envs/$LIBLIFE_ENV.env .env
     source $ROOTDIR/.envs/$LIBLIFE_ENV.env
     echo "PORT=$REACT_APP_PORT" >> .env
