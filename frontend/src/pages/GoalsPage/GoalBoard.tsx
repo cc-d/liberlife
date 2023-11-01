@@ -1,12 +1,10 @@
 import React from "react";
-import useTheme from "@mui/material/styles/useTheme";
 import {
   Box,
   Typography,
   TextField,
   Button,
   Divider,
-  IconButton,
 } from "@mui/material";
 import { GoalOut } from "../../api";
 import { GoalItem } from "./GoalItem";
@@ -38,7 +36,6 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
   handleGoalUpdate,
   handleDeleteTask,
 }) => {
-  const theme = useTheme();
   const latestUpdatedOn = (goal: any) => {
     if (!goal?.tasks && goal.tasks?.length > 0) {
       return new Date(goal.updated_on);

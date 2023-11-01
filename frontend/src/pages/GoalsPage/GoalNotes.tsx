@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useTheme } from '@mui/material/styles';
 import { Box, Typography, TextField, IconButton, Link } from "@mui/material";
 import { GoalOut } from "../../api";
 import EditIcon from "@mui/icons-material/Edit";
@@ -97,7 +96,6 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
 
   const editBoxHeight = editedNotes?.split("\n").length || 1;
 
-  const theme = useTheme();
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>

@@ -1,22 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
-import {
-  Box,
-  TextField,
-  Button,
-  List,
-  ListItem,
-  Typography,
-  IconButton,
-  Container,
-  Divider,
-} from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { Container } from "@mui/material";
 import apios from "../../apios";
 import { GoalOut, GoalTaskOut } from "../../api";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
-import { GoalItem } from "./GoalItem";
 import GoalBoard from "./GoalBoard";
 
 const GoalsPage: React.FC = () => {
@@ -174,7 +161,8 @@ const GoalsPage: React.FC = () => {
           prevGoals.map((g) => {
             if (g.id !== goalId) return g;
             if (updatedText !== undefined) return { ...g, text: updatedText };
-            if (updatedNotes !== undefined) return { ...g, notes: updatedNotes };
+            if (updatedNotes !== undefined)
+              return { ...g, notes: updatedNotes };
             return g;
           })
         );
@@ -188,7 +176,6 @@ const GoalsPage: React.FC = () => {
     }
     return false;
   };
-
 
   const handleDeleteTask = async (goalId: number, taskId: number) => {
     try {
@@ -224,8 +211,9 @@ const GoalsPage: React.FC = () => {
     <Container
       maxWidth={false}
       sx={{
-        m: 0, p: 0,
-        backgroundColor: 'black',
+        m: 0,
+        p: 0,
+        backgroundColor: "black",
       }}
     >
       <GoalBoard

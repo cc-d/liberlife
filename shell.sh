@@ -7,11 +7,6 @@ if [ -z "$LIBLIFE_ENV" ]; then
     export LIBLIFE_ENV="dev"
 fi
 
-exportenv() {
-    for _exvar in $(cat $ROOTDIR/.envs/$LIBLIFE_ENV.env); do
-        export $_exvar
-    done
-}
 
 uvistart() {
     cd $ROOTDIR
@@ -20,25 +15,26 @@ uvistart() {
     else
         . "$APIDIR/venv/bin/activate"
     fi
-    exportenv
+    . "$ROOTDIR/.envs/$LIBLIFE_ENV.env"
     uvicorn api.app.main:app --port $API_PORT --host $API_HOST --reload
 }
 
 gentypes() {
+    echo "generating types url: http://$API_HOST:$API_PORT/openapi.json"
     npx openapi-typescript-codegen generate \
-    --exportSchemas true --input http://localhost:8999/openapi.json \
+    --exportSchemas true --input "http://$API_HOST:$API_PORT/openapi.json" \
     --output "$FRONTDIR/src/api/"
 }
 
 npmapi() {
-    cd $FRONTDIR
     gentypes
-    cp ../.envs/$LIBLIFE_ENV.env .env
-    source $ROOTDIR/.envs/$LIBLIFE_ENV.env
-    echo "PORT=$REACT_APP_PORT" >> .env
-    echo "HOST=$REACT_APP_HOST" >> .env
-    npm start
-    cd $ROOTDIR
+    echo "copying $LIBLIFE_ENV.env to $FRONTDIR/.env"
+    . "$ROOTDIR/.envs/$LIBLIFE_ENV.env"
+    cp "$ROOTDIR/.envs/$LIBLIFE_ENV.env" "$FRONTDIR/.env"
+    echo "PORT=$REACT_APP_PORT" >> "$FRONTDIR/.env"
+    echo "HOST=$REACT_APP_HOST" >> "$FRONTDIR/.env"
+
+    cd $FRONTDIR && npm start && cd $ROOTDIR
 }
 
 dc () {

@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import { Container, Typography, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import apios from "../../apios";
@@ -6,7 +6,6 @@ import LogRegForm, { LogRegFormState } from "./LogRegForm";
 import { useAuth } from "../../contexts/AuthContext";
 
 const LogRegPage: React.FC = () => {
-  const nav = useNavigate();
 
   const { login } = useAuth();
   const navigate = useNavigate();

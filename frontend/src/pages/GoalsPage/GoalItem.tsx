@@ -35,7 +35,6 @@ export const GoalItem: React.FC<GoalItemProps> = ({
   const maxElementWidth = "98vw !important";
   const maxNotesWidth = `calc(${maxElementWidth} - 48px) !important`;
   const theme = useTheme();
-  const backgroundColor = theme.palette.background.default
 
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
