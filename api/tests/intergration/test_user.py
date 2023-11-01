@@ -19,32 +19,32 @@ from ..common import (
     HPASSWORD,
     event_loop,
     client,
-    db,
+    create_db,
     OAUTH_LOGIN_FORM,
     GOALS,
-    getheaders_user,
     TASKS,
     headers,
-    transaction,
+    reguser,
+    userme,
+    loginheaders,
     reguser,
 )
 from logfunc import logf
 
 
 @pytest.mark.asyncio
-@logf(use_print=True)
-async def test_register(client, transaction, reguser):
+async def test_register(client, reguser):
     # User is already registered by the fixture
     heads = await reguser
 
 
 @pytest.mark.asyncio
-async def test_login(client, transaction, reguser):
+async def test_login(client, reguser):
     resp = await client.post("/u/login", json=LOGINJSON)
 
 
 @pytest.mark.asyncio
-async def test_oauth_login(client, transaction, reguser):
+async def test_oauth_login(client, reguser):
     resp = await client.post(
         "/u/oauth_login",
         data=OAUTH_LOGIN_FORM,
@@ -54,7 +54,7 @@ async def test_oauth_login(client, transaction, reguser):
 
 
 @pytest.mark.asyncio
-async def test_register_duplicate_user(client, transaction, reguser):
+async def test_register_duplicate_user(client, reguser):
     # Since the user is already registered, try registering again
     resp = await client.post("/u/register", json=LOGINJSON)
     assert resp.status_code == 400
@@ -62,6 +62,6 @@ async def test_register_duplicate_user(client, transaction, reguser):
 
 
 @pytest.mark.asyncio
-async def test_me(client, transaction, getheaders_user):
-    headers, ujson = await getheaders_user
-    assert headers['Authorization'].startswith('Bearer ')
+async def test_me(client, userme):
+    userme = await userme
+    assert userme['username'] == USERNAME

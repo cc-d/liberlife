@@ -27,34 +27,16 @@ from api.app.utils.security import decode_jwt, hash_pass
 
 from ..app.db.session import Base, async_engine, sync_engine
 
-USERNAME = "testuser2"
-PASSWORD = "testpass2"
-USERID = 1
-HPASSWORD = hash_pass(PASSWORD)
-
-LOGINJSON = {"username": USERNAME, "password": PASSWORD}
-
-USERDB = SchemaUser.UserDB(
-    id=USERID,
-    username=USERNAME,
-    hpassword=HPASSWORD,
-    created_on=dt.utcnow(),
-    updated_on=dt.utcnow(),
+from .data import (
+    GOALS,
+    LOGINJSON,
+    PASSWORD,
+    USERNAME,
+    USERDB,
+    HPASSWORD,
+    TASKS,
+    OAUTH_LOGIN_FORM,
 )
-
-OAUTH_LOGIN_FORM = {
-    "grant_type": "password",
-    "username": USERNAME,
-    "password": PASSWORD,
-}
-
-
-class GOALS:
-    TEXTS = ['TESTGOAL%s' % i for i in range(2)]
-
-
-class TASKS:
-    TEXTS = ['TESTTASK%s' % i for i in range(2)]
 
 
 def assert_token(resp):
@@ -78,7 +60,7 @@ def headers(resp):
 
 
 @pytest.fixture(scope="module")
-def event_loop(request):
+def event_loop():
     loop = asyncio.get_event_loop_policy().new_event_loop()
     yield loop
     loop.close()
@@ -86,12 +68,12 @@ def event_loop(request):
 
 @pytest_asyncio.fixture(scope="module")
 async def client():
-    async with AsyncClient(app=app, base_url=f"http://test") as client:
+    async with AsyncClient(app=app, base_url="http://test") as client:
         yield client
 
 
 @pytest_asyncio.fixture(scope="module")
-async def db() -> AsyncSession:
+async def create_db() -> AsyncSession:
     async with async_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     yield
@@ -100,8 +82,8 @@ async def db() -> AsyncSession:
     await async_engine.dispose()
 
 
-@pytest.fixture(scope="module")
-async def transaction(db):
+@pytest.fixture(scope="function")
+async def funcsession(create_db):
     session = sessionmaker(
         async_engine, class_=AsyncSession, expire_on_commit=False
     )()
@@ -111,36 +93,35 @@ async def transaction(db):
 
 
 @pytest.fixture(scope="module")
-async def reguser(client, db):
+async def reguser(client, create_db):
     resp = await client.post("/u/register", json=LOGINJSON)
     assert_token(resp)
     return headers(resp)
 
 
 @pytest.fixture(scope="module")
-async def getheaders_user(client, transaction, reguser):
+async def loginheaders(client, reguser):
     resp = await client.post("/u/login", json=LOGINJSON)
-    heads = headers(resp)
-    resp = await client.get("/u/me", headers=heads)
-    assert resp.status_code == 200
-    ujson = resp.json()
-    assert ujson["username"] == LOGINJSON["username"]
-    return heads, ujson
+    return headers(resp)
 
 
 @pytest.fixture(scope="module")
-def setup_goals(client, getheaders_user, event_loop):
-    # Define the async function inside the fixture
-    async def async_setup_goals():
-        headers, ujson = await getheaders_user
-        newgoals = []
-        for text in GOALS.TEXTS:
-            resp = await client.post(
-                "/goals", json={"text": text}, headers=headers
-            )
-            assert resp.status_code == 200
-            newgoals.append(resp.json())
-        return newgoals, headers, ujson
+async def userme(client, loginheaders):
+    loginheaders = await loginheaders
+    resp = await client.get("/u/me", headers=loginheaders)
+    assert resp.status_code == 200
+    return resp.json()
 
-    # Run the async function using an event loop and return the result
-    return event_loop.run_until_complete(async_setup_goals())
+
+@pytest_asyncio.fixture(scope="module")
+async def user_and_headers(client, create_db):
+    # Login
+    login_resp = await client.post("/u/login", json=LOGINJSON)
+    login_headers = headers(login_resp)
+
+    # Get user details
+    user_resp = await client.get("/u/me", headers=login_headers)
+    assert user_resp.status_code == 200
+    user_json = user_resp.json()
+
+    return user_json, login_headers
