@@ -7,7 +7,6 @@ if [ -z "$LIBLIFE_ENV" ]; then
     export LIBLIFE_ENV="dev"
 fi
 
-
 uvistart() {
     cd $ROOTDIR
     if [ ! -z "$VIRTUAL_ENV" ]; then
@@ -27,9 +26,9 @@ gentypes() {
 }
 
 npmapi() {
+    . "$ROOTDIR/.envs/$LIBLIFE_ENV.env"
     gentypes
     echo "copying $LIBLIFE_ENV.env to $FRONTDIR/.env"
-    . "$ROOTDIR/.envs/$LIBLIFE_ENV.env"
     cp "$ROOTDIR/.envs/$LIBLIFE_ENV.env" "$FRONTDIR/.env"
     echo "PORT=$REACT_APP_PORT" >> "$FRONTDIR/.env"
     echo "HOST=$REACT_APP_HOST" >> "$FRONTDIR/.env"
