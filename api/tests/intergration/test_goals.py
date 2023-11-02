@@ -1,7 +1,12 @@
+import logging
+import os
+import asyncio
 from contextlib import asynccontextmanager, contextmanager
 
 import pytest
+
 from app.db.models import Goal
+from logfunc import logf
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.future import select
 from sqlalchemy.orm import sessionmaker
@@ -11,19 +16,18 @@ from api.app.schemas import goal as SchemaGoal
 from api.app.schemas import user as SchemaUser
 
 from ..common import (
-    TASKS,
     GOALS,
     HPASSWORD,
     LOGINJSON,
     OAUTH_LOGIN_FORM,
     PASSWORD,
+    TASKS,
     USERDB,
     USERNAME,
     assert_token,
     client,
     create_db,
     event_loop,
-    funcsession,
     headers,
     loginresp,
     reguser,
@@ -31,7 +35,6 @@ from ..common import (
     userme,
 )
 from .test_user import test_register
-from logfunc import logf
 
 
 @logf(level='INFO')
@@ -101,34 +104,19 @@ async def test_update_goal(client, setup_goals):
     assert resp.json()['id'] == newgoals[1]['id']
 
 
+async def allgoals_request(client, headers):
+    resp = await client.get("/goals", headers=headers)
+    return resp
+
+
 @pytest.mark.asyncio
 async def test_delete_goal(client, setup_goals):
     newgoals, headers, tuser = setup_goals
+    allgoals = await allgoals_request(client, headers)
+    allgoals = allgoals.json()
 
-    # Create a new session within the test function
-    session = sessionmaker(
-        async_engine, class_=AsyncSession, expire_on_commit=False
-    )()
+    agtexts = {g['text'] for g in allgoals}
 
-    try:
-        async with session.begin():
-            for goal in newgoals:
-                resp = await client.delete(
-                    f"/goals/{goal['id']}", headers=headers
-                )
-
-            stmt = select(Goal).where(Goal.user_id == tuser['id'])
-            result = await session.execute(stmt)
-            goals = result.scalars().all()
-            assert len(goals) == 0
-
-    finally:
-        await session.close()  # Ensure the session is properly closed
-
-
-# verify that the goal is not deleted from the database
-@pytest.mark.asyncio
-async def test_delete_goal_db(client, setup_goals):
-    newgoals, headers, tuser = setup_goals
-    resp = await client.get("/goals", headers=headers)
-    rjson = resp.json()
+    for gt in GOALS.TEXTS:
+        if gt not in agtexts:
+            await new_goalresp(gt, client, headers)

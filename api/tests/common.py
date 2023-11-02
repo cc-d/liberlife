@@ -82,16 +82,6 @@ async def create_db() -> AsyncSession:
     await async_engine.dispose()
 
 
-@pytest.fixture(scope="function")
-async def funcsession(create_db):
-    session = sessionmaker(
-        async_engine, class_=AsyncSession, expire_on_commit=False
-    )()
-    async with session.begin():
-        yield session
-        await session.rollback()
-
-
 async def register(client):
     resp = await client.post("/u/register", json=LOGINJSON)
     return headers(resp)
