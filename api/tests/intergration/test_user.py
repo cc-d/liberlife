@@ -33,9 +33,10 @@ from logfunc import logf
 
 
 @pytest.mark.asyncio
-async def test_register(client, reguser):
-    # User is already registered by the fixture
-    heads = await reguser
+async def test_register(reguser):
+    rr = await reguser
+    assert 'Authorization' in rr
+    assert rr['Authorization'].startswith('Bearer')
 
 
 @pytest.mark.asyncio
