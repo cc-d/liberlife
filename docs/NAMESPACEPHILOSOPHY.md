@@ -39,6 +39,6 @@ Here's a rough rundown on how the python namespace structure is defined:
 
    - Relative imports also reinforce the idea of treating each namespace or directory as its independent module, aiding in understanding the codebase hierarchy and dependencies.
 
-   - **MOST IMPORTANTLY** this keeps the namespace clean and prevents long names or single monolithic packages/modules.
+   - **MOST IMPORTANTLY** this keeps the namespace clean and prevents long names or single monolithic packages/modules, and avoids any sort of overlap with `PYTHONPATH`
 
 Through structured namespace management, focusing on conceptual segregation, developers can efficiently navigate the codebase, reduce naming collisions, and encourage a maintainable and scalable project.

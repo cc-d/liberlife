@@ -1,23 +1,23 @@
 {
   "configurations": [
     {
-      "name": "Python: FastAPI",
       "type": "python",
-      "module": "uvicorn",
-      "args": ["--port=8999","api.app.main:app"  , "--reload"],
+      "request": "launch",
+      "name": "Run Tests",
+      "module": "pytest",
       "env": {
-        "PYTHONPATH": "${workspaceFolder}"
-    },
-      "jinja": false,
-      "request": "launch"
-    },
-    {
-        "type": "chrome",
-        "request": "launch",
-        "name": "Launch chrome against frontend",
-        "url": "http://localhost:3999",
-        "webRoot": "${workspaceFolder}/frontend/src",
-        "sourceMaps": true,
+        "LOGF_USE_PRINT": "true",
+      },
+      "args": [
+        "tests",
+        "-s",
+        "--show-capture=all",
+        "-x",
+        "--cov",
+        "--cov-report=term-missing",
+      ],
+      "cwd": "${workspaceFolder}/api",
     }
+
   ]
 }
