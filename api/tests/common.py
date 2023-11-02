@@ -92,36 +92,54 @@ async def funcsession(create_db):
         await session.rollback()
 
 
+async def register(client):
+    resp = await client.post("/u/register", json=LOGINJSON)
+    return headers(resp)
+
+
+async def login(client):
+    resp = await client.post("/u/login", json=LOGINJSON)
+    return resp
+
+
+@pytest.fixture(scope="module")
+async def loginresp(client, reguser):
+    uh = await login(client)
+    return uh
+
+
+async def ume_resp(client):
+    uh = await login(client)
+    uh = headers(uh)
+    resp = await client.get("/u/me", headers=uh)
+    return resp
+
+
+@pytest.fixture
+async def funclogin(client):
+    return await login(client)
+
+
 @pytest.fixture(scope="module")
 async def reguser(client, create_db):
-    resp = await client.post("/u/register", json=LOGINJSON)
-    assert_token(resp)
-    return headers(resp)
+    return await register(client)
 
 
 @pytest.fixture(scope="module")
-async def loginheaders(client, reguser):
-    resp = await client.post("/u/login", json=LOGINJSON)
-    return headers(resp)
-
-
-@pytest.fixture(scope="module")
-async def userme(client, loginheaders):
-    loginheaders = await loginheaders
-    resp = await client.get("/u/me", headers=loginheaders)
+async def userme(client, reguser, loginresp):
+    uh = await loginresp
+    resp = await client.get("/u/me", headers=headers(uh))
     assert resp.status_code == 200
     return resp.json()
 
 
 @pytest_asyncio.fixture(scope="module")
-async def user_and_headers(client, create_db):
-    # Login
-    login_resp = await client.post("/u/login", json=LOGINJSON)
-    login_headers = headers(login_resp)
+async def user_and_headers(client, create_db, reguser, loginresp):
+    r = await loginresp
+    assert r.status_code == 200
+    assert_token(r)
 
-    # Get user details
-    user_resp = await client.get("/u/me", headers=login_headers)
-    assert user_resp.status_code == 200
-    user_json = user_resp.json()
+    ume = await ume_resp(client)
+    assert ume.status_code == 200
 
-    return user_json, login_headers
+    return ume.json(), headers(r)

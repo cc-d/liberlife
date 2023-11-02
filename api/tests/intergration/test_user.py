@@ -26,8 +26,8 @@ from ..common import (
     headers,
     reguser,
     userme,
-    loginheaders,
     reguser,
+    loginresp,
 )
 from logfunc import logf
 
