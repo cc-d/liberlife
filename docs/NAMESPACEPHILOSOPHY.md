@@ -54,29 +54,13 @@ app/
 
 **2. Concept: User, Goal & Task**
 
-- **CRUD Operations**:
-```plaintext
-crud/
-├── user.py
-├── goal.py
-└── task.py (assuming task operations are here)
+```
+crud/               routes/              schemas/
+  - user.py           - user.py            - user.py
+  - goal.py           - goal.py            - goal.py
+  - task.py           - task.py            - task.py
 ```
 
-- **Routing Logic**:
-```plaintext
-routes/
-├── user.py
-├── goal.py
-└── task.py (assuming task routes are here)
-```
-
-- **Data Schemas**:
-```plaintext
-schemas/
-├── user.py
-├── goal.py
-└── task.py (assuming task schema is here)
-```
 
 **3. Concept: Database Interaction**
 ```plaintext
