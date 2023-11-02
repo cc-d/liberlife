@@ -1,20 +1,37 @@
+Certainly! Here's an integrated version of your provided text with the project overview:
+
+---
+
 # liberlife
 
-NOW LIVE: [https://life.liberfy.ai](https://life.liberfy.ai)
+**NOW LIVE:** [https://life.liberfy.ai](https://life.liberfy.ai)
 
-seems like a fun simple little project that may end up being useful
-
-mainly meant as a personal life trakcer thing for my own use
+This seems like a fun, simple little project that may end up being useful. It's primarily intended as a personal life tracker tool for my own use.
 
 ![App Preview](/preview.png)
 
+## Project Overview
 
+- **compose.yml:** Project's Docker composition file.
+- **.envs/:** Environment variable configurations.
+- **.vscode/:** Visual Studio Code specific settings.
+- **api/**
+  - **Dockerfile:** API's Docker configuration.
+  - **app/:** Core application functionality.
+    - **crud/:** Database CRUD operations.
+    - **db/:** Database models and session management.
+    - **routes/:** Endpoints and their logic.
+    - **utils/:** Helpers like middleware and security.
+  - **tests/:** Unit and integration tests.
+- **frontend/**
+  - **Dockerfile:** Frontend's Docker configuration.
+  - **public/:** Public assets and templates.
+  - **src/:** Main source code for frontend, including core utilities, components, contexts, and page components.
+- **nginx/:** Nginx server configurations and Docker setup.
 
 ## async
 
-Every route and non-cpu bound route/query/test/whatever is async.
-
-This was, a lot, harder than doing things 100% sync, and in many cases was utterly unnecessary, but it was good practice.
+Every route and non-cpu bound route/query/test/whatever is async. This was, a lot, harder than doing things 100% sync, and in many cases was utterly unnecessary, but it was good practice.
 
 ## async tests
 
@@ -50,7 +67,7 @@ app/utils/security.py          26      1    96%   26
 TOTAL                         394     76    81%
 
 
-============================================================== 14 passed in 3.45s ===============================================================
+======= 14 passed in 3.45s==============
 ```
 
 now, it doesn't feel so pointless. 14 pretty short test funcs for 84% coverage is pretty good.
