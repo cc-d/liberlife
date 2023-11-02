@@ -42,3 +42,62 @@ Here's a rough rundown on how the python namespace structure is defined:
    - **MOST IMPORTANTLY** this keeps the namespace clean and prevents long names or single monolithic packages/modules, and avoids any sort of overlap or ambiguity with other packages/modules on the `PYTHONPATH`.
 
 Through structured namespace management, focusing on conceptual segregation, developers can efficiently navigate the codebase, reduce naming collisions, and encourage a maintainable and scalable project.
+
+## TLDR
+
+**1. Concept: Core Application**
+```plaintext
+app/
+├── config.py
+└── main.py
+```
+
+**2. Concept: User, Goal & Task**
+
+- **CRUD Operations**:
+```plaintext
+crud/
+├── user.py
+├── goal.py
+└── task.py (assuming task operations are here)
+```
+
+- **Routing Logic**:
+```plaintext
+routes/
+├── user.py
+├── goal.py
+└── task.py (assuming task routes are here)
+```
+
+- **Data Schemas**:
+```plaintext
+schemas/
+├── user.py
+├── goal.py
+└── task.py (assuming task schema is here)
+```
+
+**3. Concept: Database Interaction**
+```plaintext
+db/
+├── models.py
+└── session.py
+```
+
+**4. Concept: Utilities**
+```plaintext
+utils/
+├── security.py
+└── middleware.py
+```
+
+**5. Concept: Testing**
+```plaintext
+tests/
+├── integration/
+│   ├── test_goals.py
+│   └── test_user.py
+└── unit/
+    └── __old_mock_tests.py
+```
