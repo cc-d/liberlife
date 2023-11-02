@@ -57,7 +57,6 @@ def setup_goals(client, user_and_headers, event_loop):
         newgoals = []
         for text in GOALS.TEXTS:
             ng = await new_goalresp(text, client, headers)
-            print(ng, '@@@@@@@')
 
             for ttext in TASKS.TEXTS:
                 nt = await new_taskresp(
@@ -74,7 +73,7 @@ def setup_goals(client, user_and_headers, event_loop):
 @pytest.mark.asyncio
 async def test_list_goals(client, setup_goals):
     """also tests goal create"""
-    newgoals, headers, tuser = setup_goals
+    newgoals, headers, _ = setup_goals
     resp = await client.get("/goals", headers=headers)
     assert resp.status_code == 200
     goals_from_response = resp.json()
@@ -84,7 +83,7 @@ async def test_list_goals(client, setup_goals):
 
 @pytest.mark.asyncio
 async def test_get_goal(client, setup_goals):
-    newgoals, headers, tuser = setup_goals
+    newgoals, headers, _ = setup_goals
     for goal in newgoals:
         resp = await client.get(f"/goals/{goal['id']}", headers=headers)
         assert resp.status_code == 200
@@ -93,7 +92,7 @@ async def test_get_goal(client, setup_goals):
 
 @pytest.mark.asyncio
 async def test_update_goal(client, setup_goals):
-    newgoals, headers, tuser = setup_goals
+    newgoals, headers, _ = setup_goals
     resp = await client.put(
         f"/goals/{newgoals[1]['id']}", json={'text': 'UPDATED'}, headers=headers
     )
@@ -124,7 +123,7 @@ async def test_delete_goal(client, setup_goals):
             assert len(goals) == 0
 
     finally:
-        session.close()  # Ensure the session is properly closed
+        await session.close()  # Ensure the session is properly closed
 
 
 # verify that the goal is not deleted from the database
