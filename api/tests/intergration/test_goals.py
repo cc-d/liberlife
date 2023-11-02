@@ -60,11 +60,6 @@ def setup_goals(client, user_and_headers, event_loop):
         for text in GOALS.TEXTS:
             ng = await new_goalresp(text, client, headers)
 
-            for ttext in TASKS.TEXTS:
-                nt = await new_taskresp(
-                    ttext, goalid=ng['id'], client=client, headers=headers
-                )
-                ng['tasks'].append(nt)
             newgoals.append(ng)
 
         return newgoals, headers, tuser
@@ -128,3 +123,96 @@ async def test_delete_goal(client, setup_goals):
     assert ngid not in ags.keys()
     assert newgoal['text'] not in ags.values()
     assert len(agjson) == len(newgoals)
+
+
+@pytest.fixture(scope="module")
+def setup_tasks(client, setup_goals, event_loop):
+    async def _async_setup():
+        tuser, headers, _ = setup_goals
+        newgoals = setup_goals[0]
+
+        for goal in newgoals:
+            for text in TASKS.TEXTS:
+                await new_taskresp(text, goal['id'], client, headers)
+        return newgoals, headers, _
+
+    return event_loop.run_until_complete(_async_setup())
+
+
+@pytest.mark.asyncio
+async def test_create_task(client, setup_tasks):
+    newgoals, headers, _ = setup_tasks
+
+    for goal in newgoals:
+        resp = await client.get(f"/goals/{goal['id']}", headers=headers)
+        assert resp.status_code == 200
+        assert len(resp.json()['tasks']) == len(TASKS.TEXTS)
+
+
+@pytest.mark.asyncio
+async def test_get_task(client, setup_tasks):
+    newgoals, headers, _ = setup_tasks
+
+    for goal in newgoals:
+        for task in goal['tasks']:
+            resp = await client.get(
+                f"/goals/{goal['id']}/tasks/{task['id']}", headers=headers
+            )
+            assert resp.status_code == 200
+            assert resp.json()['text'] == task['text']
+
+
+@pytest.mark.asyncio
+async def test_update_task(client, setup_tasks):
+    newgoals, headers, _ = setup_tasks
+
+    original = {}
+
+    for goal in newgoals:
+        for task in goal['tasks']:
+            original[task['id']] = task
+            resp = await client.put(
+                f"/goals/{goal['id']}/tasks/{task['id']}",
+                json={'text': 'UPDATED'},
+                headers=headers,
+            )
+            assert resp.status_code == 200
+            assert resp.json()['text'] == 'UPDATED'
+            assert resp.json()['id'] == task['id']
+
+    # now change them back incase same session
+    for goal in newgoals:
+        for task in goal['tasks']:
+            resp = await client.put(
+                f"/goals/{goal['id']}/tasks/{task['id']}",
+                json={
+                    'text': original[task['id']]['text'],
+                    'completed': original[task['id']]['completed'],
+                },
+                headers=headers,
+            )
+            assert resp.status_code == 200
+            assert resp.json()['text'] == original[task['id']]['text']
+            assert resp.json()['id'] == task['id']
+
+
+@pytest.mark.asyncio
+async def test_delete_task(client, setup_tasks):
+    newgoals, headers, _ = setup_tasks
+    uttext = 'UNIQUE TASK TEXT !!!!!!'
+    newtask = await new_taskresp(uttext, newgoals[0]['id'], client, headers)
+    assert newtask['text'] == uttext
+    assert newtask['goal_id'] == newgoals[0]['id']
+    utid = newtask['id']
+
+    resp = await client.delete(
+        f"/goals/{newgoals[0]['id']}/tasks/{utid}", headers=headers
+    )
+    assert resp.status_code == 200
+
+    resp = await client.get(f"/goals/{newgoals[0]['id']}", headers=headers)
+    assert resp.status_code == 200
+    gtasks = resp.json()['tasks']
+
+    assert utid not in [t['id'] for t in gtasks]
+    assert uttext not in [t['text'] for t in gtasks]

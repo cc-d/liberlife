@@ -5,7 +5,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import joinedload, selectinload
 
-from ..crud.goal import get_goal_from_id, get_goal_task_from_id, new_goal
+from ..crud.goal import (
+    get_goal_from_id,
+    get_goal_task_from_id,
+    new_goal,
+    get_goal_w_tasks,
+)
 from ..db import get_adb
 from ..db.common import async_addcomref
 from ..db.models import Goal, GoalTask
@@ -29,11 +34,7 @@ async def create_goal(
 async def list_goals(
     cur_user=Depends(get_current_user), db: AsyncSession = Depends(get_adb)
 ):
-    goals = await db.execute(
-        select(Goal).distinct().where(Goal.user_id == cur_user.id)
-    )
-    goals = goals.unique().scalars().all()
-    return goals
+    return await get_goal_w_tasks(None, db=db)
 
 
 @router.get("/{goal_id}", response_model=GoalSchema.GoalOut)
