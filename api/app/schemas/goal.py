@@ -33,6 +33,7 @@ class GoalTaskOut(GoalTaskBase, DBCommon):
 
 
 class GoalOut(GoalIn, DBCommon):
+    id: int
     user_id: int
     user: UserOut
     tasks: List[GoalTaskOut]

@@ -11,6 +11,7 @@ from api.app.schemas import goal as SchemaGoal
 from api.app.schemas import user as SchemaUser
 
 from ..common import (
+    TASKS,
     GOALS,
     HPASSWORD,
     LOGINJSON,
@@ -30,23 +31,42 @@ from ..common import (
     userme,
 )
 from .test_user import test_register
+from logfunc import logf
+
+
+@logf(level='INFO')
+async def new_goalresp(text, client, headers, **kwargs):
+    resp = await client.post("/goals", json={'text': text}, headers=headers)
+    return resp.json()
+
+
+@logf(level='INFO')
+async def new_taskresp(text, goalid, client, headers, **kwargs):
+    resp = await client.post(
+        "/goals/%s/tasks" % goalid,
+        json={'text': text, 'completed': False},
+        headers=headers,
+    )
+    return resp.json()
 
 
 @pytest.fixture(scope="module")
-def setup_goals(client, create_db, user_and_headers, event_loop):
+def setup_goals(client, user_and_headers, event_loop):
     async def _async_setup():
-        tuser, loginheaders = user_and_headers
+        tuser, headers = user_and_headers
         newgoals = []
-
         for text in GOALS.TEXTS:
-            resp = await client.post(
-                "/goals",
-                json={'text': text, 'user_id': tuser['id']},
-                headers=loginheaders,
-            )
-            assert resp.status_code == 200
-            newgoals.append(resp.json())
-        return newgoals, loginheaders, tuser
+            ng = await new_goalresp(text, client, headers)
+            print(ng, '@@@@@@@')
+
+            for ttext in TASKS.TEXTS:
+                nt = await new_taskresp(
+                    ttext, goalid=ng['id'], client=client, headers=headers
+                )
+                ng['tasks'].append(nt)
+            newgoals.append(ng)
+
+        return newgoals, headers, tuser
 
     return event_loop.run_until_complete(_async_setup())
 

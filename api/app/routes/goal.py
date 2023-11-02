@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import joinedload, selectinload
 
-from ..crud.goal import get_goal_from_id, get_goal_task_from_id
+from ..crud.goal import get_goal_from_id, get_goal_task_from_id, new_goal
 from ..db import get_adb
 from ..db.common import async_addcomref
 from ..db.models import Goal, GoalTask
@@ -17,15 +17,12 @@ router = APIRouter(prefix='/goals', tags=['goal'])
 
 @router.post('', response_model=GoalSchema.GoalOut)
 async def create_goal(
-    goal: GoalSchema.GoalIn,
+    newgoal: GoalSchema.GoalIn,
     cur_user: GoalSchema.UserOut = Depends(get_current_user),
     db: AsyncSession = Depends(get_adb),
 ):
-    new_goal = Goal(text=goal.text, user_id=cur_user.id, user=cur_user)
-    await async_addcomref(db, new_goal)
-    return GoalSchema.GoalOut(
-        **new_goal.__dict__, user=UserSchema.UserOut(**cur_user.__dict__)
-    )
+    ng = await new_goal(newgoal.text, user_id=cur_user.id, db=db)
+    return ng
 
 
 @router.get('', response_model=List[GoalSchema.GoalOut])

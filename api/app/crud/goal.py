@@ -9,6 +9,9 @@ from typing import Optional, Union
 from ..db import get_adb
 from ..db.models import User, Goal, GoalTask
 from ..schemas.user import UserDB
+from ..schemas.goal import GoalOut, GoalIn
+from ..utils.security import decode_jwt, oauth_scheme, verify_pass, encode_jwt
+from ..db.common import async_addcomref
 
 
 async def get_goal_from_id(
@@ -27,3 +30,12 @@ async def get_goal_task_from_id(
     goal_task = await db.execute(select(GoalTask).where(GoalTask.id == task_id))
     goal_task = goal_task.scalar_one_or_none()
     return goal_task
+
+
+async def new_goal(
+    text: str, user_id: int, db: AsyncSession = Depends(get_adb)
+) -> Goal:
+    goal = Goal(text=text, user_id=user_id)
+    await async_addcomref(db, goal)
+
+    return goal
