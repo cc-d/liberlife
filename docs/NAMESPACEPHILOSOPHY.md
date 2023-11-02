@@ -30,4 +30,15 @@ Here's a rough rundown on how the python namespace structure is defined:
    - Arrange tests under a specific namespace like `tests/`.
    - Subcategorize within this based on the nature (unit, integration) or the concepts under test.
 
+8. **Importance of Relative Imports**:
+   - With structured namespaces, relative imports become crucial. They not only make the code cleaner but also maintain the module's integrity.
+
+   - By using relative imports, you can easily refactor or move modules around without breaking dependencies.
+
+   - For example, within the goal namespace, you might use a relative import like from .utils import some_function rather than specifying the full path. This helps in maintaining the modular structure and reducing coupling between components.
+
+   - Relative imports also reinforce the idea of treating each namespace or directory as its independent module, aiding in understanding the codebase hierarchy and dependencies.
+
+   - **MOST IMPORTANTLY** this keeps the namespace clean and prevents long names or single monolithic packages/modules.
+
 Through structured namespace management, focusing on conceptual segregation, developers can efficiently navigate the codebase, reduce naming collisions, and encourage a maintainable and scalable project.
