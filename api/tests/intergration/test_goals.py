@@ -14,7 +14,6 @@ from sqlalchemy.orm import sessionmaker
 from api.app.db.session import async_engine
 from api.app.schemas import goal as SchemaGoal
 from api.app.schemas import user as SchemaUser
-
 from ..common import (
     GOALS,
     HPASSWORD,
@@ -112,11 +111,20 @@ async def allgoals_request(client, headers):
 @pytest.mark.asyncio
 async def test_delete_goal(client, setup_goals):
     newgoals, headers, tuser = setup_goals
-    allgoals = await allgoals_request(client, headers)
-    allgoals = allgoals.json()
+    ugtext = 'UNIQUE GOAL TEXT !!!!!!'
 
-    agtexts = {g['text'] for g in allgoals}
+    newgoal = await new_goalresp(ugtext, client, headers)
+    assert newgoal['text'] == ugtext
+    assert newgoal['user_id'] == tuser['id']
+    ngid = newgoal['id']
 
-    for gt in GOALS.TEXTS:
-        if gt not in agtexts:
-            await new_goalresp(gt, client, headers)
+    resp = await client.delete(f"/goals/{ngid}", headers=headers)
+    assert resp.status_code == 200
+
+    agresp = await allgoals_request(client, headers)
+    agjson = agresp.json()
+    ags = {ag['id']: ag['text'] for ag in agjson}
+
+    assert ngid not in ags.keys()
+    assert newgoal['text'] not in ags.values()
+    assert len(agjson) == len(newgoals)
