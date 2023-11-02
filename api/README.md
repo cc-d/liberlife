@@ -1,24 +1,44 @@
-**Files & Purpose**:
 
-1. **`config.py`**: Centralized configuration settings. Hosts details like database connection strings, JWT token settings, and environment-specific configurations, typically sourced from environment variables.
+- **api/**: The root directory of the application.
+    - `.coverage`: Generated report detailing code coverage metrics.
+    - `.coveragerc`: Configuration for coverage reports.
+    - `.env`: Contains environment variables for the project.
+    - `Dockerfile`: Instructions for building a Docker container for the API.
+    - `README.md`: Documentation and overview of the API.
+    - `alembic.ini`: Configuration for Alembic database migrations.
+    - `reqs.txt`: Lists the Python dependencies required for the project.
 
-2. **`app/__init__.py`**: Serves as the initialization file for the app package. While it might be lightweight, it's essential for structuring the application as a package.
+- **alembic/**: Manages database schema migrations.
+    - `env.py`: Environment for running migration scripts.
+    - `script.py.mako`: Template for generating migration scripts.
+    - `versions/`: Contains individual migration scripts.
 
-3. **`app/main.py`**: The heartbeat of the application. This is where the FastAPI application is instantiated, middleware integrated, and routes included. It also likely handles application bootstrapping in a development environment.
+- **app/**: Contains the core application logic.
+    - `config.py`: Configuration settings for the application.
+    - `main.py`: Entry point of the application.
 
-4. **Database Modules**:
-   - **`app/db/main.py`**: Provides the mechanism for establishing asynchronous database connections, capitalizing on the speed and efficiency of `asyncpg`.
-   - **`app/db/models.py`**: Defines the database schema in code. The `User` model is particularly noteworthy, detailing fields like ID, username, and the hashed version of passwords.
-   - **`app/db/session.py`**: Constructs the asynchronous session for the database, allowing for non-blocking database operations, essential for scalable web applications.
+    - **crud/**: Stands for Create, Read, Update, Delete - houses the main logic for database operations.
+        - `goal.py`, `user.py`: Implement CRUD operations for respective concepts.
 
-5. **Schemas**:
-   - **`app/schemas/user.py`**: Uses Pydantic to craft data models. These models both validate incoming data and shape outgoing data. The user models are particularly crucial for operations like registration, login, and profile viewing.
+    - **db/**: Handles database interactions.
+        - `common.py`: Common database utilities or helpers.
+        - `models.py`: ORM models representing database tables.
+        - `session.py`: Session management for database interactions.
 
-6. **Utilities**:
-   - **`app/utils/security.py`**: A toolkit for secure operations. It can hash and verify passwords and encode/decode JWT tokens. It also defines the method of extracting tokens from requests.
-   - **`app/utils/middleware.py`**: Holds middleware functions. These functions can process requests and responses, adding headers for things like CORS and content security policies.
-   - **`app/utils/dependencies.py`**: Contains FastAPI's dependency functions that auto-inject essential functionality or data into routes. A classic example is fetching the currently authenticated user from a token.
-   - **`app/utils/common.py`**: Houses utilities to streamline recurring tasks, like the asynchronous committing of database changes.
+    - **routes/**: Defines API routes/endpoints.
+        - `goal.py`, `user.py`: Routes related to the `goal` and `user` concepts.
 
-7. **Routes**:
-   - **`app/routes/user.py`**: The pathways for user-based operations in the application. Through these routes, users can perform actions like logging in, registering, or fetching their profiles. It relies heavily on the provided schemas and utilities for secure, validated operations.
+    - **schemas/**: Pydantic models for data validation and serialization/deserialization.
+        - `common.py`: Shared schemas or base models.
+        - `goal.py`, `user.py`: Schemas specific to `goal` and `user`.
+
+    - **utils/**: Utilities and helpers for various functionalities.
+        - `dependencies.py`: Dependency utilities, possibly for dependency injection.
+        - `middleware.py`: Middleware functions for request/response processing.
+        - `security.py`: Security-related utilities, likely authentication and authorization.
+
+- **tests/**: Houses all the tests for the application.
+    - `common.py`, `data.py`: Shared test utilities or fixtures.
+    - **integration/**: Integration tests checking the collaboration between components.
+    - **unit/**: Unit tests focusing on individual components in isolation. (deprecated)
+
