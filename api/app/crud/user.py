@@ -16,6 +16,10 @@ async def get_from_username(
     must_exist: Optional[bool] = None,
     db: AsyncSession = Depends(get_adb),
 ) -> SchemaUser.UserDB:
+    """Get a user from the database by username.
+
+    ('test', must_exist=True) -> UserDB(username='test', ...)
+    """
     user = await db.execute(select(User).where(User.username == username))
     user = user.scalar_one_or_none()
 
@@ -36,6 +40,10 @@ async def get_from_username(
 async def get_token_from_login(
     username: str, password: str, db: AsyncSession = Depends(get_adb)
 ) -> SchemaUser.Token:
+    """Get a token from a username and password.
+
+    ('test', 'test') -> {'access_token': '...', 'token_type': 'bearer'}
+    """
     user = await get_from_username(username, must_exist=True, db=db)
     if not verify_pass(password, user.hpassword):
         raise HTTPException(
