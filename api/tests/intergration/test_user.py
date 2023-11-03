@@ -29,19 +29,18 @@ from ..common import (
     reguser,
     loginresp,
 )
+from myfuncs import ranstr
 from logfunc import logf
 
 
 @pytest.mark.asyncio
 async def test_register(reguser):
-    rr = await reguser
-    assert 'Authorization' in rr
-    assert rr['Authorization'].startswith('Bearer')
+    assert_token(await reguser)
 
 
 @pytest.mark.asyncio
-async def test_login(client, reguser):
-    resp = await client.post("/u/login", json=LOGINJSON)
+async def test_login(client, reguser, loginresp):
+    assert_token(await loginresp)
 
 
 @pytest.mark.asyncio
@@ -55,6 +54,20 @@ async def test_oauth_login(client, reguser):
 
 
 @pytest.mark.asyncio
+async def test_nouser_login(client):
+    json = {"username": ranstr(20), "password": ranstr(20)}
+    resp = await client.post("/u/login", json=json)
+    assert resp.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_wrongpass_login(client, reguser):
+    json = {"username": USERNAME, "password": ranstr(20)}
+    resp = await client.post("/u/login", json=json)
+    assert resp.status_code == 401
+
+
+@pytest.mark.asyncio
 async def test_register_duplicate_user(client, reguser):
     # Since the user is already registered, try registering again
     resp = await client.post("/u/register", json=LOGINJSON)
@@ -63,6 +76,11 @@ async def test_register_duplicate_user(client, reguser):
 
 
 @pytest.mark.asyncio
-async def test_me(client, userme):
-    userme = await userme
-    assert userme['username'] == USERNAME
+async def test_me(client, reguser, userme):
+    ume = await userme
+    assert ume.status_code == 200
+    ume = ume.json()
+    assert "username" in ume
+    assert "id" in ume
+    assert ume["username"] == USERNAME
+    assert ume["id"] == USERDB.id

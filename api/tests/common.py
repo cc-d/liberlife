@@ -37,26 +37,7 @@ from .data import (
     TASKS,
     OAUTH_LOGIN_FORM,
 )
-
-
-def assert_token(resp):
-    assert resp.status_code == 200
-    assert "access_token" in resp.json()
-    assert resp.json()["token_type"] == "bearer"
-    _decoded = decode_jwt(resp.json()["access_token"])
-    assert "sub" in _decoded
-    assert _decoded["sub"] == LOGINJSON["username"]
-    assert 'exp' in _decoded
-
-
-def headers(resp):
-    assert resp.status_code == 200
-    assert_token(resp)
-    token = resp.json()["access_token"]
-    return {
-        'Authorization': f'Bearer {token}',
-        'Content-Type': 'application/json',
-    }
+from .utils import assert_token, headers, login, register, ume_resp
 
 
 @pytest.fixture(scope="module")
@@ -82,27 +63,10 @@ async def create_db() -> AsyncSession:
     await async_engine.dispose()
 
 
-async def register(client):
-    resp = await client.post("/u/register", json=LOGINJSON)
-    return headers(resp)
-
-
-async def login(client):
-    resp = await client.post("/u/login", json=LOGINJSON)
-    return resp
-
-
 @pytest.fixture(scope="module")
 async def loginresp(client, reguser):
     uh = await login(client)
     return uh
-
-
-async def ume_resp(client):
-    uh = await login(client)
-    uh = headers(uh)
-    resp = await client.get("/u/me", headers=uh)
-    return resp
 
 
 @pytest.fixture
@@ -117,19 +81,11 @@ async def reguser(client, create_db):
 
 @pytest.fixture(scope="module")
 async def userme(client, reguser, loginresp):
-    uh = await loginresp
-    resp = await client.get("/u/me", headers=headers(uh))
-    assert resp.status_code == 200
-    return resp.json()
+    return await ume_resp(client)
 
 
 @pytest_asyncio.fixture(scope="module")
-async def user_and_headers(client, create_db, reguser, loginresp):
-    r = await loginresp
-    assert r.status_code == 200
-    assert_token(r)
-
-    ume = await ume_resp(client)
-    assert ume.status_code == 200
-
-    return ume.json(), headers(r)
+async def user_and_headers(client, create_db, loginresp, userme):
+    lr = await loginresp
+    ume = await userme
+    return ume.json(), headers(lr)
