@@ -30,7 +30,8 @@ uvistart() {
 
 gentypes() {
     echo "generating types url: http://$API_HOST:$API_PORT/openapi.json"
-    npx openapi-typescript-codegen generate \
+    BASE="http://$API_HOST:$API_PORT"
+     npx openapi-typescript-codegen generate \
     --exportSchemas true --input "http://$API_HOST:$API_PORT/openapi.json" \
     --output "$FRONTDIR/src/api/"
 }
@@ -65,7 +66,9 @@ automigrate() {
 alias psqldb="psql -U pguser -h 127.0.0.1 -p 5432 liblifedb"
 
 if [ -d "$HOME/.pyenv" ]; then
-    pyenv local 3.11
+    if [ command -v pyenv 1>/dev/null 2>&1 ]; then
+        eval "$(pyenv init -)"
+    fi
 fi
 
 if [ -d "$HOME/.nvm" ]; then

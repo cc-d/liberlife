@@ -9,7 +9,7 @@ from ..crud.goal import (
     get_goal_from_id,
     get_goal_task_from_id,
     new_goal,
-    get_goal_w_tasks,
+    get_user_goals,
 )
 from ..db import get_adb
 from ..db.common import async_addcomref
@@ -33,8 +33,8 @@ async def create_goal(
 @router.get('', response_model=List[GoalSchema.GoalOut])
 async def list_goals(
     cur_user=Depends(get_current_user), db: AsyncSession = Depends(get_adb)
-):
-    return await get_goal_w_tasks(None, db=db)
+) -> List[Goal]:
+    return await get_user_goals(cur_user.id, db=db)
 
 
 @router.get("/{goal_id}", response_model=GoalSchema.GoalOut)
