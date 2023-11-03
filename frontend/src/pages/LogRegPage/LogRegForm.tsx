@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, MouseEvent } from 'react';
+import React, { useState, ChangeEvent, MouseEvent, KeyboardEvent } from 'react';
 import { TextField, Button, Box } from '@mui/material';
 
 export interface LogRegFormState {
@@ -21,10 +21,20 @@ const LogRegForm: React.FC<LogRegFormProps> = ({ isRegister = false, onSubmit })
     });
   };
 
+
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      onSubmit(state);
+    }
+  };
+
+
   const handleSubmit = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     onSubmit(state);
   };
+
 
   return (
     <Box component="form" noValidate sx={{ mt: 1, }}>
@@ -39,6 +49,7 @@ const LogRegForm: React.FC<LogRegFormProps> = ({ isRegister = false, onSubmit })
         autoFocus
         value={state.username}
         onChange={handleInputChange}
+        onKeyDown={handleKeyDown}
       />
       <TextField
         variant="outlined"
@@ -51,6 +62,7 @@ const LogRegForm: React.FC<LogRegFormProps> = ({ isRegister = false, onSubmit })
         id={`${isRegister ? 'register' : 'login'}Password`}
         value={state.password}
         onChange={handleInputChange}
+        onKeyDown={handleKeyDown}
       />
       <Button
         fullWidth
