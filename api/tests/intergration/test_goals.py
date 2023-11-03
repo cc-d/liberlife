@@ -1,19 +1,5 @@
-import logging
-import os
-import asyncio
-from contextlib import asynccontextmanager, contextmanager
-
 import pytest
-
-from app.db.models import Goal
 from logfunc import logf
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.future import select
-from sqlalchemy.orm import sessionmaker
-
-from api.app.db.session import async_engine
-from api.app.schemas import goal as SchemaGoal
-from api.app.schemas import user as SchemaUser
 from ..common import (
     GOALS,
     HPASSWORD,
@@ -21,7 +7,6 @@ from ..common import (
     OAUTH_LOGIN_FORM,
     PASSWORD,
     TASKS,
-    USERDB,
     USERNAME,
     assert_token,
     client,

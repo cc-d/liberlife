@@ -1,11 +1,8 @@
 import asyncio
-import json
 import os
-from typing import Generator, Optional, Union
 from contextlib import asynccontextmanager
 from datetime import datetime as dt
 from typing import Generator, Optional
-from unittest.mock import AsyncMock, patch
 
 import pytest
 import pytest_asyncio
@@ -25,19 +22,30 @@ from api.app.schemas import goal as SchemaGoal
 from api.app.schemas import user as SchemaUser
 from api.app.utils.security import decode_jwt, hash_pass
 
-from ..app.db.session import Base, async_engine, sync_engine
-
 from .data import (
     GOALS,
     LOGINJSON,
     PASSWORD,
     USERNAME,
-    USERDB,
     HPASSWORD,
     TASKS,
+    USERDB,
     OAUTH_LOGIN_FORM,
 )
 from .utils import assert_token, headers, login, register, ume_resp
+
+
+@pytest.fixture(scope="module")
+def event_loop():
+    loop = asyncio.get_event_loop_policy().new_event_loop()
+    yield loop
+    loop.close()
+
+
+@pytest_asyncio.fixture(scope="module")
+async def client():
+    async with AsyncClient(app=app, base_url="http://test") as client:
+        yield client
 
 
 @pytest.fixture(scope="module")

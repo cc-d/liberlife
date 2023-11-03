@@ -11,6 +11,7 @@
       "args": [
         "tests",
         "-s",
+        "-vv",
         "--show-capture=all",
         "-x",
         "--cov",
