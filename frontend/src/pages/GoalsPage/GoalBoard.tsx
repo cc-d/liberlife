@@ -9,21 +9,19 @@ import {
 import { GoalOut } from "../../api";
 import { GoalItem } from "./GoalItem";
 import apios from "../../apios";
+import {
+  actionUpdateGoal,
+  actionDeleteTask,
+  actionAddTaskToGoal,
+  actionTaskCompletion,
+  actionGoalDelete,
+} from "./actions";
 
 interface GoalBoardProps {
   goals: GoalOut[];
-  setGoals: (goals: GoalOut[]) => void;
+  setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>;
   newGoalText: string;
   setNewGoalText: (text: string) => void;
-  toggleTaskCompletion: (
-    goalId: number,
-    taskId: number,
-    isCompleted: boolean
-  ) => void;
-  handleGoalDelete: (goalId: number) => void;
-  handleAddTaskToGoal: (goalId: number, taskText: string) => void;
-  handleGoalUpdate: (goalId: number, updatedText: string) => Promise<boolean>;
-  handleDeleteTask: (goalId: number, taskId: number) => void;
 }
 
 const GoalBoard: React.FC<GoalBoardProps> = ({
@@ -31,11 +29,6 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
   setGoals,
   newGoalText,
   setNewGoalText,
-  toggleTaskCompletion,
-  handleGoalDelete,
-  handleAddTaskToGoal,
-  handleGoalUpdate,
-  handleDeleteTask,
 }) => {
 
   const handleAddGoal = async () => {
@@ -47,6 +40,34 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
       }
     }
   };
+
+  const toggleTaskCompletion = async (
+    goalId: number,
+    taskId: number,
+    isCompleted: boolean
+  ) => {
+    return actionTaskCompletion(goals, setGoals, goalId, taskId, isCompleted)
+  };
+  const handleAddTaskToGoal = async (goalId: number, taskText: string) => {
+    return actionAddTaskToGoal(goals, setGoals, goalId, taskText)
+  };
+
+  const handleGoalDelete = async (goalId: number) => {
+    return actionGoalDelete(goals, setGoals, goalId)
+  };
+
+  const handleGoalUpdate = async (
+    goalId: number,
+    updatedText?: string,
+    updatedNotes?: string | null
+  ) => {
+    return actionUpdateGoal(setGoals, goalId, updatedText, updatedNotes)
+  };
+
+  const handleDeleteTask = async (goalId: number, taskId: number) => {
+    return actionDeleteTask(goals, setGoals, goalId, taskId)
+  };
+
 
   return (
     <Box sx={{
