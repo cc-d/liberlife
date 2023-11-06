@@ -64,11 +64,12 @@ export const actionGoalDelete = async (
   }
 };
 
-
 export const actionAddTaskToGoal = async (
   goals: GoalOut[],
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>,
-  goalId: number, taskText: string) => {
+  goalId: number,
+  taskText: string
+) => {
   try {
     const response = await apios.post<GoalTaskOut>(`/goals/${goalId}/tasks`, {
       text: taskText,
@@ -95,10 +96,11 @@ export const actionAddTaskToGoal = async (
 };
 
 export const actionDeleteTask = async (
-
   goals: GoalOut[],
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>,
-  goalId: number, taskId: number) => {
+  goalId: number,
+  taskId: number
+) => {
   try {
     const response = await apios.delete(`/goals/${goalId}/tasks/${taskId}`);
     if (response.data) {
@@ -127,7 +129,7 @@ export const actionDeleteTask = async (
   }
 };
 
-export   const actionTaskCompletion = async (
+export const actionTaskCompletion = async (
   goals: GoalOut[],
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>,
   goalId: number,
