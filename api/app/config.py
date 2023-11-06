@@ -18,7 +18,11 @@ ASYNC_DATABASE_URL = (
     f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 )
 
-ASYNC_TESTDB_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/test_{DB_NAME}"
+TESTDB_NAME = f'test_{DB_NAME}'
+TESTDB_URL = f'{DBMS}://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{TESTDB_NAME}'
+ASYNC_TESTDB_URL = (
+    f'{DBMS}+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{TESTDB_NAME}'
+)
 
 
 JWT_KEY = evar('API_JWT_SECRET', 'secret')

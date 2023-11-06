@@ -1,7 +1,12 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker, declarative_base
-from ..config import ASYNC_DATABASE_URL, DATABASE_URL
+from ..config import (
+    ASYNC_DATABASE_URL,
+    DATABASE_URL,
+    ASYNC_TESTDB_URL,
+    TESTDB_URL,
+)
 
 Base = declarative_base()
 
@@ -18,3 +23,11 @@ sync_engine = create_engine(DATABASE_URL, echo=False)
 
 # Sync session local
 SessionLocal = sessionmaker(bind=sync_engine, expire_on_commit=False)
+
+# Testing
+test_sync_engine = create_engine(TESTDB_URL, echo=True)
+test_engine = create_async_engine(ASYNC_TESTDB_URL, echo=False, future=True)
+TestSessionLocal = sessionmaker(bind=test_sync_engine, expire_on_commit=False)
+TestAsyncSessionLocal = sessionmaker(
+    bind=test_engine, expire_on_commit=False, class_=AsyncSession
+)

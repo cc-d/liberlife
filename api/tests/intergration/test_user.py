@@ -2,12 +2,17 @@ import pytest
 import json
 from httpx import AsyncClient
 from unittest.mock import AsyncMock, patch, Mock, ANY as MOCKANY
+from api.app.db import get_adb, get_test_adb
 from api.app.db.session import (
     AsyncSessionLocal,
     SessionLocal,
     Base,
     async_engine,
     sync_engine,
+    test_engine,
+    test_sync_engine,
+    TestAsyncSessionLocal,
+    TestSessionLocal,
 )
 from api.app.main import app
 from ..common import (
@@ -34,7 +39,7 @@ from logfunc import logf
 
 
 @pytest.mark.asyncio
-async def test_register(reguser):
+async def test_register(client, reguser):
     assert_token(await reguser)
 
 

@@ -41,8 +41,6 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
       return new Date(goal.updated_on);
     }
 
-    console.log("latest", goal);
-
     if (!goal.task && goal.tasks?.length > 0) {
       let mostRecentGoal = new Date(goal.updated_on);
 
@@ -80,8 +78,9 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
             alignItems: "center",
           }}
         >
-          Goals
+          Goal Board
         </Typography>
+
 
         <TextField
           variant="outlined"
