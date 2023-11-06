@@ -83,7 +83,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
         }}
       >
         <Typography
-          variant="h4"
+          variant="h5"
           sx={{
             flexGrow: 1,
             maxWidth: "200px",

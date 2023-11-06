@@ -31,7 +31,6 @@ export const darkTheme = createTheme({
 
 
 function App() {
-  document.title = "life.liberfy.ai";
   return (
     <Box
       sx={{

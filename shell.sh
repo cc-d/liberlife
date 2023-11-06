@@ -29,11 +29,13 @@ uvistart() {
 }
 
 gentypes() {
-    echo "generating types url: http://$API_HOST:$API_PORT/openapi.json"
     BASE="http://$API_HOST:$API_PORT"
-     npx openapi-typescript-codegen generate \
-    --exportSchemas true --input "http://$API_HOST:$API_PORT/openapi.json" \
-    --output "$FRONTDIR/src/api/"
+    OPENAPI_URL="$BASE/openapi.json"
+    echo "generating types url: $OPENAPI_URL"
+    npx openapi-typescript-codegen generate \
+        --exportSchemas true \
+        --input "$OPENAPI_URL" \
+        --output "$FRONTDIR/src/api/"
 }
 
 npmapi() {

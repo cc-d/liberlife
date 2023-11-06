@@ -70,9 +70,13 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
                 mb: 1,
                 flexGrow: 1,
                 width: "100%",
-
-                "&:hover": {
+                "&:active": {
                   backgroundColor: "#303030",
+                },
+                "@media (pointer: fine)": {
+                  "&:hover": {
+                    backgroundColor: "#303030",
+                  },
                 },
               }}
               key={task.id}

@@ -12,9 +12,9 @@ import GoalNotes from "./GoalNotes";
 interface GoalItemProps {
   goal: GoalOut;
   onTaskToggle: (goalId: number, taskId: number, isCompleted: boolean) => void;
-  onGoalDelete: Function;
-  onTaskAdd: Function;
-  onGoalUpdate: Function;
+  onGoalDelete: (goalId: number) => void;
+  onTaskAdd: (goalId: number, taskText: string) => void;
+  onGoalUpdate: (goalId: number, text?: string, notes?: string | null) => Promise<boolean>;
   onTaskDelete: (goalId: number, taskId: number) => void;
 }
 
@@ -31,7 +31,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editedText, setEditedText] = useState<string>("");
 
-  const maxElementWidth = "98vw !important";
+  const maxElementWidth = "98vw";
   const maxNotesWidth = `calc(${maxElementWidth} - 48px) !important`;
   const theme = useTheme();
 
