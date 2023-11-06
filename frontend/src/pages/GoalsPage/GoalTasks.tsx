@@ -14,7 +14,7 @@ interface GoalTasksProps {
   newTaskText: string;
   setNewTaskText: (text: string) => void;
   handleAddTask: () => void;
-  onTaskDelete: (goalId: number, taskId: number) => void;
+  handleDeleteTask: (goalId: number, taskId: number) => void;
   goal: GoalOut | null;
   onToggle: (goalId: number, taskId: number, isCompleted: boolean) => void;
 }
@@ -25,7 +25,7 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
   handleAddTask,
   goal,
   onToggle,
-  onTaskDelete,
+  handleDeleteTask,
 }) => {
   const tasks: GoalTaskOut[] = goal ? goal.tasks : [];
   return (
@@ -97,7 +97,7 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
               <IconButton
                 onClick={(event) => {
                   event.stopPropagation(); // Prevent triggering the onToggle when deleting
-                  onTaskDelete(goal.id, task.id);
+                  handleDeleteTask(goal.id, task.id);
                 }}
               >
                 <DeleteIcon />

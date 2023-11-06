@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Divider,
-} from "@mui/material";
+import { Box, Typography, TextField, Button, Divider } from "@mui/material";
 import { GoalOut } from "../../api";
 import { GoalItem } from "./GoalItem";
 import apios from "../../apios";
@@ -14,7 +8,7 @@ import {
   actionDeleteTask,
   actionAddTaskToGoal,
   actionTaskCompletion,
-  actionGoalDelete,
+  actihandleGoalDelete,
 } from "./actions";
 
 interface GoalBoardProps {
@@ -30,7 +24,6 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
   newGoalText,
   setNewGoalText,
 }) => {
-
   const handleAddGoal = async () => {
     if (newGoalText.trim()) {
       const response = await apios.post("/goals", { text: newGoalText });
@@ -46,14 +39,14 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
     taskId: number,
     isCompleted: boolean
   ) => {
-    return actionTaskCompletion(goals, setGoals, goalId, taskId, isCompleted)
+    return actionTaskCompletion(goals, setGoals, goalId, taskId, isCompleted);
   };
   const handleAddTaskToGoal = async (goalId: number, taskText: string) => {
-    return actionAddTaskToGoal(goals, setGoals, goalId, taskText)
+    return actionAddTaskToGoal(goals, setGoals, goalId, taskText);
   };
 
   const handleGoalDelete = async (goalId: number) => {
-    return actionGoalDelete(goals, setGoals, goalId)
+    return actihandleGoalDelete(goals, setGoals, goalId);
   };
 
   const handleGoalUpdate = async (
@@ -61,18 +54,19 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
     updatedText?: string,
     updatedNotes?: string | null
   ) => {
-    return actionUpdateGoal(setGoals, goalId, updatedText, updatedNotes)
+    return actionUpdateGoal(setGoals, goalId, updatedText, updatedNotes);
   };
 
   const handleDeleteTask = async (goalId: number, taskId: number) => {
-    return actionDeleteTask(goals, setGoals, goalId, taskId)
+    return actionDeleteTask(goals, setGoals, goalId, taskId);
   };
 
-
   return (
-    <Box sx={{
-      backgroundColor: 'black',
-    }}>
+    <Box
+      sx={{
+        backgroundColor: "black",
+      }}
+    >
       <Box
         sx={{
           display: "flex",
@@ -94,7 +88,6 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
           Goal Board
         </Typography>
 
-
         <TextField
           variant="outlined"
           placeholder="New goal..."
@@ -112,7 +105,6 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
         <Button
           variant="contained"
           color="primary"
-
           sx={{
             maxHeight: "56px",
             mt: 0.5,
@@ -145,11 +137,11 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
           <GoalItem
             key={goal.id}
             goal={goal}
-            onTaskToggle={toggleTaskCompletion}
-            onGoalDelete={handleGoalDelete}
-            onTaskAdd={handleAddTaskToGoal}
-            onGoalUpdate={handleGoalUpdate}
-            onTaskDelete={handleDeleteTask}
+            toggleTaskCompletion={toggleTaskCompletion}
+            handleGoalDelete={handleGoalDelete}
+            handleAddTaskToGoal={handleAddTaskToGoal}
+            handleGoalUpdate={handleGoalUpdate}
+            handleDeleteTask={handleDeleteTask}
           />
         ))}
       </Box>

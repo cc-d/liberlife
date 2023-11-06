@@ -11,20 +11,20 @@ import GoalNotes from "./GoalNotes";
 
 interface GoalItemProps {
   goal: GoalOut;
-  onTaskToggle: (goalId: number, taskId: number, isCompleted: boolean) => void;
-  onGoalDelete: (goalId: number) => void;
-  onTaskAdd: (goalId: number, taskText: string) => void;
-  onGoalUpdate: (goalId: number, text?: string, notes?: string | null) => Promise<boolean>;
-  onTaskDelete: (goalId: number, taskId: number) => void;
+  toggleTaskCompletion: (goalId: number, taskId: number, isCompleted: boolean) => void;
+  handleGoalDelete: (goalId: number) => void;
+  handleAddTaskToGoal: (goalId: number, taskText: string) => void;
+  handleGoalUpdate: (goalId: number, text?: string, notes?: string | null) => Promise<boolean>;
+  handleDeleteTask: (goalId: number, taskId: number) => void;
 }
 
 export const GoalItem: React.FC<GoalItemProps> = ({
   goal,
-  onTaskToggle,
-  onGoalDelete,
-  onTaskAdd,
-  onTaskDelete,
-  onGoalUpdate,
+  toggleTaskCompletion,
+  handleGoalDelete,
+  handleAddTaskToGoal,
+  handleDeleteTask,
+  handleGoalUpdate,
 }) => {
   const [newTaskText, setNewTaskText] = useState<string>("");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -50,7 +50,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
   };
 
   const handleSave = async () => {
-    const result = await onGoalUpdate(goal.id, editedText);
+    const result = await handleGoalUpdate(goal.id, editedText);
     if (result) {
       setIsEditing(false);
     }
@@ -61,7 +61,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
   };
 
   const handleSaveNotes = async (updatedNotes: string | null) => {
-    onGoalUpdate(goal.id, undefined, updatedNotes);
+    handleGoalUpdate(goal.id, undefined, updatedNotes);
   };
 
   return (
@@ -88,7 +88,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
         handleMenuClick={handleMenuClick}
         handleMenuClose={handleMenuClose}
         startEdit={startEdit}
-        handleDelete={() => onGoalDelete(goal.id)}
+        handleDelete={() => handleGoalDelete(goal.id)}
         anchorEl={anchorEl}
         maxElementWidth={maxElementWidth}
       />
@@ -102,13 +102,13 @@ export const GoalItem: React.FC<GoalItemProps> = ({
         setNewTaskText={setNewTaskText}
         handleAddTask={() => {
           if (newTaskText.trim()) {
-            onTaskAdd(goal.id, newTaskText);
+            handleAddTaskToGoal(goal.id, newTaskText);
             setNewTaskText("");
           }
         }}
         goal={goal}
-        onToggle={onTaskToggle}
-        onTaskDelete={onTaskDelete}
+        onToggle={toggleTaskCompletion}
+        handleDeleteTask={handleDeleteTask}
       />
       <Divider
         sx={{

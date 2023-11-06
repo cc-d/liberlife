@@ -41,7 +41,7 @@ export const actionUpdateGoal = async (
   return false;
 };
 
-export const actionGoalDelete = async (
+export const actihandleGoalDelete = async (
   goals: GoalOut[],
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>,
   goalId: number
