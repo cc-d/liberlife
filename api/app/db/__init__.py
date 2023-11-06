@@ -27,7 +27,6 @@ async def get_adb() -> AsyncSession:
 
 def get_test_db() -> Session:
     db = TestSessionLocal()
-    print("get_test_db @@@@@@@@@")
     try:
         yield db
     finally:

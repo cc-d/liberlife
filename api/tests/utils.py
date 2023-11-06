@@ -1,5 +1,5 @@
 from ..app.utils.security import decode_jwt
-from .common import LOGINJSON
+from .data import LOGINJSON
 
 
 def assert_token(resp):

@@ -8,12 +8,13 @@ import {
 } from "@mui/material";
 import { GoalOut } from "../../api";
 import { GoalItem } from "./GoalItem";
+import apios from "../../apios";
 
 interface GoalBoardProps {
   goals: GoalOut[];
+  setGoals: (goals: GoalOut[]) => void;
   newGoalText: string;
   setNewGoalText: (text: string) => void;
-  handleAddGoal: () => void;
   toggleTaskCompletion: (
     goalId: number,
     taskId: number,
@@ -27,31 +28,22 @@ interface GoalBoardProps {
 
 const GoalBoard: React.FC<GoalBoardProps> = ({
   goals,
+  setGoals,
   newGoalText,
   setNewGoalText,
-  handleAddGoal,
   toggleTaskCompletion,
   handleGoalDelete,
   handleAddTaskToGoal,
   handleGoalUpdate,
   handleDeleteTask,
 }) => {
-  const latestUpdatedOn = (goal: any) => {
-    if (!goal?.tasks && goal.tasks?.length > 0) {
-      return new Date(goal.updated_on);
-    }
 
-    if (!goal.task && goal.tasks?.length > 0) {
-      let mostRecentGoal = new Date(goal.updated_on);
-
-      let mostRecentTask = goal.tasks
-        .map((task: any) => new Date(task.updated_on))
-        .sort((a: Date, b: Date) => b.getTime() - a.getTime())[0];
-
-      if (mostRecentTask.getTime() > mostRecentGoal.getTime()) {
-        return mostRecentTask;
-      } else {
-        return mostRecentGoal;
+  const handleAddGoal = async () => {
+    if (newGoalText.trim()) {
+      const response = await apios.post("/goals", { text: newGoalText });
+      if (response.data) {
+        setGoals([...goals, response.data]);
+        setNewGoalText("");
       }
     }
   };
@@ -137,7 +129,6 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
             onTaskAdd={handleAddTaskToGoal}
             onGoalUpdate={handleGoalUpdate}
             onTaskDelete={handleDeleteTask}
-            mostRecentUpdate={latestUpdatedOn(goal)}
           />
         ))}
       </Box>

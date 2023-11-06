@@ -15,19 +15,12 @@ from api.app.db.session import (
     TestSessionLocal,
 )
 from api.app.main import app
+from ..data import USERNAME, PASSWORD, LOGINJSON, OAUTH_LOGIN_FORM, USERDB
 from ..common import (
-    USERDB,
-    LOGINJSON,
     assert_token,
-    USERNAME,
-    PASSWORD,
-    HPASSWORD,
     event_loop,
     client,
     create_db,
-    OAUTH_LOGIN_FORM,
-    GOALS,
-    TASKS,
     headers,
     reguser,
     userme,
@@ -39,12 +32,12 @@ from logfunc import logf
 
 
 @pytest.mark.asyncio
-async def test_register(client, reguser):
+async def test_register(reguser):
     assert_token(await reguser)
 
 
 @pytest.mark.asyncio
-async def test_login(client, reguser, loginresp):
+async def test_login(loginresp):
     assert_token(await loginresp)
 
 

@@ -27,16 +27,6 @@ from api.app.schemas import goal as SchemaGoal
 from api.app.schemas import user as SchemaUser
 from api.app.utils.security import decode_jwt, hash_pass
 
-from .data import (
-    GOALS,
-    LOGINJSON,
-    PASSWORD,
-    USERNAME,
-    HPASSWORD,
-    TASKS,
-    USERDB,
-    OAUTH_LOGIN_FORM,
-)
 from .utils import assert_token, headers, login, register, ume_resp
 
 
@@ -45,14 +35,6 @@ def event_loop():
     loop = asyncio.get_event_loop_policy().new_event_loop()
     yield loop
     loop.close()
-
-
-@pytest_asyncio.fixture(scope="module")
-async def client(create_db) -> AsyncClient:
-    app.dependency_overrides[get_adb] = get_test_adb
-    async with AsyncClient(app=app, base_url="http://test") as client:
-        yield client
-    del app.dependency_overrides[get_adb]
 
 
 @pytest_asyncio.fixture(scope="module")
@@ -68,6 +50,14 @@ async def create_db() -> AsyncSession:
     await test_engine.dispose()
 
 
+@pytest_asyncio.fixture(scope="module")
+async def client(create_db) -> AsyncClient:
+    app.dependency_overrides[get_adb] = get_test_adb
+    async with AsyncClient(app=app, base_url="http://test") as client:
+        yield client
+    del app.dependency_overrides[get_adb]
+
+
 @pytest.fixture(scope="module")
 async def loginresp(client, reguser):
     uh = await login(client)
@@ -80,17 +70,17 @@ async def funclogin(client):
 
 
 @pytest.fixture(scope="module")
-async def reguser(client, create_db):
+async def reguser(client):
     return await register(client)
 
 
 @pytest.fixture(scope="module")
-async def userme(client, reguser, loginresp):
+async def userme(client, reguser):
     return await ume_resp(client)
 
 
 @pytest_asyncio.fixture(scope="module")
-async def user_and_headers(client, create_db, loginresp, userme):
+async def user_and_headers(loginresp, userme):
     lr = await loginresp
     ume = await userme
     return ume.json(), headers(lr)

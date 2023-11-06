@@ -42,7 +42,11 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
   maxElementWidth,
 }) => {
   return (
-    <Box>
+    <Box
+      sx={{
+        maxWidth: maxElementWidth,
+      }}
+      >
       <Box
         sx={{
           display: "flex",
@@ -79,7 +83,10 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
             </>
           ) : (
             <>
-              <Typography variant="h6" sx={{ flexGrow: 1 }}>
+              <Typography variant="h6" sx={{
+                  flexGrow: 1,
+                  maxWidth: maxElementWidth
+              }}>
                 {goal.text}
               </Typography>
 

@@ -33,16 +33,6 @@ const GoalsPage: React.FC = () => {
     fetchGoals();
   }, [auth, navigate]);
 
-  const handleAddGoal = async () => {
-    if (newGoalText.trim()) {
-      const response = await apios.post("/goals", { text: newGoalText });
-      if (response.data) {
-        setGoals([...goals, response.data]);
-        setNewGoalText("");
-      }
-    }
-  };
-
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
@@ -68,7 +58,7 @@ const GoalsPage: React.FC = () => {
       const response = await apios.put(`/goals/${goalId}/tasks/${taskId}`, {
         completed: !isCompleted,
       });
-      if (response.data && response.data.updated_on) {
+      if (response.data) {
         setGoals(
           goals.map((goal) => {
             if (goal.id === goalId && goal.tasks) {
@@ -77,12 +67,10 @@ const GoalsPage: React.FC = () => {
                   return {
                     ...task,
                     completed: !isCompleted,
-                    updated_on: response.data.updated_on,
                   };
                 }
                 return task;
               });
-              goal.updated_on = response.data.updated_on;
             }
             return goal;
           })
@@ -97,7 +85,7 @@ const GoalsPage: React.FC = () => {
       const response = await apios.post<GoalTaskOut>(`/goals/${goalId}/tasks`, {
         text: taskText,
       });
-      if (response.data && response.data.updated_on) {
+      if (response.data) {
         setGoals(
           goals.map((goal) => {
             if (goal.id === goalId) {
@@ -107,7 +95,6 @@ const GoalsPage: React.FC = () => {
               return {
                 ...goal,
                 tasks: updatedTasks,
-                updated_on: response.data.updated_on,
               };
             }
             return goal;
@@ -180,7 +167,7 @@ const GoalsPage: React.FC = () => {
   const handleDeleteTask = async (goalId: number, taskId: number) => {
     try {
       const response = await apios.delete(`/goals/${goalId}/tasks/${taskId}`);
-      if (response.data && response.data.updated_on) {
+      if (response.data) {
         setGoals(
           goals.map((goal) => {
             if (goal.id === goalId) {
@@ -190,7 +177,6 @@ const GoalsPage: React.FC = () => {
               return {
                 ...goal,
                 tasks: updatedTasks,
-                updated_on: response.data.updated_on,
               };
             }
             return goal;
@@ -218,9 +204,9 @@ const GoalsPage: React.FC = () => {
     >
       <GoalBoard
         goals={goals}
+        setGoals={setGoals}
         newGoalText={newGoalText}
         setNewGoalText={setNewGoalText}
-        handleAddGoal={handleAddGoal}
         toggleTaskCompletion={toggleTaskCompletion}
         handleGoalDelete={handleGoalDelete}
         handleAddTaskToGoal={handleAddTaskToGoal}

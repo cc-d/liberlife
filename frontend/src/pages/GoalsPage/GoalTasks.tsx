@@ -17,7 +17,6 @@ interface GoalTasksProps {
   onTaskDelete: (goalId: number, taskId: number) => void;
   goal: GoalOut | null;
   onToggle: (goalId: number, taskId: number, isCompleted: boolean) => void;
-  maxElementWidth: string;
 }
 
 export const GoalTasks: React.FC<GoalTasksProps> = ({
@@ -27,7 +26,6 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
   goal,
   onToggle,
   onTaskDelete,
-  maxElementWidth,
 }) => {
   const tasks: GoalTaskOut[] = goal ? goal.tasks : [];
   return (

@@ -1,13 +1,7 @@
 import pytest
 from logfunc import logf
+from ..data import GOALS, TASKS, USERNAME, LOGINJSON, OAUTH_LOGIN_FORM
 from ..common import (
-    GOALS,
-    HPASSWORD,
-    LOGINJSON,
-    OAUTH_LOGIN_FORM,
-    PASSWORD,
-    TASKS,
-    USERNAME,
     assert_token,
     client,
     create_db,

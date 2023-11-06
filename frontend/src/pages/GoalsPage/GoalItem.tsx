@@ -16,7 +16,6 @@ interface GoalItemProps {
   onTaskAdd: Function;
   onGoalUpdate: Function;
   onTaskDelete: (goalId: number, taskId: number) => void;
-  mostRecentUpdate: Date;
 }
 
 export const GoalItem: React.FC<GoalItemProps> = ({
@@ -75,6 +74,8 @@ export const GoalItem: React.FC<GoalItemProps> = ({
         flexDirection: "column", // Stack children vertically
         flexGrow: 1,
         backgroundColor: `#111111`,
+        maxWidth: maxElementWidth,
+        overflowWrap: "anywhere",
       }}
     >
       <GoalHeader
@@ -107,7 +108,6 @@ export const GoalItem: React.FC<GoalItemProps> = ({
         }}
         goal={goal}
         onToggle={onTaskToggle}
-        maxElementWidth={maxElementWidth}
         onTaskDelete={onTaskDelete}
       />
       <Divider
