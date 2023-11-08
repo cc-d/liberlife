@@ -83,6 +83,7 @@ export const actionAddTaskToGoal = async (
               : [response.data];
             return {
               ...goal,
+              updated_on: response.data.updated_on,
               tasks: updatedTasks,
             };
           }
@@ -113,6 +114,7 @@ export const actionDeleteTask = async (
             return {
               ...goal,
               tasks: updatedTasks,
+              updated_on: response.data.updated_on,
             };
           }
           return goal;
@@ -144,6 +146,7 @@ export const actionTaskCompletion = async (
       setGoals(
         goals.map((goal) => {
           if (goal.id === goalId && goal.tasks) {
+            goal.updated_on = response.data.updated_on;
             goal.tasks = goal.tasks.map((task) => {
               if (task.id === taskId) {
                 return {
@@ -153,6 +156,7 @@ export const actionTaskCompletion = async (
               }
               return task;
             });
+
           }
           return goal;
         })

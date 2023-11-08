@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import joinedload, selectinload
+from sqlalchemy.sql import func
 
 from ..crud.goal import (
     get_goal_from_id,
@@ -114,7 +115,11 @@ async def add_task_to_goal(
             detail="You are not authorized to add tasks to this goal.",
         )
     new_task = GoalTask(**task_in.model_dump(), goal_id=goal.id)
-    await async_addcomref(db, new_task)
+    goal.updated_on = func.now()
+    db.add(new_task)
+    db.add(goal)
+    await db.commit()
+    await db.refresh(new_task)
     return new_task
 
 
@@ -135,7 +140,9 @@ async def list_tasks_for_goal(
     return tasks.scalars().all()
 
 
-@router.get("/{goal_id}/tasks/{task_id}", response_model=GoalSchema.GoalTaskOut)
+@router.get(
+    "/{goal_id}/tasks/{task_id}", response_model=GoalSchema.GoalTaskOut
+)
 async def get_task(
     task: GoalTask = Depends(
         get_goal_task_from_id
@@ -151,7 +158,9 @@ async def get_task(
     return task
 
 
-@router.put("/{goal_id}/tasks/{task_id}", response_model=GoalSchema.GoalTaskOut)
+@router.put(
+    "/{goal_id}/tasks/{task_id}", response_model=GoalSchema.GoalTaskOut
+)
 async def update_task(
     task_update: GoalSchema.GoalTaskUpdate,
     task: GoalTask = Depends(
@@ -166,10 +175,14 @@ async def update_task(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="You are not authorized to update this task.",
         )
-    for key, value in task_update.dict().items():
+    for key, value in task_update.model_dump().items():
         setattr(task, key, value)
+    db.add(task)
+    goal.updated_on = func.now()
+    db.add(goal)
     await db.commit()
     await db.refresh(task)
+
     return task
 
 
@@ -187,15 +200,14 @@ async def delete_task(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="You are not authorized to delete this task.",
         )
+    goal.updated_on = func.now()
+    db.add(goal)
     await db.delete(task)
     await db.commit()
-
-    # Fetch the updated goal's timestamp after the task deletion
-    updated_goal = await db.execute(select(Goal).filter(Goal.id == goal.id))
-    updated_goal = updated_goal.scalar()
+    await db.refresh(goal)
 
     # Return the success detail alongside the updated_on timestamp
     return {
         "detail": "Task deleted successfully",
-        "updated_on": updated_goal.updated_on,
+        "updated_on": goal.updated_on,
     }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import useTheme from "@mui/material/styles/useTheme";
 import {
   Box,
@@ -18,6 +18,22 @@ interface GoalItemProps {
   handleDeleteTask: (goalId: number, taskId: number) => void;
 }
 
+export const getLatestDate = (goal: GoalOut): string | null => {
+  let goalDate: Date | null = goal.updated_on ? new Date(goal.updated_on) : null;
+  let latestDate: Date | null = goalDate;
+
+  goal.tasks.forEach((task) => {
+    if (!task.updated_on) {
+      return;
+    }
+    const taskDate = new Date(task.updated_on);
+    if (!latestDate || taskDate.getTime() > latestDate.getTime()) {
+      latestDate = taskDate;
+    }
+  });
+  return latestDate ? latestDate.toLocaleString() : null;
+}
+
 export const GoalItem: React.FC<GoalItemProps> = ({
   goal,
   toggleTaskCompletion,
@@ -34,6 +50,11 @@ export const GoalItem: React.FC<GoalItemProps> = ({
   const maxElementWidth = "98vw";
   const maxNotesWidth = `calc(${maxElementWidth} - 48px) !important`;
   const theme = useTheme();
+  const latestUpdate = getLatestDate(goal);
+
+  useEffect(() => {
+
+  }, [goal]);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -130,9 +151,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
       </Box>
       <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
         <Box sx={{ opacity: 0.5, fontSize: "0.8em" }}>
-          {goal && goal.updated_on
-            ? `${new Date(goal.updated_on).toLocaleString()}`
-            : ""}
+          {goal && latestUpdate && `Last updated ${latestUpdate}`}
         </Box>
       </Box>
     </Box>
