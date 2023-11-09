@@ -46,13 +46,10 @@ const SortButton: React.FC<SortButtonProps> = ({ sortOrder, onSort }) => {
     <Box
       sx={{
         display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
         m: 0,
         p: 0,
         flexDirection: "row",
         width: "100%",
-        maxWidth: "120px",
       }}
     >
       {/* Static 'Sort' icon and text */}
@@ -63,13 +60,11 @@ const SortButton: React.FC<SortButtonProps> = ({ sortOrder, onSort }) => {
           m: 0,
           p: 0,
           flexDirection: "row",
-
+          mr: 1,
         }}
       >
         <SortIcon sx={{ fontSize: "1rem", m: 0 }} />
-        <Typography variant="subtitle2" sx={{
-
-            userSelect: "none", m: 0, p: 0 }}>
+        <Typography variant="subtitle2" sx={{ m: 0, p: 0, userSelect: "none" }}>
           sort
         </Typography>
       </Box>

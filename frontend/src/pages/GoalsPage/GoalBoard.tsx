@@ -89,7 +89,6 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
     localStorage.setItem("sortOrder", sortOrder);
   }, [sortOrder]);
 
-
   const handleSortClick = () => {
     const nextSortOrder = {
       [SortOrder.Default]: SortOrder.UpdatedAsc,
@@ -129,25 +128,28 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
           display: "flex",
           flexDirection: "row",
           alignItems: "left",
-          m: 0, p: 0.5,
-          flexGrow: 1,
+          m: 0,
+          p: 0.5,
         }}
       >
         <Box
           sx={{
             display: "flex",
             flexDirection: "column",
-            flexGrow: 1,
-            minWidth: "130px",
             justifyContent: "space-between",
-
-
+            m: 0,
+            p: 0,
           }}
-
         >
           <Typography
             variant="h5"
-
+            noWrap
+            sx={{
+              m: 0,
+              p: 0,
+              userSelect: "none",
+              pr: 0.5,
+            }}
           >
             Goal Board
           </Typography>
