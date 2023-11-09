@@ -1,6 +1,7 @@
 import React from "react";
 import apios from "../../apios";
 import { GoalOut, GoalTaskOut } from "../../api";
+import { goalDateHelper } from "./helpers";
 
 export const actionUpdateGoal = async (
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>,
@@ -164,5 +165,19 @@ export const actionTaskCompletion = async (
     }
   } catch (error) {
     console.error("Error updating task completion status:", error);
+  }
+};
+
+
+
+// Function to perform the sorting based on the sortOrder state
+const sortGoalsFunction = (goals: GoalOut[], sortOrder: string) => {
+  switch (sortOrder) {
+    case 'updated asc':
+      return [...goals].sort((a, b) => goalDateHelper(a) - goalDateHelper(b));
+    case 'updated desc':
+      return [...goals].sort((a, b) => goalDateHelper(b) - goalDateHelper(a));
+    default:
+      return goals; // return the original array if 'default' is selected
   }
 };

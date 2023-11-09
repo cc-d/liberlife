@@ -1,5 +1,18 @@
-import React from "react";
-import { Box, Typography, TextField, Button, Divider } from "@mui/material";
+import React, { useState, useEffect, useMemo } from "react";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Divider,
+  IconButton,
+  Select,
+  MenuItem,
+} from "@mui/material";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import SortIcon from "@mui/icons-material/Sort";
+import { goalDateHelper } from "./helpers";
 import { GoalOut } from "../../api";
 import { GoalItem } from "./GoalItem";
 import apios from "../../apios";
@@ -24,6 +37,9 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
   newGoalText,
   setNewGoalText,
 }) => {
+  const [sortOrder, setSortOrder] = useState<string>(
+    localStorage.getItem("sortOrder") || "default"
+  );
   const handleAddGoal = async () => {
     if (newGoalText.trim()) {
       const response = await apios.post("/goals", { text: newGoalText });
@@ -61,6 +77,48 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
     return actionDeleteTask(goals, setGoals, goalId, taskId);
   };
 
+  // Function to perform the sorting based on the sortOrder state
+  const sortGoalsFunction = () => {
+    switch (sortOrder) {
+      case "updated asc":
+        return [...goals].sort((a, b) => goalDateHelper(a) - goalDateHelper(b));
+      case "updated desc":
+        return [...goals].sort((a, b) => goalDateHelper(b) - goalDateHelper(a));
+      default:
+        return goals; // return the original array if 'default' is selected
+    }
+  };
+
+  const sortedGoals = sortGoalsFunction();
+
+  // Handler to cycle through the sort orders
+  const handleSortClick = () => {
+    setSortOrder((prevSortOrder) => {
+      switch (prevSortOrder) {
+        case "default":
+          localStorage.setItem("sortOrder", "updated asc");
+          return "updated asc";
+        case "updated asc":
+          localStorage.setItem("sortOrder", "updated desc");
+          return "updated desc";
+        case "updated desc":
+          localStorage.setItem("sortOrder", "default");
+          return "default";
+        default:
+          localStorage.setItem("sortOrder", "default");
+          return "default";
+      }
+    });
+  };
+
+  // Determine which icon to show
+  const SortIconComponent =
+    sortOrder === "updated asc"
+      ? ArrowUpwardIcon
+      : sortOrder === "updated desc"
+      ? ArrowDownwardIcon
+      : SortIcon;
+
   return (
     <Box
       sx={{
@@ -76,17 +134,66 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
           p: 0.5,
         }}
       >
-        <Typography
-          variant="h5"
+        <Box
           sx={{
-            flexGrow: 1,
-            maxWidth: "200px",
             display: "flex",
             alignItems: "center",
+            justifyContent: "space-between",
+            flexDirection: "column",
+            p: 0,
+            m: 0,
+            pl: 0.5,
+            pr: 0.5,
           }}
         >
-          Goal Board
-        </Typography>
+          <Typography
+            variant="h5"
+            sx={{
+              flexGrow: 1,
+              minWidth: "8rem",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            Goal Board
+          </Typography>
+
+          <Box
+            className="sort-container"
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              m: 0,
+              p: 0,
+              minWidth: "100px",
+            }}
+          >
+            <IconButton onClick={handleSortClick} aria-label="sort goals">
+              <Typography
+                variant="h6"
+                sx={{
+                  flexGrow: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: "1rem",
+                  minWidth: "2rem",
+                  m: 0,
+                  p: 0,
+                }}
+              >
+                sort: {sortOrder.split(" ")[0]}
+              </Typography>
+              <SortIconComponent
+                sx={{
+                  fontSize: "1rem",
+                  m: 0,
+                  p: 0,
+                  minWidth: "2rem",
+                }}
+              />
+            </IconButton>
+          </Box>
+        </Box>
 
         <TextField
           variant="outlined"
@@ -124,6 +231,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
           mr: 0.5,
         }}
       />
+
       <Box
         sx={{
           display: "flex",
@@ -133,7 +241,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
           m: 0.5,
         }}
       >
-        {goals.map((goal) => (
+        {sortedGoals.map((goal) => (
           <GoalItem
             key={goal.id}
             goal={goal}
