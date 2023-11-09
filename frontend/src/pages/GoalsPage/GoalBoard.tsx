@@ -80,9 +80,9 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
   // Function to perform the sorting based on the sortOrder state
   const sortGoalsFunction = () => {
     switch (sortOrder) {
-      case "updated asc":
-        return [...goals].sort((a, b) => goalDateHelper(a) - goalDateHelper(b));
       case "updated desc":
+        return [...goals].sort((a, b) => goalDateHelper(a) - goalDateHelper(b));
+      case "updated asc":
         return [...goals].sort((a, b) => goalDateHelper(b) - goalDateHelper(a));
       default:
         return goals; // return the original array if 'default' is selected
