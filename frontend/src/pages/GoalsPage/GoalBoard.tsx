@@ -28,8 +28,9 @@ import SortButton, {
   SortOrder,
   sortIconAndLabel,
   SortIconMapping,
+  sortGoals,
+  sortOrders,
 } from "./SortButton";
-
 interface GoalBoardProps {
   goals: GoalOut[];
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>;
@@ -90,32 +91,15 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
   }, [sortOrder]);
 
   const handleSortClick = () => {
-    const nextSortOrder = {
-      [SortOrder.Default]: SortOrder.UpdatedAsc,
-      [SortOrder.UpdatedAsc]: SortOrder.UpdatedDesc,
-      [SortOrder.UpdatedDesc]: SortOrder.AlphabeticalAsc,
-      [SortOrder.AlphabeticalAsc]: SortOrder.AlphabeticalDesc,
-      [SortOrder.AlphabeticalDesc]: SortOrder.Default,
-    }[sortOrder];
-
+    const nextSortOrder =
+      sortOrders[(sortOrders.indexOf(sortOrder) + 1) % sortOrders.length];
     setSortOrder(nextSortOrder);
   };
 
-  // Memoized sorting function
-  const sortedGoals = useMemo(() => {
-    switch (sortOrder) {
-      case SortOrder.UpdatedAsc:
-        return [...goals].sort((a, b) => goalDateHelper(b) - goalDateHelper(a));
-      case SortOrder.UpdatedDesc:
-        return [...goals].sort((a, b) => goalDateHelper(a) - goalDateHelper(b));
-      case SortOrder.AlphabeticalAsc:
-        return [...goals].sort((a, b) => a.text.localeCompare(b.text));
-      case SortOrder.AlphabeticalDesc:
-        return [...goals].sort((a, b) => b.text.localeCompare(a.text));
-      default:
-        return goals;
-    }
-  }, [goals, sortOrder]);
+  const sortedGoals = useMemo(() => sortGoals(goals, sortOrder), [
+    goals,
+    sortOrder,
+  ]);
 
   return (
     <Box
@@ -138,6 +122,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
             flexDirection: "column",
             justifyContent: "space-between",
             m: 0,
+            flexGrow: 1,
             p: 0,
           }}
         >

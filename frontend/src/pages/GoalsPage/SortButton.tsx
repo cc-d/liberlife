@@ -4,6 +4,9 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import SortIcon from "@mui/icons-material/Sort"; // This is the default icon for 'Sort'
 import FilterListIcon from "@mui/icons-material/FilterList"; // New icon for 'Default'
+import { GoalOut } from "../../api";
+import { goalDateHelper } from "./helpers";
+
 
 export interface SortIconMapping {
   icon: React.ElementType;
@@ -17,6 +20,32 @@ export enum SortOrder {
   AlphabeticalAsc = "a-z",
   AlphabeticalDesc = "z-a",
 }
+
+export const sortGoals = (
+  goals: GoalOut[],
+  sortOrder: SortOrder
+): GoalOut[] => {
+  switch (sortOrder) {
+    case SortOrder.UpdatedAsc:
+      return [...goals].sort((a, b) => goalDateHelper(b) - goalDateHelper(a));
+    case SortOrder.UpdatedDesc:
+      return [...goals].sort((a, b) => goalDateHelper(a) - goalDateHelper(b));
+    case SortOrder.AlphabeticalAsc:
+      return [...goals].sort((a, b) => a.text.localeCompare(b.text));
+    case SortOrder.AlphabeticalDesc:
+      return [...goals].sort((a, b) => b.text.localeCompare(a.text));
+    default:
+      return goals;
+  }
+};
+
+export const sortOrders: SortOrder[] = [
+  SortOrder.Default,
+  SortOrder.UpdatedAsc,
+  SortOrder.UpdatedDesc,
+  SortOrder.AlphabeticalAsc,
+  SortOrder.AlphabeticalDesc,
+];
 
 export const sortIconAndLabel = (sortOrder: SortOrder): SortIconMapping => {
   switch (sortOrder) {
@@ -49,6 +78,8 @@ const SortButton: React.FC<SortButtonProps> = ({ sortOrder, onSort }) => {
         m: 0,
         p: 0,
         flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "flex-start",
         width: "100%",
       }}
     >
