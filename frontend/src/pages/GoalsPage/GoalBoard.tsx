@@ -5,14 +5,7 @@ import {
   TextField,
   Button,
   Divider,
-  IconButton,
-  Select,
-  MenuItem,
 } from "@mui/material";
-import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import SortIcon from "@mui/icons-material/Sort";
-import { goalDateHelper } from "./helpers";
 import { GoalOut } from "../../api";
 import { GoalItem } from "./GoalItem";
 import apios from "../../apios";
@@ -26,8 +19,6 @@ import {
 
 import SortButton, {
   SortOrder,
-  sortIconAndLabel,
-  SortIconMapping,
   sortGoals,
   sortOrders,
 } from "./SortButton";
