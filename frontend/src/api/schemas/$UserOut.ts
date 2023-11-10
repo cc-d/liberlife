@@ -14,13 +14,9 @@ export const $UserOut = {
             format: 'date-time',
         },
         updated_on: {
-            type: 'any-of',
-            contains: [{
-                type: 'string',
-                format: 'date-time',
-            }, {
-                type: 'null',
-            }],
+            type: 'string',
+            isRequired: true,
+            format: 'date-time',
         },
         username: {
             type: 'string',

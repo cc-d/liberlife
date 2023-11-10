@@ -6,7 +6,7 @@
 export type UserOut = {
     id: number;
     created_on: string;
-    updated_on?: (string | null);
+    updated_on: string;
     username: string;
 };
 

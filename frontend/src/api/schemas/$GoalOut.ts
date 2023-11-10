@@ -14,13 +14,9 @@ export const $GoalOut = {
             format: 'date-time',
         },
         updated_on: {
-            type: 'any-of',
-            contains: [{
-                type: 'string',
-                format: 'date-time',
-            }, {
-                type: 'null',
-            }],
+            type: 'string',
+            isRequired: true,
+            format: 'date-time',
         },
         text: {
             type: 'string',

@@ -5,8 +5,6 @@ import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import SortIcon from "@mui/icons-material/Sort"; // This is the default icon for 'Sort'
 import FilterListIcon from "@mui/icons-material/FilterList"; // New icon for 'Default'
 import { GoalOut } from "../../api";
-import { goalDateHelper } from "./helpers";
-
 
 export interface SortIconMapping {
   icon: React.ElementType;
@@ -21,15 +19,23 @@ export enum SortOrder {
   AlphabeticalDesc = "z-a",
 }
 
+export const convertOnTime = (goal: GoalOut): number => {
+  return new Date(goal.updated_on).getTime();
+};
+
 export const sortGoals = (
   goals: GoalOut[],
   sortOrder: SortOrder
 ): GoalOut[] => {
   switch (sortOrder) {
     case SortOrder.UpdatedAsc:
-      return [...goals].sort((a, b) => goalDateHelper(b) - goalDateHelper(a));
+      return [...goals].sort(
+        (a: GoalOut, b: GoalOut) => convertOnTime(a) - convertOnTime(b)
+      );
     case SortOrder.UpdatedDesc:
-      return [...goals].sort((a, b) => goalDateHelper(a) - goalDateHelper(b));
+      return [...goals].sort(
+        (a: GoalOut, b: GoalOut) => convertOnTime(b) - convertOnTime(a)
+      );
     case SortOrder.AlphabeticalAsc:
       return [...goals].sort((a, b) => a.text.localeCompare(b.text));
     case SortOrder.AlphabeticalDesc:

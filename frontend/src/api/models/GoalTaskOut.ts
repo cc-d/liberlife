@@ -6,7 +6,7 @@
 export type GoalTaskOut = {
     id: number;
     created_on: string;
-    updated_on?: (string | null);
+    updated_on: string;
     completed: boolean;
     goal_id: number;
     text: string;

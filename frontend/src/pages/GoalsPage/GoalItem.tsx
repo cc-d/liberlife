@@ -19,15 +19,12 @@ interface GoalItemProps {
 }
 
 export const getLatestDate = (goal: GoalOut): string | null => {
-  let goalDate: Date | null = goal.updated_on ? new Date(goal.updated_on) : null;
-  let latestDate: Date | null = goalDate;
+  const goalDate: Number = new Date(goal.updated_on).getTime();
+  let latestDate: Number = goalDate;
 
   goal.tasks.forEach((task) => {
-    if (!task.updated_on) {
-      return;
-    }
-    const taskDate = new Date(task.updated_on);
-    if (!latestDate || taskDate.getTime() > latestDate.getTime()) {
+    const taskDate: Number = new Date(task.updated_on).getTime();
+    if (!latestDate || taskDate > latestDate) {
       latestDate = taskDate;
     }
   });

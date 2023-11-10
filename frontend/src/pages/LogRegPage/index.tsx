@@ -62,6 +62,9 @@ const LogRegPage: React.FC = () => {
         <Typography component="h1" variant="h5" sx={{ mt: 3 }}>
           Register
         </Typography>
+        <Typography component="p" variant="subtitle2" sx={{ }}>
+          *no password requirements
+        </Typography>
         <LogRegForm isRegister onSubmit={handleRegister} />
       </Box>
     </Container>

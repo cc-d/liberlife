@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
+import { decodePayload } from "./helpers";
 
-interface AuthContextType {
+interface AuthContextProps {
   user: string | null;
   login: (username: string, token: string) => void;
   logout: () => void;
@@ -11,24 +12,12 @@ interface AuthProviderProps {
   children: React.ReactNode;
 }
 
-export const AuthContext = createContext<AuthContextType | undefined>(
+export const AuthContext = createContext<AuthContextProps | undefined>(
   undefined
 );
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [userLoading, setUserLoading] = useState(true);
-
-  const decodePayload = (token: string) => {
-    try {
-      const payload = token.split(".")[1];
-      const decodedPayload = atob(payload);
-      const jsonObject = JSON.parse(decodedPayload);
-      return jsonObject.sub; // Assuming the JWT payload has a "username" field
-    } catch (error) {
-      console.error("Error decoding the token", error);
-      return null;
-    }
-  };
 
   const [user, setUser] = useState<string | null>(() => {
     try {

@@ -9,7 +9,7 @@ import type { UserOut } from './UserOut';
 export type GoalOut = {
     id: number;
     created_on: string;
-    updated_on?: (string | null);
+    updated_on: string;
     text: string;
     user_id: number;
     user: UserOut;

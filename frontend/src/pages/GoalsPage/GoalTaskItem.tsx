@@ -3,7 +3,6 @@ import { Box, Checkbox, Typography, IconButton } from "@mui/material";
 import { GoalTaskOut } from "../../api";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-
 export const GoalTaskItem: React.FC<{
   task: GoalTaskOut;
   goalId: number;
@@ -16,14 +15,12 @@ export const GoalTaskItem: React.FC<{
       alignItems="center"
       onClick={() => onToggle(goalId, task.id, task.completed)}
       sx={{
-
-        cursor: "pointer", mb: 1,
+        cursor: "pointer",
+        mb: 1,
         "&:hover": {
           backgroundColor: "#303030",
         },
-
-    }}
-
+      }}
     >
       <Checkbox checked={task.completed} />
       <Box
@@ -40,7 +37,6 @@ export const GoalTaskItem: React.FC<{
       <IconButton
         onClick={(e) => {
           e.stopPropagation(); // This prevents the parent onClick from being called
-
         }}
       >
         <DeleteIcon />
