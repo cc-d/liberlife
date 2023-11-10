@@ -20,15 +20,15 @@ interface GoalItemProps {
 
 export const getLatestDate = (goal: GoalOut): string | null => {
   const goalDate: Number = new Date(goal.updated_on).getTime();
-  let latestDate: Number = goalDate;
+  let latestDate: Date = new Date(goal.updated_on)
 
   goal.tasks.forEach((task) => {
     const taskDate: Number = new Date(task.updated_on).getTime();
-    if (!latestDate || taskDate > latestDate) {
-      latestDate = taskDate;
+    if (taskDate > goalDate) {
+      latestDate = new Date(task.updated_on)
     }
   });
-  return latestDate ? latestDate.toLocaleString() : null;
+  return latestDate ? latestDate.toLocaleString() : new Date().toLocaleString();
 }
 
 export const GoalItem: React.FC<GoalItemProps> = ({
@@ -47,7 +47,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
   const maxElementWidth = "98vw";
   const maxNotesWidth = `calc(${maxElementWidth} - 48px) !important`;
   const theme = useTheme();
-  const latestUpdate = getLatestDate(goal);
+  const latestUpdate = getLatestDate(goal)
 
   useEffect(() => {
 
@@ -148,7 +148,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
       </Box>
       <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
         <Box sx={{ opacity: 0.5, fontSize: "0.8em" }}>
-          {goal && latestUpdate && `Last updated ${latestUpdate}`}
+          {goal && latestUpdate && `Last updated: ${latestUpdate}`}
         </Box>
       </Box>
     </Box>
