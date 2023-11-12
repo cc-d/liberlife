@@ -6,17 +6,20 @@ export const actionUpdateGoal = async (
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>,
   goalId: number,
   updatedText?: string,
-  updatedNotes?: string | null
+  updatedNotes?: string | null,
+  archived?: boolean
 ) => {
   try {
     let endpoint = `/goals/${goalId}`;
     let payload: any = {};
 
-    if (updatedText !== undefined) {
-      payload.text = updatedText;
-    } else if (updatedNotes !== undefined) {
+    if (updatedNotes !== undefined) {
       endpoint += `/notes`;
       payload.notes = updatedNotes;
+    } else if (updatedText !== undefined) {
+      payload.text = updatedText;
+    } else if (archived !== undefined) {
+      payload.archived = archived;
     }
 
     const response = await apios.put(endpoint, payload);
@@ -26,6 +29,7 @@ export const actionUpdateGoal = async (
         prevGoals.map((g) => {
           if (g.id !== goalId) return g;
           if (updatedText !== undefined) return { ...g, text: updatedText };
+          if (archived !== undefined) return { ...g, archived: archived };
           if (updatedNotes !== undefined) return { ...g, notes: updatedNotes };
           return g;
         })

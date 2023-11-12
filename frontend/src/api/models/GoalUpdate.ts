@@ -3,7 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type GoalUpdateNotes = {
+export type GoalUpdate = {
+    text?: (string | null);
     notes?: (string | null);
+    archived?: (boolean | null);
 };
 

@@ -67,9 +67,10 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
   const handleGoalUpdate = async (
     goalId: number,
     updatedText?: string,
-    updatedNotes?: string | null
+    updatedNotes?: string | null,
+    archived?: boolean
   ) => {
-    return actionUpdateGoal(setGoals, goalId, updatedText, updatedNotes);
+    return actionUpdateGoal(setGoals, goalId, updatedText, updatedNotes, archived);
   };
 
   const handleDeleteTask = async (goalId: number, taskId: number) => {

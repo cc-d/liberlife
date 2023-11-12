@@ -76,3 +76,5 @@ fi
 if [ -d "$HOME/.nvm" ]; then
     nvm use 20
 fi
+
+alias pytestargs='pytest tests -s -vv --show-capture=all -x --cov --cov-report=term-missing'

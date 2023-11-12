@@ -14,6 +14,7 @@ export type GoalOut = {
     user_id: number;
     user: UserOut;
     tasks: Array<GoalTaskOut>;
-    notes?: (string | null);
+    notes: (string | null);
+    archived?: boolean;
 };
 

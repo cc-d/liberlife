@@ -25,6 +25,7 @@ interface GoalHeaderProps {
   handleDelete: () => void;
   anchorEl: null | HTMLElement;
   maxElementWidth: string;
+  handleArchive: () => void;
 }
 
 export const GoalHeader: React.FC<GoalHeaderProps> = ({
@@ -40,7 +41,9 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
   handleDelete,
   anchorEl,
   maxElementWidth,
+  handleArchive,
 }) => {
+  const archText = goal.archived ? "Unarchive" : "Archive";
   return (
     <Box
       sx={{
@@ -101,6 +104,7 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
               >
                 <MenuItem onClick={startEdit}>Edit</MenuItem>
                 <MenuItem onClick={handleDelete}>Delete</MenuItem>
+                <MenuItem onClick={handleArchive}>{archText}</MenuItem>
               </Menu>
             </>
           )}

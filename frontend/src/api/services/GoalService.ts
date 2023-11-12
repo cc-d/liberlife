@@ -7,7 +7,7 @@ import type { GoalOut } from '../models/GoalOut';
 import type { GoalTaskIn } from '../models/GoalTaskIn';
 import type { GoalTaskOut } from '../models/GoalTaskOut';
 import type { GoalTaskUpdate } from '../models/GoalTaskUpdate';
-import type { GoalUpdateNotes } from '../models/GoalUpdateNotes';
+import type { GoalUpdate } from '../models/GoalUpdate';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -54,7 +54,7 @@ export class GoalService {
      * @throws ApiError
      */
     public static getGoalGoalsGoalIdGet(
-        goalId: number,
+        goalId: (number | string),
     ): CancelablePromise<GoalOut> {
         return __request(OpenAPI, {
             method: 'GET',
@@ -76,8 +76,8 @@ export class GoalService {
      * @throws ApiError
      */
     public static updateGoalGoalsGoalIdPut(
-        goalId: number,
-        requestBody: GoalIn,
+        goalId: (number | string),
+        requestBody: GoalUpdate,
     ): CancelablePromise<GoalOut> {
         return __request(OpenAPI, {
             method: 'PUT',
@@ -100,7 +100,7 @@ export class GoalService {
      * @throws ApiError
      */
     public static deleteGoalGoalsGoalIdDelete(
-        goalId: number,
+        goalId: (number | string),
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
@@ -122,8 +122,8 @@ export class GoalService {
      * @throws ApiError
      */
     public static updateGoalNotesGoalsGoalIdNotesPut(
-        goalId: number,
-        requestBody: GoalUpdateNotes,
+        goalId: (number | string),
+        requestBody: GoalUpdate,
     ): CancelablePromise<GoalOut> {
         return __request(OpenAPI, {
             method: 'PUT',
@@ -147,7 +147,7 @@ export class GoalService {
      * @throws ApiError
      */
     public static addTaskToGoalGoalsGoalIdTasksPost(
-        goalId: number,
+        goalId: (number | string),
         requestBody: GoalTaskIn,
     ): CancelablePromise<GoalTaskOut> {
         return __request(OpenAPI, {
@@ -171,7 +171,7 @@ export class GoalService {
      * @throws ApiError
      */
     public static listTasksForGoalGoalsGoalIdTasksGet(
-        goalId: number,
+        goalId: (number | string),
     ): CancelablePromise<Array<GoalTaskOut>> {
         return __request(OpenAPI, {
             method: 'GET',
@@ -194,7 +194,7 @@ export class GoalService {
      */
     public static getTaskGoalsGoalIdTasksTaskIdGet(
         taskId: number,
-        goalId: number,
+        goalId: (number | string),
     ): CancelablePromise<GoalTaskOut> {
         return __request(OpenAPI, {
             method: 'GET',
@@ -219,7 +219,7 @@ export class GoalService {
      */
     public static updateTaskGoalsGoalIdTasksTaskIdPut(
         taskId: number,
-        goalId: number,
+        goalId: (number | string),
         requestBody: GoalTaskUpdate,
     ): CancelablePromise<GoalTaskOut> {
         return __request(OpenAPI, {
@@ -246,7 +246,7 @@ export class GoalService {
      */
     public static deleteTaskGoalsGoalIdTasksTaskIdDelete(
         taskId: number,
-        goalId: number,
+        goalId: (number | string),
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',

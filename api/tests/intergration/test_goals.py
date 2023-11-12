@@ -114,8 +114,7 @@ async def test_delete_goal(client, setup_goals):
     assert resp.status_code == 200
 
     agresp = await allgoals_request(client, headers)
-    agjson = agresp.json()
-    ags = {ag['id']: ag['text'] for ag in agjson}
+    ags = {ag['id']: ag['text'] for ag in agresp.json()}
 
     assert ngid not in ags.keys()
     assert newgoal['text'] not in ags.values()

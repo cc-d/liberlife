@@ -44,6 +44,10 @@ export const $GoalOut = {
             }, {
                 type: 'null',
             }],
+            isRequired: true,
+        },
+        archived: {
+            type: 'boolean',
         },
     },
 } as const;
