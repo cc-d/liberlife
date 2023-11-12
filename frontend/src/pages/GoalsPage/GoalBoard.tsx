@@ -28,6 +28,8 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
   const [sortOrder, setSortOrder] = useState<SortOrder>(
     () => (localStorage.getItem("sortOrder") as SortOrder) || SortOrder.Default
   );
+  const [currentGoals, setCurrentGoals] = useState<GoalOut[]>([]);
+  const [archivedGoals, setArchivedGoals] = useState<GoalOut[]>([]);
 
   const handleAddGoal = async () => {
     if (newGoalText.trim()) {
@@ -89,15 +91,10 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
     [goals, sortOrder]
   );
 
-  const archivedGoals = useMemo(
-    () => goals.filter((goal) => goal.archived),
-    [sortedGoals]
-  );
-
-  const currentGoals = useMemo(
-    () => goals.filter((goal) => !goal.archived),
-    [sortedGoals]
-  );
+  useEffect(() => {
+    setCurrentGoals(sortedGoals.filter((goal) => !goal.archived));
+    setArchivedGoals(sortedGoals.filter((goal) => goal.archived));
+  }, [sortedGoals]);
 
   return (
     <Box
