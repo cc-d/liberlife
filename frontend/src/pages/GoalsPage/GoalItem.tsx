@@ -87,12 +87,13 @@ export const GoalItem: React.FC<GoalItemProps> = ({
   };
 
   const handleArchive = async () => {
-    handleGoalUpdate(
+    await handleGoalUpdate(
       goal.id,
       undefined,
       undefined,
       true ? !goal.archived : false
     );
+    handleMenuClose();
   };
 
   return (

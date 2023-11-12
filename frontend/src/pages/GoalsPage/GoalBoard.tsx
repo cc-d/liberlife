@@ -1,11 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Divider,
-} from "@mui/material";
+import { Box, Typography, TextField, Button, Divider } from "@mui/material";
 import { GoalOut } from "../../api";
 import { GoalItem } from "./GoalItem";
 import apios from "../../apios";
@@ -17,11 +11,7 @@ import {
   actihandleGoalDelete,
 } from "./actions";
 
-import SortButton, {
-  SortOrder,
-  sortGoals,
-  sortOrders,
-} from "./SortButton";
+import SortButton, { SortOrder, sortGoals, sortOrders } from "./SortButton";
 interface GoalBoardProps {
   goals: GoalOut[];
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>;
@@ -70,7 +60,13 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
     updatedNotes?: string | null,
     archived?: boolean
   ) => {
-    return actionUpdateGoal(setGoals, goalId, updatedText, updatedNotes, archived);
+    return actionUpdateGoal(
+      setGoals,
+      goalId,
+      updatedText,
+      updatedNotes,
+      archived
+    );
   };
 
   const handleDeleteTask = async (goalId: number, taskId: number) => {
@@ -88,10 +84,20 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
     setSortOrder(nextSortOrder);
   };
 
-  const sortedGoals = useMemo(() => sortGoals(goals, sortOrder), [
-    goals,
-    sortOrder,
-  ]);
+  const sortedGoals = useMemo(
+    () => sortGoals(goals, sortOrder),
+    [goals, sortOrder]
+  );
+
+  const archivedGoals = useMemo(
+    () => goals.filter((goal) => goal.archived),
+    [sortedGoals]
+  );
+
+  const currentGoals = useMemo(
+    () => goals.filter((goal) => !goal.archived),
+    [sortedGoals]
+  );
 
   return (
     <Box
@@ -179,7 +185,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
           m: 0.5,
         }}
       >
-        {sortedGoals.map((goal) => (
+        {currentGoals.map((goal) => (
           <GoalItem
             key={goal.id}
             goal={goal}
@@ -191,6 +197,56 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
           />
         ))}
       </Box>
+
+      {archivedGoals.length > 0 && (
+        <>
+          <Divider
+            sx={{
+              backgroundColor: "#303030",
+              height: "2px",
+              m: 0.5,
+              mt: 1,
+              mb: 1,
+            }}
+          ></Divider>
+          <Typography
+            variant="h5"
+            noWrap
+            sx={{
+              m: 0,
+              p: 0,
+              userSelect: "none",
+              ml: 0.5,
+            }}
+          >
+            Archived
+          </Typography>
+        </>
+      )}
+
+      {archivedGoals.length > 0 && (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "left",
+            m: 0.5,
+          }}
+        >
+          {archivedGoals.map((goal) => (
+            <GoalItem
+              key={goal.id}
+              goal={goal}
+              toggleTaskCompletion={toggleTaskCompletion}
+              handleGoalDelete={handleGoalDelete}
+              handleAddTaskToGoal={handleAddTaskToGoal}
+              handleGoalUpdate={handleGoalUpdate}
+              handleDeleteTask={handleDeleteTask}
+            />
+          ))}
+        </Box>
+      )}
     </Box>
   );
 };
