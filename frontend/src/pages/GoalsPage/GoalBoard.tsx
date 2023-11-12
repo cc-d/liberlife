@@ -162,6 +162,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
           }}
         />
         <Button
+          size="small"
           variant="contained"
           color="primary"
           sx={{

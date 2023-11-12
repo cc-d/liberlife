@@ -13,7 +13,7 @@ const GoalsPage: React.FC = () => {
   const auth = useContext(AuthContext);
 
   useEffect(() => {
-    if (!localStorage.getItem('token') || (!auth?.userLoading && !auth?.user)) {
+    if (!localStorage.getItem("token") || (!auth?.userLoading && !auth?.user)) {
       navigate("/login");
       return;
     }
@@ -33,12 +33,12 @@ const GoalsPage: React.FC = () => {
     fetchGoals();
   }, [auth, navigate]);
 
-
   return (
     <Container
-      maxWidth={false}
+      maxWidth="xl"
+      //disableGutters
       sx={{
-        m: 0,
+        m: "auto",
         p: 0,
         backgroundColor: "black",
       }}
