@@ -36,3 +36,23 @@ def decode_jwt(token: str):
 
 
 oauth_scheme = OAuth2PasswordBearer(tokenUrl="u/oauth_login")
+
+
+@logf()
+def obj_userid_401(uid: int, obj: any) -> bool:
+    """Raise 401 if obj doesnt have matching user id
+    Raises:
+        HTTPException: 401 if obj doesnt have matching user id
+    Returns:
+        bool: True if obj has matching user id otherwise should err
+    """
+    if isinstance(obj, dict):
+        if 'user_id' in obj and obj['user_id'] == uid:
+            return True
+    elif uid == getattr(obj, 'user_id'):
+        return True
+
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="You are not authorized to access this resource.",
+    )

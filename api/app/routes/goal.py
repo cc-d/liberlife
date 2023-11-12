@@ -17,6 +17,7 @@ from ..db.common import async_addcomref
 from ..db.models import Goal, GoalTask
 from ..schemas import goal as GoalSchema, user as UserSchema
 from ..utils.dependencies import get_current_user
+from ..utils.httperrors import HTTP401
 
 router = APIRouter(prefix='/goals', tags=['goal'])
 
@@ -43,10 +44,7 @@ async def get_goal(
     goal: Goal = Depends(get_goal_from_id), cur_user=Depends(get_current_user)
 ):
     if goal.user_id != cur_user.id:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="You are not authorized to access this goal.",
-        )
+        raise HTTP401
     return goal
 
 
@@ -58,10 +56,8 @@ async def update_goal(
     db: AsyncSession = Depends(get_adb),
 ):
     if goal.user_id != cur_user.id:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="You are not authorized to access this goal.",
-        )
+        raise HTTP401
+
     for field, value in goal_update.model_dump().items():
         if value is None:
             continue
@@ -77,10 +73,7 @@ async def delete_goal(
     db: AsyncSession = Depends(get_adb),
 ):
     if goal.user_id != cur_user.id:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="You are not authorized to delete this goal.",
-        )
+        raise HTTP401
     await db.delete(goal)
     await db.commit()
     return {"detail": "Goal deleted successfully"}
@@ -94,10 +87,7 @@ async def update_goal_notes(
     db: AsyncSession = Depends(get_adb),
 ):
     if goal.user_id != cur_user.id:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="You are not authorized to update this goal.",
-        )
+        raise HTTP401
     goal.notes = goal_update.notes
     await async_addcomref(db, goal)
     return goal
@@ -112,10 +102,7 @@ async def add_task_to_goal(
 ):
     # Ensure the goal belongs to the current user
     if goal.user_id != cur_user.id:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="You are not authorized to add tasks to this goal.",
-        )
+        raise HTTP401
     new_task = GoalTask(**task_in.model_dump(), goal_id=goal.id)
     goal.updated_on = func.now()
     db.add(new_task)
@@ -132,10 +119,7 @@ async def list_tasks_for_goal(
     db: AsyncSession = Depends(get_adb),
 ):
     if goal.user_id != cur_user.id:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="You are not authorized to view tasks for this goal.",
-        )
+        raise HTTP401
     tasks = await db.execute(
         select(GoalTask).where(GoalTask.goal_id == goal.id)
     )
@@ -152,11 +136,8 @@ async def get_task(
     goal: Goal = Depends(get_goal_from_id),
     cur_user=Depends(get_current_user),
 ):
-    if task.goal_id != goal.id or goal.user_id != cur_user.id:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="You are not authorized to access this task.",
-        )
+    if goal.user_id != cur_user.id:
+        raise HTTP401
     return task
 
 
@@ -172,11 +153,9 @@ async def update_task(
     cur_user=Depends(get_current_user),
     db: AsyncSession = Depends(get_adb),
 ):
-    if task.goal_id != goal.id or goal.user_id != cur_user.id:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="You are not authorized to update this task.",
-        )
+    if goal.user_id != cur_user.id:
+        raise HTTP401
+
     for key, value in task_update.model_dump().items():
         setattr(task, key, value)
     db.add(task)
@@ -197,11 +176,8 @@ async def delete_task(
     cur_user=Depends(get_current_user),
     db: AsyncSession = Depends(get_adb),
 ):
-    if task.goal_id != goal.id or goal.user_id != cur_user.id:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="You are not authorized to delete this task.",
-        )
+    if goal.user_id != cur_user.id:
+        raise HTTP401
     goal.updated_on = func.now()
     db.add(goal)
     await db.delete(task)

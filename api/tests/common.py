@@ -10,18 +10,9 @@ from httpx import AsyncClient
 from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
+from myfuncs import ranstr
 from api.app.db import get_adb, get_test_adb
-from api.app.db.session import (
-    AsyncSessionLocal,
-    Base,
-    SessionLocal,
-    async_engine,
-    sync_engine,
-    test_engine,
-    test_sync_engine,
-    TestAsyncSessionLocal,
-    TestSessionLocal,
-)
+from api.app.db.session import sync_engine, test_engine
 from api.app.main import app
 from api.app.schemas import goal as SchemaGoal
 from api.app.schemas import user as SchemaUser
@@ -67,6 +58,18 @@ async def loginresp(client, reguser):
 @pytest.fixture
 async def funclogin(client):
     return await login(client)
+
+
+@pytest.fixture
+async def funcnewuser(client) -> tuple[SchemaUser.UserOut, dict]:
+    uname, upass = ranstr(20), ranstr(20)
+    ujson = {"username": uname, "password": upass}
+    uhead = await register(client, ujson)
+    assert uhead.status_code == 200
+    um = await client.get("/u/me", headers=headers(uhead))
+    assert um.status_code == 200
+
+    return um, uhead.json()
 
 
 @pytest.fixture(scope="module")
