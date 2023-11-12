@@ -64,17 +64,35 @@ async def test_get_goal(client, setup_goals):
         resp = await client.get(f"/goals/{goal['id']}", headers=headers)
         assert resp.status_code == 200
         assert resp.json()['text'] == goal['text']
+        assert 'archived' in resp.json()
 
 
 @pytest.mark.asyncio
 async def test_update_goal(client, setup_goals):
     newgoals, headers, _ = setup_goals
+    uniqtext = 'UPDATE UNIQUE TEXT !!!!!!'
+
+    newgoal = await new_goalresp(uniqtext, client, headers)
+    assert 'archived' in newgoal
+    assert newgoal['archived'] == False
+    assert newgoal['text'] == uniqtext
+
     resp = await client.put(
-        f"/goals/{newgoals[1]['id']}", json={'text': 'UPDATED'}, headers=headers
+        f"/goals/{newgoal['id']}", json={'text': 'UPDATED'}, headers=headers
     )
+
     assert resp.status_code == 200
     assert resp.json()['text'] == 'UPDATED'
-    assert resp.json()['id'] == newgoals[1]['id']
+    assert resp.json()['id'] == newgoal['id']
+
+    resp = await client.put(
+        f"/goals/{newgoal['id']}",
+        json={'text': uniqtext, 'archived': False},
+        headers=headers,
+    )
+    assert resp.status_code == 200
+    assert resp.json()['archived'] == False
+    assert resp.json()['text'] == uniqtext
 
 
 async def allgoals_request(client, headers):
@@ -101,7 +119,9 @@ async def test_delete_goal(client, setup_goals):
 
     assert ngid not in ags.keys()
     assert newgoal['text'] not in ags.values()
-    assert len(agjson) == len(newgoals)
+    for ng in newgoals:
+        assert ng['id'] in ags.keys()
+        assert ng['text'] in ags.values()
 
 
 @pytest.fixture(scope="module")

@@ -52,9 +52,9 @@ async def get_goal(
 
 @router.put("/{goal_id}", response_model=GoalSchema.GoalOut)
 async def update_goal(
+    goal_update: GoalSchema.GoalUpdate,
     goal: Goal = Depends(get_goal_from_id),
     cur_user=Depends(get_current_user),
-    goal_in: GoalSchema.GoalIn = Body(...),
     db: AsyncSession = Depends(get_adb),
 ):
     if goal.user_id != cur_user.id:
@@ -62,7 +62,9 @@ async def update_goal(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="You are not authorized to access this goal.",
         )
-    for field, value in goal_in:
+    for field, value in goal_update.model_dump().items():
+        if value is None:
+            continue
         setattr(goal, field, value)
     await async_addcomref(db, goal)
     return goal
@@ -86,7 +88,7 @@ async def delete_goal(
 
 @router.put("/{goal_id}/notes", response_model=GoalSchema.GoalOut)
 async def update_goal_notes(
-    goal_update: GoalSchema.GoalUpdateNotes,
+    goal_update: GoalSchema.GoalUpdate = Body(...),
     goal: Goal = Depends(get_goal_from_id),
     cur_user=Depends(get_current_user),
     db: AsyncSession = Depends(get_adb),

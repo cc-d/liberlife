@@ -44,6 +44,11 @@ class Goal(Base):
     updated_on: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
+
+    archived: Mapped[bool] = mapped_column(
+        Boolean, default=False, nullable=False
+    )
+
     user = relationship("User", back_populates="goals")
     tasks = relationship(
         "GoalTask",

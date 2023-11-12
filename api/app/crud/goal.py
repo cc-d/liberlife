@@ -15,10 +15,14 @@ from ..db.common import async_addcomref
 
 
 async def get_goal_from_id(
-    goal_id: int, db: AsyncSession = Depends(get_adb)
+    goal_id: int | str, db: AsyncSession = Depends(get_adb)
 ) -> Optional[Goal]:
+    if isinstance(goal_id, str):
+        goal_id = int(goal_id)
     goal = await db.execute(
-        select(Goal).where(Goal.id == goal_id).options(selectinload(Goal.tasks))
+        select(Goal)
+        .where(Goal.id == goal_id)
+        .options(selectinload(Goal.tasks))
     )
     return goal.unique().scalar_one_or_none()
 
@@ -37,7 +41,9 @@ async def get_user_goals(
 async def get_goal_task_from_id(
     task_id: int, db: AsyncSession = Depends(get_adb)
 ) -> Optional[Goal]:
-    goal_task = await db.execute(select(GoalTask).where(GoalTask.id == task_id))
+    goal_task = await db.execute(
+        select(GoalTask).where(GoalTask.id == task_id)
+    )
     goal_task = goal_task.scalar_one_or_none()
     return goal_task
 

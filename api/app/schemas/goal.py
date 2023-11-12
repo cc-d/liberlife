@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Union
 from .common import DBCommon
 from .user import UserOut, UserDB
 
@@ -37,8 +37,11 @@ class GoalOut(GoalIn, DBCommon):
     user_id: int
     user: UserOut
     tasks: List[GoalTaskOut]
-    notes: Optional[str] = None
+    notes: Union[str, None]
+    archived: bool = False
 
 
-class GoalUpdateNotes(BaseModel):
+class GoalUpdate(BaseModel):
+    text: Optional[str] = None
     notes: Optional[str] = None
+    archived: Optional[bool] = None
