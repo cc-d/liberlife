@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Typography, TextField, IconButton, Link } from "@mui/material";
-import { GoalOut } from "../../api";
+import { GoalOut } from "../../../api";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 
@@ -8,6 +8,7 @@ interface GoalNotesProps {
   goal: GoalOut;
   maxNotesWidth: string;
   onSaveNotes: (notes: string | null) => void;
+  latestUpdate: string | null;
 }
 
 const renderFormattedNotes = (goal: GoalOut) => {
@@ -81,8 +82,8 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
   goal,
   maxNotesWidth,
   onSaveNotes,
+  latestUpdate,
 }) => {
-
   const [isEditingNotes, setIsEditingNotes] = useState<boolean>(false);
   const [editedNotes, setEditedNotes] = useState<string | null | undefined>(
     goal?.notes || ""
@@ -96,34 +97,47 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
 
   const editBoxHeight = editedNotes?.split("\n").length || 1;
 
-
   return (
-    <Box sx={{ display: "flex", flexDirection: "column" }}>
+    <Box
+      sx={{
+        m: 0,
+
+        maxWidth: "100%",
+      }}
+    >
       {isEditingNotes ? (
         <Box
           sx={{
             display: "flex",
-            alignItems: "stretch",
             flexDirection: "row",
+            alignItems: "stretch",
+            flexGrow: 1,
+            maxWidth: maxNotesWidth,
+            width: "100%",
           }}
         >
           <TextField
             value={editedNotes || ""}
             onChange={(e) => setEditedNotes(e.target.value)}
             multiline
-            fullWidth
             rows={editBoxHeight}
             sx={{
               flexGrow: 1,
+              m: 0,
+              p: 0,
+              borderRadius: 0,
+              maxWidth: maxNotesWidth,
+              width: "100%",
+              minWidth: "100%",
             }}
           />
           <IconButton
             onClick={handleSaveNotes}
             sx={{
-              alignSelf: "stretch",
               display: "flex",
               alignItems: "center",
               borderRadius: 0,
+              m: 0,
             }}
           >
             <SaveIcon />
@@ -133,17 +147,19 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
         <Box
           display="flex"
           alignItems="stretch"
+          flexDirection="row"
           sx={{
-            m: 0,
-            p: 0,
+            flexGrow: 1,
+            pl: 0.5,
+            width: "100%",
           }}
         >
           <Typography
             color={goal?.notes ? "textPrimary" : "textSecondary"}
             sx={{
-              overflowWrap: "break-word",
-              whiteSpace: "pre-wrap",
               flexGrow: 1,
+              width: "100%",
+              whiteSpace: "pre-wrap",
             }}
           >
             {goal?.notes ? renderFormattedNotes(goal) : "add notes..."}
@@ -161,6 +177,20 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
           </IconButton>
         </Box>
       )}
+
+      <Typography
+        variant="caption"
+        color="textSecondary"
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          m: 0,
+          p: 0,
+          mr: 0.5,
+        }}
+      >
+        updated: {latestUpdate}
+      </Typography>
     </Box>
   );
 };

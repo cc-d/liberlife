@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import useTheme from "@mui/material/styles/useTheme";
 import { Box, Divider } from "@mui/material";
-import { GoalOut } from "../../api";
+import { GoalOut } from "../../../api";
 import GoalHeader from "./GoalHeader";
 import GoalTasks from "./GoalTasks";
 import GoalNotes from "./GoalNotes";
@@ -101,15 +101,18 @@ export const GoalItem: React.FC<GoalItemProps> = ({
       sx={{
         borderRadius: 1,
         border: `2px solid ${theme.palette.divider}`,
-        p: 0.5,
-        m: 0.25,
         display: "flex", // This turns it into a flex container
         flexDirection: "column", // Stack children vertically
         flexGrow: 1,
         backgroundColor: `#111111`,
-        maxWidth: maxElementWidth,
+
         overflowWrap: "anywhere",
         opacity: goal.archived ? 0.5 : 1,
+
+        p: 0,
+        ml: 0,
+        mb: 0.5,
+        width: "fit-content",
       }}
     >
       <GoalHeader
@@ -126,11 +129,6 @@ export const GoalItem: React.FC<GoalItemProps> = ({
         anchorEl={anchorEl}
         maxElementWidth={maxElementWidth}
         handleArchive={handleArchive}
-      />
-      <Divider
-        sx={{
-          backgroundColor: "#303030",
-        }}
       />
       <GoalTasks
         newTaskText={newTaskText}
@@ -151,23 +149,12 @@ export const GoalItem: React.FC<GoalItemProps> = ({
         }}
       />
 
-      <Box
-        sx={{
-          ml: 0.5,
-          mt: 0.25,
-        }}
-      >
-        <GoalNotes
-          goal={goal}
-          maxNotesWidth={maxNotesWidth}
-          onSaveNotes={handleSaveNotes}
-        />
-      </Box>
-      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-        <Box sx={{ opacity: 0.5, fontSize: "0.8em" }}>
-          {goal && latestUpdate && `Last updated: ${latestUpdate}`}
-        </Box>
-      </Box>
+      <GoalNotes
+        goal={goal}
+        maxNotesWidth={maxNotesWidth}
+        onSaveNotes={handleSaveNotes}
+        latestUpdate={latestUpdate}
+      />
     </Box>
   );
 };

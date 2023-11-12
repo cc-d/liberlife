@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Checkbox, Typography, IconButton } from "@mui/material";
-import { GoalTaskOut } from "../../api";
+import { GoalTaskOut } from "../../../api";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 export const GoalTaskItem: React.FC<{
@@ -28,7 +28,6 @@ export const GoalTaskItem: React.FC<{
         sx={{
           textDecoration: task.completed ? "line-through" : "none",
           flexGrow: 1,
-          maxWidth: maxElementWidth,
           overflowWrap: "anywhere",
         }}
       >

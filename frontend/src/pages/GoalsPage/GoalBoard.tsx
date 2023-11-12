@@ -10,6 +10,8 @@ import {
   actionTaskCompletion,
   actihandleGoalDelete,
 } from "./actions";
+import GoalBoardElem from "./GoalBoardElem";
+import ShowHideTextButton from "../../components/ShowHideTooltip";
 
 import SortButton, { SortOrder, sortGoals, sortOrders } from "./SortButton";
 interface GoalBoardProps {
@@ -27,6 +29,9 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
 }) => {
   const [sortOrder, setSortOrder] = useState<SortOrder>(
     () => (localStorage.getItem("sortOrder") as SortOrder) || SortOrder.Default
+  );
+  const [hideArchived, setHideArchived] = useState<boolean>(
+    localStorage.getItem("hideArchived") === "true"
   );
   const [currentGoals, setCurrentGoals] = useState<GoalOut[]>([]);
   const [archivedGoals, setArchivedGoals] = useState<GoalOut[]>([]);
@@ -93,13 +98,16 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
 
   useEffect(() => {
     setCurrentGoals(sortedGoals.filter((goal) => !goal.archived));
-    setArchivedGoals(sortedGoals.filter((goal) => goal.archived));
+
+    !hideArchived &&
+      setArchivedGoals(sortedGoals.filter((goal) => goal.archived));
   }, [sortedGoals]);
 
   return (
     <Box
       sx={{
         backgroundColor: "black",
+        m: 1,
       }}
     >
       <Box
@@ -107,8 +115,9 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
           display: "flex",
           flexDirection: "row",
           alignItems: "left",
-          m: 0,
-          p: 0.5,
+          mb: 1,
+          width: "100%",
+          maxWidth: "100%",
         }}
       >
         <Box
@@ -128,7 +137,6 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
               m: 0,
               p: 0,
               userSelect: "none",
-              pr: 0.5,
             }}
           >
             Goal Board
@@ -147,15 +155,18 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
             }
           }}
           sx={{
-            p: 0.5,
+            m: 0,
+            p: 0,
           }}
         />
         <Button
           variant="contained"
           color="primary"
           sx={{
-            maxHeight: "56px",
-            mt: 0.5,
+            m: 0,
+
+            maxWidth: "100%",
+            minHeight: "100%",
           }}
           onClick={handleAddGoal}
         >
@@ -163,86 +174,33 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
         </Button>
       </Box>
 
-      <Divider
-        sx={{
-          backgroundColor: "#303030",
-          height: "2px",
-          mb: 1,
-          ml: 0.5,
-          mr: 0.5,
-        }}
+      <GoalBoardElem
+        goals={currentGoals}
+        toggleTaskCompletion={toggleTaskCompletion}
+        handleGoalDelete={handleGoalDelete}
+        handleAddTaskToGoal={handleAddTaskToGoal}
+        handleGoalUpdate={handleGoalUpdate}
+        handleDeleteTask={handleDeleteTask}
+        isArchived={false}
       />
 
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          flexWrap: "wrap",
-          justifyContent: "left",
-          m: 0.5,
-        }}
-      >
-        {currentGoals.map((goal) => (
-          <GoalItem
-            key={goal.id}
-            goal={goal}
-            toggleTaskCompletion={toggleTaskCompletion}
-            handleGoalDelete={handleGoalDelete}
-            handleAddTaskToGoal={handleAddTaskToGoal}
-            handleGoalUpdate={handleGoalUpdate}
-            handleDeleteTask={handleDeleteTask}
-          />
-        ))}
+      <Box p={0.5} m={0.5} mt={2} sx={{ cursor: "pointer" }}>
+        <ShowHideTextButton
+          text="Archived"
+          hideArchived={hideArchived}
+          setHideArchived={setHideArchived}
+        />
       </Box>
-
-      {archivedGoals.length > 0 && (
-        <>
-          <Divider
-            sx={{
-              backgroundColor: "#303030",
-              height: "2px",
-              m: 0.5,
-              mt: 1,
-              mb: 1,
-            }}
-          ></Divider>
-          <Typography
-            variant="h5"
-            noWrap
-            sx={{
-              m: 0,
-              p: 0,
-              userSelect: "none",
-              ml: 0.5,
-            }}
-          >
-            Archived
-          </Typography>
-        </>
-      )}
-
-      {archivedGoals.length > 0 && (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "wrap",
-            justifyContent: "left",
-            m: 0.5,
-          }}
-        >
-          {archivedGoals.map((goal) => (
-            <GoalItem
-              key={goal.id}
-              goal={goal}
-              toggleTaskCompletion={toggleTaskCompletion}
-              handleGoalDelete={handleGoalDelete}
-              handleAddTaskToGoal={handleAddTaskToGoal}
-              handleGoalUpdate={handleGoalUpdate}
-              handleDeleteTask={handleDeleteTask}
-            />
-          ))}
-        </Box>
+      {!hideArchived && (
+        <GoalBoardElem
+          goals={archivedGoals}
+          toggleTaskCompletion={toggleTaskCompletion}
+          handleGoalDelete={handleGoalDelete}
+          handleAddTaskToGoal={handleAddTaskToGoal}
+          handleGoalUpdate={handleGoalUpdate}
+          handleDeleteTask={handleDeleteTask}
+          isArchived={true}
+        />
       )}
     </Box>
   );
