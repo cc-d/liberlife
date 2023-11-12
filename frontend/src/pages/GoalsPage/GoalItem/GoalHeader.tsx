@@ -52,7 +52,7 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
         alignItems: "center",
         flexGrow: 1,
         width: "100%",
-        p: 0.25,
+        p: 0.5,
       }}
     >
       <Box
@@ -89,12 +89,12 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
         ) : (
           <>
             <Typography
-              variant="h6"
+              variant="h5"
               sx={{
                 flexGrow: 1,
                 width: "100%",
                 maxWidth: maxElementWidth,
-                ml: 0.5,
+                pl: 0.5,
               }}
             >
               {goal.text}

@@ -112,7 +112,7 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
             flexDirection: "row",
             alignItems: "stretch",
             flexGrow: 1,
-            maxWidth: maxNotesWidth,
+            maxWidth: "100%",
             width: "100%",
           }}
         >
@@ -128,7 +128,6 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
               borderRadius: 0,
               maxWidth: maxNotesWidth,
               width: "100%",
-              minWidth: "100%",
             }}
           />
           <IconButton
@@ -150,7 +149,7 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
           flexDirection="row"
           sx={{
             flexGrow: 1,
-            pl: 0.5,
+
             width: "100%",
           }}
         >
@@ -160,6 +159,10 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
               flexGrow: 1,
               width: "100%",
               whiteSpace: "pre-wrap",
+              p: 0,
+              m: 0,
+              pt: 0.5,
+              pl: 1,
             }}
           >
             {goal?.notes ? renderFormattedNotes(goal) : "add notes..."}

@@ -158,6 +158,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
           sx={{
             m: 0,
             p: 0,
+            ml: 0.5,
           }}
         />
         <Button

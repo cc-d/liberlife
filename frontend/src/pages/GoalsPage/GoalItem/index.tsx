@@ -110,8 +110,10 @@ export const GoalItem: React.FC<GoalItemProps> = ({
         opacity: goal.archived ? 0.5 : 1,
 
         p: 0,
-        ml: 0,
-        mr: 0.5,
+        m: 0,
+        ml: 0.25,
+        mr: 0.25,
+
         mb: 0.5,
         width: "fit-content",
       }}
