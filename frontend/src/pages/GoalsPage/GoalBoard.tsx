@@ -128,6 +128,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
             m: 0,
             flexGrow: 1,
             p: 0,
+            height: "100%",
           }}
         >
           <Typography
@@ -184,7 +185,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
         isArchived={false}
       />
 
-      <Box p={0.5} m={0.5} mt={2} sx={{ cursor: "pointer" }}>
+      <Box p={0.5} m={0.5} mt={2}>
         <ShowHideTextButton
           text="Archived"
           hideArchived={hideArchived}

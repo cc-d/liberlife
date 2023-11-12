@@ -15,9 +15,6 @@ export const ShowHideTextButton: React.FC<{
       sx={{
         cursor: "pointer",
         userSelect: "none",
-        maxWidth: "fit-content",
-        display: "flex",
-        alignItems: "center",
         width: "fit-content",
       }}
     >
