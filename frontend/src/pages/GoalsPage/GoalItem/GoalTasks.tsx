@@ -99,6 +99,8 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
                 sx={{
                   cursor: "pointer",
                   flexGrow: 1,
+                  pt: 0.25,
+                  pb: 0.25,
                   width: "100%",
                   "&:active": {
                     backgroundColor: "#303030",

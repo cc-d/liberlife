@@ -192,6 +192,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
           setHideArchived={setHideArchived}
         />
       </Box>
+
       {!hideArchived && (
         <GoalBoardElem
           goals={archivedGoals}

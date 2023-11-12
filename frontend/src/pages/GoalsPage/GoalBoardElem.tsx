@@ -41,11 +41,11 @@ export const GoalBoardElem: React.FC<GoalBoardElemProps> = ({
           <GoalItem
             key={goal.id}
             goal={goal}
-            toggleTaskCompletion={isArchived ? undefined : toggleTaskCompletion}
-            handleGoalDelete={isArchived ? undefined : handleGoalDelete}
-            handleAddTaskToGoal={isArchived ? undefined : handleAddTaskToGoal}
-            handleGoalUpdate={isArchived ? undefined : handleGoalUpdate}
-            handleDeleteTask={isArchived ? undefined : handleDeleteTask}
+            toggleTaskCompletion={toggleTaskCompletion}
+            handleGoalDelete={handleGoalDelete}
+            handleAddTaskToGoal={handleAddTaskToGoal}
+            handleGoalUpdate={handleGoalUpdate}
+            handleDeleteTask={handleDeleteTask}
           />
         ))}
       </Box>

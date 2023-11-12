@@ -16,7 +16,8 @@ export const GoalTaskItem: React.FC<{
       onClick={() => onToggle(goalId, task.id, task.completed)}
       sx={{
         cursor: "pointer",
-        mb: 1,
+        width: "100%",
+
         "&:hover": {
           backgroundColor: "#303030",
         },
