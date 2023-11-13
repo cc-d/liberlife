@@ -8,20 +8,11 @@ import GoalNotes from "./GoalNotes";
 
 interface GoalItemProps {
   goal: GoalOut;
-  toggleTaskCompletion: (
-    goalId: number,
-    taskId: number,
-    isCompleted: boolean
-  ) => void;
-  handleGoalDelete: (goalId: number) => void;
-  handleAddTaskToGoal: (goalId: number, taskText: string) => void;
-  handleGoalUpdate: (
-    goalId: number,
-    text?: string,
-    notes?: string | null,
-    archived?: boolean
-  ) => Promise<boolean>;
-  handleDeleteTask: (goalId: number, taskId: number) => void;
+  toggleTaskCompletion: Function;
+  handleGoalDelete: Function;
+  handleAddTaskToGoal: Function;
+  handleGoalUpdate: Function;
+  handleDeleteTask: Function;
 }
 
 export const getLatestDate = (goal: GoalOut): string | null => {

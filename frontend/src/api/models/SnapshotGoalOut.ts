@@ -3,18 +3,17 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { GoalTaskOut } from './GoalTaskOut';
-import type { UserOut } from './UserOut';
+import type { SnapshotTaskOut } from './SnapshotTaskOut';
 
-export type GoalOut = {
+export type SnapshotGoalOut = {
     created_on: string;
     updated_on: string;
     id: number;
-    text: string;
     user_id: number;
-    user: UserOut;
-    tasks: Array<GoalTaskOut>;
+    tasks?: Array<SnapshotTaskOut>;
     notes: (string | null);
     archived?: boolean;
+    board_id: string;
+    text: string;
 };
 

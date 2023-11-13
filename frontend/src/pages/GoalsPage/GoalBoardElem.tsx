@@ -11,7 +11,7 @@ interface GoalBoardElemProps {
   handleAddTaskToGoal?: any;
   handleGoalUpdate?: any;
   handleDeleteTask?: any;
-  isArchived: boolean;
+  isSnapshot?: boolean;
 }
 
 export const GoalBoardElem: React.FC<GoalBoardElemProps> = ({
@@ -21,7 +21,7 @@ export const GoalBoardElem: React.FC<GoalBoardElemProps> = ({
   handleAddTaskToGoal,
   handleGoalUpdate,
   handleDeleteTask,
-  isArchived = false,
+  isSnapshot = false,
 }) => {
   return (
     <>
@@ -37,17 +37,29 @@ export const GoalBoardElem: React.FC<GoalBoardElemProps> = ({
           mt: 1,
         }}
       >
-        {goals.map((goal) => (
-          <GoalItem
-            key={goal.id}
-            goal={goal}
-            toggleTaskCompletion={toggleTaskCompletion}
-            handleGoalDelete={handleGoalDelete}
-            handleAddTaskToGoal={handleAddTaskToGoal}
-            handleGoalUpdate={handleGoalUpdate}
-            handleDeleteTask={handleDeleteTask}
-          />
-        ))}
+        {goals.map((goal: GoalOut) =>
+          isSnapshot ? (
+            <GoalItem
+              key={goal.id}
+              goal={goal}
+              toggleTaskCompletion={() => {}}
+              handleGoalDelete={() => {}}
+              handleAddTaskToGoal={() => {}}
+              handleGoalUpdate={() => {}}
+              handleDeleteTask={() => {}}
+            />
+          ) : (
+            <GoalItem
+              key={goal.id}
+              goal={goal}
+              toggleTaskCompletion={toggleTaskCompletion}
+              handleGoalDelete={handleGoalDelete}
+              handleAddTaskToGoal={handleAddTaskToGoal}
+              handleGoalUpdate={handleGoalUpdate}
+              handleDeleteTask={handleDeleteTask}
+            />
+          )
+        )}
       </Box>
     </>
   );

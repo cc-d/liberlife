@@ -3,10 +3,13 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type UserOut = {
+import type { SnapshotGoalOut } from './SnapshotGoalOut';
+
+export type SnapshotOut = {
     created_on: string;
     updated_on: string;
-    id: number;
-    username: string;
+    uuid: string;
+    user_id: number;
+    goals: Array<SnapshotGoalOut>;
 };
 

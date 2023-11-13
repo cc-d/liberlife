@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload, joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
+from logfunc import logf
 from ..schemas import snapshot as SnapSchema
 from ..schemas import user as UserSchema
 
@@ -16,7 +17,10 @@ from ..db.models import (
 )
 from ..db.common import async_addcomref
 from ..crud.goal import get_goal_from_id, get_user_goals, new_goal
-from ..crud.snapshots import get_snapshot_from_uuid as get_snap_from_uuid
+from ..crud.snapshots import (
+    get_snapshot_from_uuid as get_snap_from_uuid,
+    slow_snap_from_uuid,
+)
 
 router = APIRouter(prefix='/snapshots', tags=['snapshot'])
 
@@ -43,37 +47,30 @@ async def create_snapshot(
         new_snapgoals.append(newsg)
     new_snap.goals = new_snapgoals
     await async_addcomref(db, new_snap)
-    return (
-        (
-            await db.execute(
-                select(BoardSnapshot)
-                .filter(BoardSnapshot.uuid == new_snap.uuid)
-                .options(
-                    joinedload(BoardSnapshot.goals).options(
-                        joinedload(SnapshotGoal.tasks)
-                    )
-                )
-            )
-        )
-        .unique()
-        .scalar_one_or_none()
-    )
+    return await get_snap_from_uuid(new_snap.uuid, db=db)
 
 
 @router.get('', response_model=list[SnapSchema.SnapshotOut])
+@logf(level='warning', use_print=True)
 async def list_snapshots(
     curuser: SnapSchema.UserOut = Depends(get_current_user),
     db: AsyncSession = Depends(get_adb),
 ):
-    return (
-        await db.execute(
-            select(BoardSnapshot).filter(BoardSnapshot.user_id == curuser.id)
+    snaps = await db.execute(
+        select(BoardSnapshot)
+        .filter(BoardSnapshot.user_id == curuser.id)
+        .options(
+            joinedload(BoardSnapshot.goals).options(
+                joinedload(SnapshotGoal.tasks)
+            )
         )
-        .scalars()
-        .all()
     )
+    return snaps.unique().scalars().all()
 
 
 @router.get('/{snap_id}', response_model=SnapSchema.SnapshotOut)
+@logf(level='warning')
 async def get_snapshot(snap_id: str, db: AsyncSession = Depends(get_adb)):
-    return await get_snap_from_uuid(snap_id, db=db)
+    snap = await get_snap_from_uuid(snap_id, db=db)
+
+    return snap

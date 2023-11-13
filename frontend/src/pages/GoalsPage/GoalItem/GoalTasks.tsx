@@ -14,10 +14,10 @@ import { GoalTaskOut, GoalOut } from "../../../api";
 interface GoalTasksProps {
   newTaskText: string;
   setNewTaskText: (text: string) => void;
-  handleAddTask: () => void;
-  handleDeleteTask: (goalId: number, taskId: number) => void;
+  handleAddTask: any;
+  handleDeleteTask: any;
   goal: GoalOut | null;
-  onToggle: (goalId: number, taskId: number, isCompleted: boolean) => void;
+  onToggle: any;
 }
 
 export const GoalTasks: React.FC<GoalTasksProps> = ({

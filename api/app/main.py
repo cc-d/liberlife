@@ -9,7 +9,7 @@ from . import config
 from .utils.middleware import apply_cors_middleware, CSPMiddleware
 from .routes import ROUTERS
 
-app = FastAPI(docs_url='/docs', redoc_url='/redoc')
+app = FastAPI(docs_url='/docs', redoc_url='/redoc', debug=config.DEBUG)
 
 router = APIRouter()
 

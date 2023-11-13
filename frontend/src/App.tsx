@@ -7,7 +7,8 @@ import { Box } from "@mui/system";
 import LogRegPage from "./pages/LogRegPage";
 import GoalsPage from "./pages/GoalsPage";
 import NavBar from "./components/NavBar";
-import './styles.css';
+import SnapshotGoalBoard from "./pages/SnapPage";
+import "./styles.css";
 
 export const primaryColor = "#2E8B57"; // SeaGreen
 export const secondaryColor = "#006400"; // DarkGreen
@@ -22,34 +23,33 @@ export const darkTheme = createTheme({
       main: secondaryColor, // DarkGreen
     },
     background: {
-      default: '#121212',  // Dark background color
-      paper: '#1E1E1E',    // Dark paper background
+      default: "#121212", // Dark background color
+      paper: "#1E1E1E", // Dark paper background
     },
-
   },
 });
-
 
 function App() {
   return (
     <Box
       sx={{
-        backgroundColor: 'black',
+        backgroundColor: "black",
       }}
-      >
-    <AuthProvider>
-      <ThemeProvider theme={darkTheme}>
-        <CssBaseline />
+    >
+      <AuthProvider>
+        <ThemeProvider theme={darkTheme}>
+          <CssBaseline />
 
-        <Router>
-          <NavBar />
-          <Routes>
-            <Route path="/" element={<GoalsPage />} />
-            <Route path="/login" element={<LogRegPage />} />
-          </Routes>
-        </Router>
-      </ThemeProvider>
-    </AuthProvider>
+          <Router>
+            <NavBar />
+            <Routes>
+              <Route path="/" element={<GoalsPage />} />
+              <Route path="/snapshots/:uuid" element={<SnapshotGoalBoard />} />
+              <Route path="/login" element={<LogRegPage />} />
+            </Routes>
+          </Router>
+        </ThemeProvider>
+      </AuthProvider>
     </Box>
   );
 }

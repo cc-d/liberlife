@@ -184,7 +184,6 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
         handleAddTaskToGoal={handleAddTaskToGoal}
         handleGoalUpdate={handleGoalUpdate}
         handleDeleteTask={handleDeleteTask}
-        isArchived={false}
       />
 
       <Box p={0.5} m={0.5} mt={2}>
@@ -203,7 +202,6 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
           handleAddTaskToGoal={handleAddTaskToGoal}
           handleGoalUpdate={handleGoalUpdate}
           handleDeleteTask={handleDeleteTask}
-          isArchived={true}
         />
       )}
     </Box>

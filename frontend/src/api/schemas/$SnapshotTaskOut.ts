@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $GoalTaskOut = {
+export const $SnapshotTaskOut = {
     properties: {
         created_on: {
             type: 'string',

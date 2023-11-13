@@ -3,6 +3,9 @@ from myfuncs import typed_evar as evar
 from logfunc import logf
 
 
+DEBUG = evar('API_DEBUG', False)
+SQL_ECHO = evar('API_SQL_ECHO', False)
+
 HOST = evar('API_HOST')
 PORT = evar('API_PORT')
 

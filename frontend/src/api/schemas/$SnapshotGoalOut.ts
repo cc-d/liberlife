@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $GoalTaskOut = {
+export const $SnapshotGoalOut = {
     properties: {
         created_on: {
             type: 'string',
@@ -18,12 +18,30 @@ export const $GoalTaskOut = {
             type: 'number',
             isRequired: true,
         },
-        completed: {
-            type: 'boolean',
+        user_id: {
+            type: 'number',
             isRequired: true,
         },
-        goal_id: {
-            type: 'number',
+        tasks: {
+            type: 'array',
+            contains: {
+                type: 'SnapshotTaskOut',
+            },
+        },
+        notes: {
+            type: 'any-of',
+            contains: [{
+                type: 'string',
+            }, {
+                type: 'null',
+            }],
+            isRequired: true,
+        },
+        archived: {
+            type: 'boolean',
+        },
+        board_id: {
+            type: 'string',
             isRequired: true,
         },
         text: {

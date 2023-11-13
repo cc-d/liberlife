@@ -11,18 +11,22 @@ const NavBar: React.FC = () => {
   const auth = useContext(AuthContext);
   const theme = useTheme();
 
+  const isLoginPage = window.location.pathname === "/login";
+
   const handleLogout = () => {
     auth?.logout();
     navigate("/login");
   };
 
   useEffect(() => {
-    if (!auth || !auth.user) {
+    if (isLoginPage) {
+      return;
+    } else if ((!auth || !auth.user) && !auth?.userLoading) {
       navigate("/login");
     }
   }, [auth, navigate]);
 
-  if (!auth || !auth.user) {
+  if (!auth || !auth.user || window.location.pathname === "/login") {
     return null;
   }
 

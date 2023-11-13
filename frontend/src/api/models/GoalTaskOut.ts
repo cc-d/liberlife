@@ -4,9 +4,9 @@
 /* eslint-disable */
 
 export type GoalTaskOut = {
-    id: number;
     created_on: string;
     updated_on: string;
+    id: number;
     completed: boolean;
     goal_id: number;
     text: string;

@@ -4,10 +4,6 @@
 /* eslint-disable */
 export const $UserOut = {
     properties: {
-        id: {
-            type: 'number',
-            isRequired: true,
-        },
         created_on: {
             type: 'string',
             isRequired: true,
@@ -17,6 +13,10 @@ export const $UserOut = {
             type: 'string',
             isRequired: true,
             format: 'date-time',
+        },
+        id: {
+            type: 'number',
+            isRequired: true,
         },
         username: {
             type: 'string',

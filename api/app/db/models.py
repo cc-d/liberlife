@@ -2,6 +2,7 @@ from uuid import uuid4
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Integer, String, Text, ForeignKey, DateTime, Boolean
 from sqlalchemy.sql import func
+from myfuncs import default_repr
 from .session import Base
 
 _STRLEN = 255
@@ -74,6 +75,9 @@ class SnapshotGoal(CommonGoal):
     )
     board = relationship("BoardSnapshot", back_populates="goals")
 
+    def __repr__(self):
+        return default_repr(self, use_pformat=True)
+
 
 class CommonGoalTask(CommonBase):
     __abstract__ = True
@@ -112,3 +116,8 @@ class BoardSnapshot(TimestampMixin):
         cascade="all, delete-orphan",
         lazy='joined',
     )
+
+    def __repr__(self):
+        from pprint import pformat
+
+        return default_repr(self, use_pformat=True)

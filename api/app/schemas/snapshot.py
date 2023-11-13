@@ -1,3 +1,4 @@
+from pydantic import BaseModel
 from .goal import GoalIn, GoalOut, GoalTaskIn, GoalTaskOut, GoalUpdate
 from .common import CommonBase
 from .user import UserOut
@@ -14,6 +15,7 @@ class SnapshotGoalOut(CommonBase):
     notes: str | None
     archived: bool = False
     board_id: str
+    text: str
 
 
 class SnapshotOut(CommonBase):

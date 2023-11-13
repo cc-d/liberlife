@@ -3,10 +3,12 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type UserOut = {
+export type SnapshotTaskOut = {
     created_on: string;
     updated_on: string;
     id: number;
-    username: string;
+    completed: boolean;
+    goal_id: number;
+    text: string;
 };
 
