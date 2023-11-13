@@ -19,6 +19,7 @@ interface GoalBoardProps {
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>;
   newGoalText: string;
   setNewGoalText: (text: string) => void;
+  isSnapshot?: boolean;
 }
 
 const GoalBoard: React.FC<GoalBoardProps> = ({
@@ -26,6 +27,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
   setGoals,
   newGoalText,
   setNewGoalText,
+  isSnapshot = false,
 }) => {
   const [sortOrder, setSortOrder] = useState<SortOrder>(
     () => (localStorage.getItem("sortOrder") as SortOrder) || SortOrder.Default
@@ -140,41 +142,45 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
               userSelect: "none",
             }}
           >
-            Goal Board
+            {isSnapshot ? "GOAL BOARD SNAPSHOT" : "Goal Board"}
           </Typography>
           <SortButton sortOrder={sortOrder} onSort={handleSortClick} />
         </Box>
 
-        <TextField
-          variant="outlined"
-          placeholder="New goal..."
-          value={newGoalText}
-          onChange={(e) => setNewGoalText(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleAddGoal();
-            }
-          }}
-          sx={{
-            m: 0,
-            p: 0,
-            ml: 0.5,
-          }}
-        />
-        <Button
-          size="small"
-          variant="contained"
-          color="primary"
-          sx={{
-            m: 0,
+        {isSnapshot ? null : (
+          <>
+            <TextField
+              variant="outlined"
+              placeholder="New goal..."
+              value={newGoalText}
+              onChange={(e) => setNewGoalText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleAddGoal();
+                }
+              }}
+              sx={{
+                m: 0,
+                p: 0,
+                ml: 0.5,
+              }}
+            />
+            <Button
+              size="small"
+              variant="contained"
+              color="primary"
+              sx={{
+                m: 0,
 
-            maxWidth: "100%",
-            minHeight: "100%",
-          }}
-          onClick={handleAddGoal}
-        >
-          Create
-        </Button>
+                maxWidth: "100%",
+                minHeight: "100%",
+              }}
+              onClick={handleAddGoal}
+            >
+              Create
+            </Button>
+          </>
+        )}
       </Box>
 
       <GoalBoardElem

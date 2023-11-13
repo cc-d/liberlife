@@ -12,6 +12,7 @@ const NavBar: React.FC = () => {
   const theme = useTheme();
 
   const isLoginPage = window.location.pathname === "/login";
+  const isSnapPage = window.location.pathname.startsWith("/snapshot");
 
   const handleLogout = () => {
     auth?.logout();
@@ -22,11 +23,13 @@ const NavBar: React.FC = () => {
     if (isLoginPage) {
       return;
     } else if ((!auth || !auth.user) && !auth?.userLoading) {
-      navigate("/login");
+      if (!window.location.pathname.startsWith("/snapshots")) {
+        navigate("/login");
+      }
     }
   }, [auth, navigate]);
 
-  if (!auth || !auth.user || window.location.pathname === "/login") {
+  if (window.location.pathname === "/login") {
     return null;
   }
 
@@ -38,6 +41,7 @@ const NavBar: React.FC = () => {
       }}
     >
       <Toolbar
+        variant="dense"
         sx={{
           display: "flex",
           alignItems: "center",
@@ -46,20 +50,48 @@ const NavBar: React.FC = () => {
           color: `${theme.palette.text.primary}`,
         }}
       >
-        <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          life.liberfy.ai
-        </Typography>
-
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <IconButton color="inherit" aria-label="account of current user">
-            <AccountCircleIcon />
-          </IconButton>
-          <Typography variant="body1" sx={{ mr: 2, color: "text.primary" }}>
-            {auth.user}
+        <Box
+          sx={{
+            flexGrow: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Typography
+            variant="h6"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            life.liberfy.ai
           </Typography>
-          <IconButton color="inherit" onClick={handleLogout}>
-            <LogoutIcon />
-          </IconButton>
+
+          {isSnapPage ? (
+            <Typography variant="h6">not logged in</Typography>
+          ) : (
+            auth?.user && (
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <IconButton
+                  color="inherit"
+                  aria-label="account of current user"
+                >
+                  <AccountCircleIcon />
+                </IconButton>
+                <Typography
+                  variant="body1"
+                  sx={{ mr: 2, color: "text.primary" }}
+                >
+                  {auth.user}
+                </Typography>
+                <IconButton color="inherit" onClick={handleLogout}>
+                  <LogoutIcon />
+                </IconButton>
+              </Box>
+            )
+          )}
         </Box>
       </Toolbar>
     </AppBar>
