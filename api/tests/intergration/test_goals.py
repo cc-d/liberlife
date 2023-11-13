@@ -327,3 +327,33 @@ async def test_goal_401s(client, funcnewuser, new_task_func):
     async for resp in _401urls():
         resp = await resp
         assert resp.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_snapshots(client, user_and_headers, event_loop, setup_goals):
+    setup_goals, headers, ujson = setup_goals
+    ujson, headers = user_and_headers
+    resp = await client.get("/snapshots", headers=headers)
+    assert resp.status_code == 200
+
+    assert len(resp.json()) == 0
+
+    resp = await client.post("/snapshots", headers=headers)
+    assert resp.status_code == 200
+    assert 'uuid' in resp.json()
+    assert 'goals' in resp.json()
+
+
+@pytest.mark.asyncio
+async def test_snapshots_401(client, setup_goals):
+    setup_goals, headers, ujson = setup_goals
+    resp = await client.get("/snapshots", headers=None)
+    assert resp.status_code == 401
+
+    resp = await client.post("/snapshots", headers=headers)
+    assert resp.status_code == 200
+
+    snapid = resp.json()['uuid']
+
+    resp = await client.get(f"/snapshots/{snapid}", headers=None)
+    assert resp.status_code == 200
