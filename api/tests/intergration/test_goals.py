@@ -357,3 +357,10 @@ async def test_snapshots_401(client, setup_goals):
 
     resp = await client.get(f"/snapshots/{snapid}", headers=None)
     assert resp.status_code == 200
+
+    resp = await client.get(f"/snapshots/{snapid}", headers=headers)
+    assert resp.status_code == 200
+
+    assert resp.json()['uuid'] == snapid
+    assert 'goals' in resp.json()
+    assert resp.json()['goals'] != []

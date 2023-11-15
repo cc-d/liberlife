@@ -1,10 +1,66 @@
 import React, { useContext, useEffect } from "react";
 import useTheme from "@mui/material/styles/useTheme";
-import { AppBar, Toolbar, Typography, IconButton, Box } from "@mui/material";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Box,
+  Button,
+} from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"; // User icon
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext, AuthContextProps } from "../contexts/AuthContext";
+
+interface NavBarUserElemProps {
+  auth: AuthContextProps | undefined;
+  handleLogout: () => void;
+}
+
+const NavBarUserElem: React.FC<NavBarUserElemProps> = ({
+  auth,
+  handleLogout,
+}) => {
+  const nav = useNavigate();
+  if (!auth || auth?.userLoading) {
+    return (
+      <Typography variant="h6" sx={{ mr: 2, color: "inherit" }}>
+        Loading...
+      </Typography>
+    );
+  }
+
+  if (!auth.user) {
+    return (
+      <Button variant="text" color="inherit" onClick={() => nav("/login")}>
+        Login
+      </Button>
+    );
+  }
+
+  return (
+    <Box sx={{ display: "flex", alignItems: "center" }}>
+      <IconButton
+        color="inherit"
+        aria-label="account of current user"
+        aria-controls="menu-appbar"
+        aria-haspopup="true"
+        onClick={() => nav("/profile")}
+        sx={{ mr: 1 }}
+        href="/profile"
+      >
+        <AccountCircleIcon />
+        <Typography variant="h6" sx={{ mr: 0, color: "inherit" }}>
+          {auth.user}
+        </Typography>
+      </IconButton>
+      <IconButton color="inherit" onClick={handleLogout} sx={{ mr: 2 }}>
+        <LogoutIcon />
+      </IconButton>
+    </Box>
+  );
+};
 
 const NavBar: React.FC = () => {
   const navigate = useNavigate();
@@ -60,37 +116,16 @@ const NavBar: React.FC = () => {
         >
           <Typography
             variant="h6"
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
+            color="inherit"
+            component="a"
+            href="/snapshots"
+            sx={{ textDecoration: "none" }}
           >
             life.liberfy.ai
           </Typography>
 
-          {isSnapPage ? (
-            <Typography variant="h6">not logged in</Typography>
-          ) : (
-            auth?.user && (
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <IconButton
-                  color="inherit"
-                  aria-label="account of current user"
-                >
-                  <AccountCircleIcon />
-                </IconButton>
-                <Typography
-                  variant="body1"
-                  sx={{ mr: 2, color: "text.primary" }}
-                >
-                  {auth.user}
-                </Typography>
-                <IconButton color="inherit" onClick={handleLogout}>
-                  <LogoutIcon />
-                </IconButton>
-              </Box>
-            )
+          {!isLoginPage && (
+            <NavBarUserElem auth={auth} handleLogout={handleLogout} />
           )}
         </Box>
       </Toolbar>

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
 import { decodePayload } from "./helpers";
 
-interface AuthContextProps {
+export interface AuthContextProps {
   user: string | null;
   login: (username: string, token: string) => void;
   logout: () => void;
