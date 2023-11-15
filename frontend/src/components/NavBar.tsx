@@ -118,7 +118,7 @@ const NavBar: React.FC = () => {
             variant="h6"
             color="inherit"
             component="a"
-            href="/snapshots"
+            href="/"
             sx={{ textDecoration: "none" }}
           >
             life.liberfy.ai
