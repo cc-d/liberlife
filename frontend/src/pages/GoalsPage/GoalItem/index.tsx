@@ -118,15 +118,11 @@ export const GoalItem: React.FC<GoalItemProps> = ({
         m: 0,
         ml: 0.25,
         mr: 0.25,
-        width: {
-          xs: longestStr < 13 ? "47.6vw" : "fit-content",
-          sm: "fit-content",
-          md: "fit-content",
-          lg: "fit-content",
-          xl: "fit-content",
+        width: "fit-content",
+        maxWidth: {
+          xs: longestStr < 13 ? "47.3vw" : "98vw",
+          sm: "100%",
         },
-        maxWidth: "100%",
-
         mb: 0.5,
       }}
     >
