@@ -28,6 +28,19 @@ export const getLatestDate = (goal: GoalOut): string | null => {
   return latestDate ? latestDate.toLocaleString() : new Date().toLocaleString();
 };
 
+export const getLongestStr = (goal: GoalOut): number => {
+  let longestStr: number = goal.text.length;
+  if (goal.notes && goal.notes.length > longestStr) {
+    longestStr = goal.notes.length;
+  }
+  goal.tasks.forEach((task) => {
+    if (task.text.length > longestStr) {
+      longestStr = task.text.length;
+    }
+  });
+  return longestStr;
+};
+
 export const GoalItem: React.FC<GoalItemProps> = ({
   goal,
   toggleTaskCompletion,
@@ -41,7 +54,8 @@ export const GoalItem: React.FC<GoalItemProps> = ({
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editedText, setEditedText] = useState<string>("");
 
-  const maxElementWidth = "98vw";
+  const longestStr = getLongestStr(goal);
+  const maxElementWidth = longestStr >= 13 ? "98vw" : "47.6vw";
   const maxNotesWidth = `calc(${maxElementWidth} - 48px) !important`;
   const theme = useTheme();
   const latestUpdate = getLatestDate(goal);
@@ -104,9 +118,16 @@ export const GoalItem: React.FC<GoalItemProps> = ({
         m: 0,
         ml: 0.25,
         mr: 0.25,
+        width: {
+          xs: longestStr < 13 ? "47.6vw" : "fit-content",
+          sm: "fit-content",
+          md: "fit-content",
+          lg: "fit-content",
+          xl: "fit-content",
+        },
+        maxWidth: "100%",
 
         mb: 0.5,
-        width: "fit-content",
       }}
     >
       <GoalHeader

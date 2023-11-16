@@ -61,6 +61,7 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
           flexDirection: "row",
           alignItems: "center",
           flexGrow: 1,
+          width: "100%",
         }}
       >
         {isEditing ? (
@@ -91,9 +92,10 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
             <Typography
               variant="h5"
               sx={{
+                display: "flex",
                 flexGrow: 1,
                 width: "100%",
-                maxWidth: maxElementWidth,
+
                 pl: 0.5,
               }}
             >
