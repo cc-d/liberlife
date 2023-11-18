@@ -30,3 +30,32 @@ Thumbs.db
 
 .env
 .pytest_cache
+
+# Node (for your React frontend)
+node_modules/
+npm-debug.log
+yarn-error.log
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Android (for your mobile/ directory)
+*.apk
+*.ap_
+*.aab
+*.dex
+*.class
+*.o
+*.so
+
+# Gradle files
+.gradle/
+build/
+
+# Android Studio
+.idea/
+*.iml
+*.hprof
+local.properties
