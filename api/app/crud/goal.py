@@ -12,6 +12,7 @@ from ..schemas.user import UserDB
 from ..schemas.goal import GoalOut, GoalIn
 from ..utils.security import decode_jwt, oauth_scheme, verify_pass, encode_jwt
 from ..db.common import async_addcomref
+from ..utils.httperrors import HTTP401, HTTP404, HTTP400, HTTP409
 
 
 async def get_goal_from_id(

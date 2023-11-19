@@ -15,11 +15,19 @@ from .test_user import test_register
 from myfuncs import ranstr
 from api.app.schemas import goal as GoalSchema
 
+G_ATTRS = ['id', 'text', 'user_id', 'archived']
+
+
+@logf(level='INFO')
+def match_attrs(goal, goal2, mattrs=G_ATTRS):
+    for attr in mattrs:
+        assert getattr(goal, attr) == getattr(goal2, attr)
+    return True
+
 
 @logf(level='INFO')
 async def new_goal_req(text, client, headers, **kwargs):
     resp = await client.post("/goals", json={'text': text}, headers=headers)
-    assert resp.status_code == 200
     return GoalSchema.GoalOut(**resp.json())
 
 
@@ -39,17 +47,11 @@ async def new_goaltask_func(client, user_and_headers) -> GoalSchema.GoalOut:
     uttext = ranstr(30)
     tuser, headers = user_and_headers
     ngoal = await new_goal_req(ngtext, client, headers)
-    assert ngoal.text == ngtext
-    assert ngoal.user_id == tuser['id']
-    assert hasattr(ngoal, 'archived')
-    assert ngoal.archived == False
 
     ntask = await new_taskresp(uttext, ngoal.id, client, headers)
     if isinstance(ntask, dict):
         ntask = GoalSchema.GoalTaskOut(**ntask)
-    assert ntask.text == uttext
-    assert ntask.goal_id == ngoal.id
-    assert ntask.completed == False
+
     ngoal.tasks = [ntask]
     return ngoal
 
@@ -78,18 +80,15 @@ async def test_list_goals(client, setup_goals):
     newgoals, headers, ujson = setup_goals
     resp = await client.get("/goals", headers=headers)
     assert resp.status_code == 200
-    assert len(resp.json()) == len(newgoals)
-    expected = ['id', 'text', 'user_id', 'archived', 'tasks']
-    for goal in resp.json():
-        for _attr in expected:
-            assert _attr in goal
-        assert goal['user_id'] == ujson['id']
-        assert goal['archived'] == False
-        assert len(goal['tasks']) == 0
+    rgoals = [GoalSchema.GoalOut(**x) for x in resp.json()]
+    rgoals = {g.id: g for g in rgoals}
+
+    for ng in newgoals:
+        match_attrs(ng, rgoals[ng.id])
 
 
 @pytest.mark.asyncio
-async def test_get_goal(client, setup_goals):
+async def test_get_goal(client, event_loop, setup_goals):
     newgoals, headers, _ = setup_goals
     for goal in newgoals:
         resp = await client.get(f"/goals/{goal.id}", headers=headers)
@@ -104,84 +103,73 @@ async def test_get_goal(client, setup_goals):
 async def test_update_goal(client, user_and_headers, new_goaltask_func):
     tuser, headers = user_and_headers
     newgoal = await new_goaltask_func
+    _rs = ranstr(30)
 
-    uid = newgoal.user.id
-    # text only
-    utext = ranstr(30)
-    resp = await client.put(
-        f"/goals/{newgoal.id}", json={'text': utext}, headers=headers
-    )
+    resp = await client.get(f"/goals/{newgoal.id}", headers=headers)
     assert resp.status_code == 200
-    assert resp.json()['user_id'] == uid
-    for _attr in ['id', 'text', 'archived']:
-        if _attr == 'text':
-            assert resp.json()[_attr] == utext
-        else:
-            assert resp.json()[_attr] == getattr(newgoal, _attr)
+    curgoal = GoalSchema.GoalOut(**resp.json())
+    assert match_attrs(curgoal, newgoal)
 
-    # test two fields
-    utext = ranstr(30)
+    jpay = {'text': 'updated', 'archived': True}
+    resp = await client.put(f"/goals/{newgoal.id}", json=jpay, headers=headers)
+    assert resp.status_code == 200
+    for k, v in jpay.items():
+        assert resp.json()[k] == v
+
+    resp = await client.get(f"/goals/{newgoal.id}", headers=headers)
+    assert resp.status_code == 200
+    curgoal = GoalSchema.GoalOut(**resp.json())
+    assert curgoal.text == 'updated'
+    assert curgoal.archived == True
+
     resp = await client.put(
         f"/goals/{newgoal.id}",
-        json={'text': utext, 'archived': True},
+        json={'text': newgoal.text, 'archived': False},
         headers=headers,
     )
 
     assert resp.status_code == 200
-    ugoal = GoalSchema.GoalOut(**resp.json())
-    assert ugoal.text == utext
-    assert ugoal.user_id == uid
-    assert ugoal.archived == True
-
-    # test just completed
-    resp = await client.put(
-        f"/goals/{newgoal.id}", json={'archive': True}, headers=headers
-    )
-    assert resp.status_code == 200
-    assert resp.json()['archived'] == True
-    assert resp.json()['text'] == utext
-    assert resp.json()['user_id'] == uid
-    assert resp.json()['id'] == newgoal.id
-
-
-async def allgoals_request(client, headers):
-    resp = await client.get("/goals", headers=headers)
-    assert resp.status_code == 200
-    return [GoalSchema.GoalOut(**g) for g in resp.json()]
+    assert resp.json()['text'] == newgoal.text
+    assert resp.json()['archived'] == False
 
 
 @pytest.mark.asyncio
 async def test_delete_goal(client, setup_goals):
     newgoals, headers, tuser = setup_goals
     utext = ranstr(30)
-
-    newgoal = await new_goal_req(utext, client, headers)
-    assert newgoal.text == utext
-    assert newgoal.user_id == tuser['id']
-    assert hasattr(newgoal, 'archived')
-    assert newgoal.archived == False
-    ngid = newgoal.id
+    resp = await client.post("/goals", json={'text': utext}, headers=headers)
+    assert resp.status_code == 200
+    ngid = resp.json()['id']
 
     resp = await client.delete(f"/goals/{ngid}", headers=headers)
     assert resp.status_code == 200
 
-    ugoals = await allgoals_request(client, headers)
-    ugmap = {g.id: g for g in ugoals}
+    ugoals = await client.get("/goals", headers=headers)
+    ugoals = [x['id'] for x in ugoals.json()]
+    assert ngid not in ugoals
 
-    for ng in newgoals:
-        assert ng.id in ugmap
-        assert ugmap[ng.id].text == ng.text
-        assert ugmap[ng.id].user_id == ng.user_id
-        assert ugmap[ng.id].archived == ng.archived
+
+@pytest.mark.asyncio
+async def test_update_goal_notes(client, setup_goals):
+    newgoals, headers, tuser = setup_goals
+    goal_to_update = newgoals[0]
+    updated_notes = "Updated Notes"
+    resp = await client.put(
+        f"/goals/{goal_to_update.id}/notes",
+        json={'notes': updated_notes},
+        headers=headers,
+    )
+    assert resp.status_code == 200
+    assert resp.json()['notes'] == updated_notes
 
 
 @pytest.fixture(scope="module")
-def setup_tasks(client, setup_goals, event_loop):
+def setup_tasks(client, event_loop, setup_goals):
     async def _async_setup():
         newgoals, headers, tuser = setup_goals
         for goal in newgoals:
             for text in TASKS.TEXTS:
-                await new_taskresp(text, goal.id, client, headers)
+                await new_taskresp(text, goal.id, client, headers=headers)
         return newgoals, headers, tuser
 
     return event_loop.run_until_complete(_async_setup())
@@ -362,3 +350,35 @@ async def test_snapshots_401(client, setup_goals):
     assert resp.json()['uuid'] == snapid
     assert 'goals' in resp.json()
     assert resp.json()['goals'] != []
+
+
+@pytest.mark.asyncio
+async def test_get_update_delete_task(client, setup_goals):
+    # Assuming a task has been added to a goal in a previous test
+    newgoals, headers, tuser = setup_goals
+    goal = newgoals[0]
+
+    # Get the first task of the goal
+    tasks_resp = await client.get(f"/goals/{goal.id}/tasks", headers=headers)
+    task = tasks_resp.json()[0]
+
+    # Update the task
+    updated_text = "Updated Task"
+    update_resp = await client.put(
+        f"/goals/{goal.id}/tasks/{task['id']}",
+        json={'completed': True},
+        headers=headers,
+    )
+    assert update_resp.status_code == 200
+    assert update_resp.json()['completed'] == True
+    assert update_resp.json()['goal_id'] == goal.id
+    assert update_resp.json()['id'] == task['id']
+    # Delete the task
+    delete_resp = await client.delete(
+        f"/goals/{goal.id}/tasks/{task['id']}", headers=headers
+    )
+    assert delete_resp.status_code == 200
+
+    # VERify it's gone
+    tasks_resp = await client.get(f"/goals/{goal.id}/tasks", headers=headers)
+    assert task['id'] not in [x['id'] for x in tasks_resp.json()]

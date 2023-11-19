@@ -7,10 +7,11 @@ from typing import Generator, Optional
 import pytest
 import pytest_asyncio
 from httpx import AsyncClient
+from myfuncs import ranstr
 from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
-from myfuncs import ranstr
+
 from api.app.db import get_adb, get_test_adb
 from api.app.db.session import sync_engine, test_engine
 from api.app.main import app

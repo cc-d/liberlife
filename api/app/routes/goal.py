@@ -14,12 +14,34 @@ from ..crud.goal import (
 )
 from ..db import get_adb
 from ..db.common import async_addcomref
-from ..db.models import Goal, GoalTask
+from ..db.models import Goal, GoalTask, User
 from ..schemas import goal as GoalSchema, user as UserSchema
 from ..utils.dependencies import get_current_user
-from ..utils.httperrors import HTTP401
+from ..utils.httperrors import HTTP401, HTTP404, HTTP400, HTTP409
+
 
 router = APIRouter(prefix='/goals', tags=['goal'])
+
+AUTHUID = int | None | UserSchema.UserOut | str | User
+
+
+from logfunc import logf
+
+
+@logf(use_print=True)
+def _raise(
+    goal: GoalSchema.GoalOut | None, auth_uid: AUTHUID = None
+) -> GoalSchema.GoalOut:
+    if getattr(auth_uid, "id", None) is not None:
+        auth_uid = auth_uid.id
+    if goal is None:
+        raise HTTP404
+    if auth_uid is not None:
+        if not isinstance(auth_uid, GoalSchema.UserOut):
+            auth_uid = int(auth_uid)
+        if int(goal.user_id) != int(auth_uid):
+            raise HTTP401
+    return goal
 
 
 @router.post('', response_model=GoalSchema.GoalOut)
@@ -43,9 +65,7 @@ async def list_goals(
 async def get_goal(
     goal: Goal = Depends(get_goal_from_id), cur_user=Depends(get_current_user)
 ):
-    if goal.user_id != cur_user.id:
-        raise HTTP401
-    return goal
+    return _raise(goal, cur_user)
 
 
 @router.put("/{goal_id}", response_model=GoalSchema.GoalOut)
@@ -55,9 +75,7 @@ async def update_goal(
     cur_user=Depends(get_current_user),
     db: AsyncSession = Depends(get_adb),
 ):
-    if goal.user_id != cur_user.id:
-        raise HTTP401
-
+    goal = _raise(goal, cur_user.id)
     for field, value in goal_update.model_dump().items():
         if value is None:
             continue
@@ -72,8 +90,7 @@ async def delete_goal(
     cur_user=Depends(get_current_user),
     db: AsyncSession = Depends(get_adb),
 ):
-    if goal.user_id != cur_user.id:
-        raise HTTP401
+    _raise(goal, cur_user.id)
     await db.delete(goal)
     await db.commit()
     return {"detail": "Goal deleted successfully"}
@@ -86,8 +103,7 @@ async def update_goal_notes(
     cur_user=Depends(get_current_user),
     db: AsyncSession = Depends(get_adb),
 ):
-    if goal.user_id != cur_user.id:
-        raise HTTP401
+    goal = _raise(goal, cur_user.id)
     goal.notes = goal_update.notes
     await async_addcomref(db, goal)
     return goal
