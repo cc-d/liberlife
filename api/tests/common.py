@@ -22,15 +22,18 @@ from api.app.utils.security import decode_jwt, hash_pass
 from .utils import assert_token, headers, login, register, ume_resp
 
 
-@pytest.fixture(scope="module")
+# Define a session-scoped event loop fixture
+@pytest_asyncio.fixture(scope="session")
 def event_loop():
-    loop = asyncio.get_event_loop_policy().new_event_loop()
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
     yield loop
     loop.close()
+    asyncio.set_event_loop(None)
 
 
 @pytest_asyncio.fixture(scope="module")
-async def create_db():
+async def create_db(event_loop):
     metadata_main = MetaData()
     metadata_main.reflect(bind=sync_engine)
     async with test_engine.begin() as conn:
@@ -41,11 +44,12 @@ async def create_db():
     await test_engine.dispose()
 
 
+# Modify client fixture to ensure it does not directly depend on event_loop
 @pytest_asyncio.fixture(scope="module")
-async def client(create_db) -> AsyncClient:
+async def client(create_db):
     app.dependency_overrides[get_adb] = get_test_adb
-    async with AsyncClient(app=app, base_url="http://test") as client:
-        yield client
+    async with AsyncClient(app=app, base_url="http://test") as client_instance:
+        yield client_instance
     del app.dependency_overrides[get_adb]
 
 

@@ -18,13 +18,13 @@ from api.app.main import app
 from ..data import USERNAME, PASSWORD, LOGINJSON, OAUTH_LOGIN_FORM, USERDB
 from ..common import (
     assert_token,
-    event_loop,
     client,
     create_db,
     headers as uheads,
     reguser,
     userme,
     reguser,
+    event_loop,
 )
 from myfuncs import ranstr
 from logfunc import logf

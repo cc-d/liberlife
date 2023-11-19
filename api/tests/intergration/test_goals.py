@@ -1,15 +1,16 @@
 import pytest
+import pytest_asyncio
 from logfunc import logf
 from ..data import GOALS, TASKS, USERNAME, LOGINJSON, OAUTH_LOGIN_FORM
 from ..common import (
     assert_token,
     client,
     create_db,
-    event_loop,
     headers,
     reguser,
     user_and_headers,
     userme,
+    event_loop,
 )
 from .test_user import test_register
 from myfuncs import ranstr
@@ -56,22 +57,18 @@ async def new_goaltask_func(client, user_and_headers) -> GoalSchema.GoalOut:
     return ngoal
 
 
-@pytest.fixture(scope="module")
-def setup_goals(client, user_and_headers, event_loop):
-    async def _async_setup():
-        tuser, headers = user_and_headers
-        newgoals = []
-        for text in GOALS.TEXTS:
-            ng = await new_goal_req(text, client, headers)
-            assert ng.text == text
-            assert ng.user_id == tuser['id']
-            assert hasattr(ng, 'archived')
-            assert ng.archived == False
-            newgoals.append(ng)
-
-        return newgoals, headers, tuser
-
-    return event_loop.run_until_complete(_async_setup())
+@pytest_asyncio.fixture(scope="module")
+async def setup_goals(client, user_and_headers):
+    tuser, headers = user_and_headers
+    newgoals = []
+    for text in GOALS.TEXTS:
+        ng = await new_goal_req(text, client, headers)
+        assert ng.text == text
+        assert ng.user_id == tuser['id']
+        assert hasattr(ng, 'archived')
+        assert ng.archived == False
+        newgoals.append(ng)
+    return newgoals, headers, tuser
 
 
 @pytest.mark.asyncio
@@ -88,7 +85,7 @@ async def test_list_goals(client, setup_goals):
 
 
 @pytest.mark.asyncio
-async def test_get_goal(client, event_loop, setup_goals):
+async def test_get_goal(client, setup_goals):
     newgoals, headers, _ = setup_goals
     for goal in newgoals:
         resp = await client.get(f"/goals/{goal.id}", headers=headers)
@@ -163,16 +160,13 @@ async def test_update_goal_notes(client, setup_goals):
     assert resp.json()['notes'] == updated_notes
 
 
-@pytest.fixture(scope="module")
-def setup_tasks(client, event_loop, setup_goals):
-    async def _async_setup():
-        newgoals, headers, tuser = setup_goals
-        for goal in newgoals:
-            for text in TASKS.TEXTS:
-                await new_taskresp(text, goal.id, client, headers=headers)
-        return newgoals, headers, tuser
-
-    return event_loop.run_until_complete(_async_setup())
+@pytest_asyncio.fixture(scope="module")
+async def setup_tasks(client, setup_goals):
+    newgoals, headers, tuser = setup_goals
+    for goal in newgoals:
+        for text in TASKS.TEXTS:
+            await new_taskresp(text, goal.id, client, headers=headers)
+    return newgoals, headers, tuser
 
 
 @pytest.mark.asyncio
@@ -239,9 +233,7 @@ async def test_update_task(client, setup_tasks):
 
 
 @pytest.fixture(scope="function")
-async def new_task_func(
-    client, user_and_headers, event_loop
-) -> GoalSchema.GoalOut:
+async def new_task_func(client, user_and_headers) -> GoalSchema.GoalOut:
     ngtext = ranstr(30)
     uttext = ranstr(30)
     tuser, headers = user_and_headers
@@ -316,7 +308,7 @@ async def test_goal_401s(client, user_and_headers, new_task_func):
 
 
 @pytest.mark.asyncio
-async def test_snapshots(client, user_and_headers, event_loop, setup_goals):
+async def test_snapshots(client, user_and_headers, setup_goals):
     setup_goals, headers, ujson = setup_goals
     ujson, headers = user_and_headers
     resp = await client.get("/snapshots", headers=headers)
