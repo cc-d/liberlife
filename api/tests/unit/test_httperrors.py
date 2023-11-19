@@ -1,9 +1,9 @@
 import pytest
+import asyncio
 from api.app.utils import httperrors as ERR
 
 from fastapi import status
 from fastapi.exceptions import HTTPException
-from fastapi.responses import JSONResponse
 
 _STR = 'test string'
 
