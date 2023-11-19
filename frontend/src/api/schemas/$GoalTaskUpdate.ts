@@ -5,8 +5,28 @@
 export const $GoalTaskUpdate = {
     properties: {
         completed: {
-            type: 'boolean',
-            isRequired: true,
+            type: 'any-of',
+            contains: [{
+                type: 'boolean',
+            }, {
+                type: 'null',
+            }],
+        },
+        text: {
+            type: 'any-of',
+            contains: [{
+                type: 'string',
+            }, {
+                type: 'null',
+            }],
+        },
+        notes: {
+            type: 'any-of',
+            contains: [{
+                type: 'string',
+            }, {
+                type: 'null',
+            }],
         },
     },
 } as const;

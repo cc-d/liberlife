@@ -142,18 +142,10 @@ export const actionTaskCompletion = async (
 ) => {
   try {
     let resp = await apios.put(`/goals/${taskGoal.id}/tasks/${taskId}`, {
-      completed: !isCompleted,
+      completed: isCompleted,
     });
 
-    return taskGoal.tasks?.map((task) => {
-      if (task.id === taskId) {
-        return {
-          ...task,
-          completed: !isCompleted,
-        };
-      }
-      return task;
-    });
+    return resp.data;
   } catch (error) {
     console.error("Error updating task completion status:", error);
 

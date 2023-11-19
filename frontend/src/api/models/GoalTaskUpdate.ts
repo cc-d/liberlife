@@ -4,6 +4,8 @@
 /* eslint-disable */
 
 export type GoalTaskUpdate = {
-    completed: boolean;
+    completed?: (boolean | null);
+    text?: (string | null);
+    notes?: (string | null);
 };
 

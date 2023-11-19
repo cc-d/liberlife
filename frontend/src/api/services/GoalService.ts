@@ -218,7 +218,7 @@ export class GoalService {
      * @throws ApiError
      */
     public static updateTaskGoalsGoalIdTasksTaskIdPut(
-        taskId: number,
+        taskId: (number | string),
         goalId: (number | string),
         requestBody: GoalTaskUpdate,
     ): CancelablePromise<GoalTaskOut> {
@@ -245,7 +245,7 @@ export class GoalService {
      * @throws ApiError
      */
     public static deleteTaskGoalsGoalIdTasksTaskIdDelete(
-        taskId: number,
+        taskId: (number | string),
         goalId: (number | string),
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
