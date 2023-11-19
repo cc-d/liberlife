@@ -1,18 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import useTheme from "@mui/material/styles/useTheme";
 import { Box, Divider } from "@mui/material";
 import { GoalOut } from "../../../api";
 import GoalHeader from "./GoalHeader";
 import GoalTasks from "./GoalTasks";
 import GoalNotes from "./GoalNotes";
+import {
+  actionUpdateGoal,
+  actionDeleteTask,
+  actionAddTaskToGoal,
+  actionTaskCompletion,
+  actihandleGoalDelete,
+} from "../actions";
 
 interface GoalItemProps {
   goal: GoalOut;
-  toggleTaskCompletion: Function;
   handleGoalDelete: Function;
   handleAddTaskToGoal: Function;
   handleGoalUpdate: Function;
   handleDeleteTask: Function;
+  toggleTaskCompletion: Function;
 }
 
 export const getLatestDate = (goal: GoalOut): string | null => {
@@ -43,7 +50,6 @@ export const getLongestStr = (goal: GoalOut): number => {
 
 export const GoalItem: React.FC<GoalItemProps> = ({
   goal,
-  toggleTaskCompletion,
   handleGoalDelete,
   handleAddTaskToGoal,
   handleDeleteTask,
@@ -54,13 +60,43 @@ export const GoalItem: React.FC<GoalItemProps> = ({
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editedText, setEditedText] = useState<string>("");
 
+  const [tasks, setTasks] = useState<GoalOut["tasks"]>(goal.tasks);
+
   const longestStr = getLongestStr(goal);
   const maxElementWidth = longestStr >= 13 ? "98vw" : "47.6vw";
   const maxNotesWidth = `calc(${maxElementWidth} - 48px) !important`;
   const theme = useTheme();
   const latestUpdate = getLatestDate(goal);
 
-  useEffect(() => {}, [goal]);
+  const toggleTaskCompletion = async (taskId: number, isCompleted: boolean) => {
+    const originalTasks = tasks;
+    try {
+      // Now, update the tasks state using the functional update form
+      // to ensure we are working with the most recent state.
+      setTasks((tasks) =>
+        tasks.map((task) =>
+          task.id === taskId ? { ...task, completed: !isCompleted } : task
+        )
+      );
+      await actionTaskCompletion(taskId, !isCompleted, goal);
+    } catch (error) {
+      // Make sure to capture and handle any errors that might occur
+      console.error("Failed to toggle task completion:", error);
+      setTasks(originalTasks);
+    }
+  };
+
+  useMemo(() => {
+    if (goal) {
+      setEditedText(goal.text);
+    }
+  }, [goal]);
+
+  useMemo(() => {
+    if (goal) {
+      setTasks(goal.tasks);
+    }
+  }, [goal.tasks]);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -101,6 +137,8 @@ export const GoalItem: React.FC<GoalItemProps> = ({
     handleMenuClose();
   };
 
+  const giWidth = longestStr < 13 ? `${1 + longestStr * 16}px` : `100%`; // 1rem for the checkbox
+
   return (
     <Box
       sx={{
@@ -109,7 +147,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
         display: "flex", // This turns it into a flex container
         flexDirection: "column", // Stack children vertically
         flexGrow: 1,
-        backgroundColor: `#111111`,
+        backgroundColor: `#0f0f0f`,
 
         overflowWrap: "anywhere",
         opacity: goal.archived ? 0.5 : 1,
@@ -118,9 +156,13 @@ export const GoalItem: React.FC<GoalItemProps> = ({
         m: 0,
         ml: 0.25,
         mr: 0.25,
-        width: "fit-content",
+        minWidth: `150px`,
+        width: {
+          xs: giWidth,
+          sm: "fit-content",
+        },
         maxWidth: {
-          xs: longestStr < 13 ? "47.3vw" : "98vw",
+          xs: longestStr < 13 ? `calc(max(${longestStr}, 150px))` : "100%",
           sm: "100%",
         },
         mb: 0.5,
@@ -150,9 +192,10 @@ export const GoalItem: React.FC<GoalItemProps> = ({
             setNewTaskText("");
           }
         }}
-        goal={goal}
+        tasks={tasks} // Pass the state here
         onToggle={toggleTaskCompletion}
         handleDeleteTask={handleDeleteTask}
+        taskGoal={goal}
       />
       <Divider
         sx={{
@@ -162,7 +205,6 @@ export const GoalItem: React.FC<GoalItemProps> = ({
 
       <GoalNotes
         goal={goal}
-        maxNotesWidth={maxNotesWidth}
         onSaveNotes={handleSaveNotes}
         latestUpdate={latestUpdate}
       />

@@ -38,8 +38,6 @@ const SnapshotGoalBoard: React.FC = () => {
       <GoalBoard
         goals={snapshotGoals}
         setGoals={setSnapshotGoals}
-        newGoalText={""}
-        setNewGoalText={() => {}}
         isSnapshot={true}
       />
     </Container>

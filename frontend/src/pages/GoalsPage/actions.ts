@@ -136,36 +136,27 @@ export const actionDeleteTask = async (
 };
 
 export const actionTaskCompletion = async (
-  goals: GoalOut[],
-  setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>,
-  goalId: number,
   taskId: number,
-  isCompleted: boolean
+  isCompleted: boolean,
+  taskGoal: GoalOut
 ) => {
   try {
-    const response = await apios.put(`/goals/${goalId}/tasks/${taskId}`, {
+    let resp = await apios.put(`/goals/${taskGoal.id}/tasks/${taskId}`, {
       completed: !isCompleted,
     });
-    if (response.data) {
-      setGoals(
-        goals.map((goal) => {
-          if (goal.id === goalId && goal.tasks) {
-            goal.updated_on = response.data.updated_on;
-            goal.tasks = goal.tasks.map((task) => {
-              if (task.id === taskId) {
-                return {
-                  ...task,
-                  completed: !isCompleted,
-                };
-              }
-              return task;
-            });
-          }
-          return goal;
-        })
-      );
-    }
+
+    return taskGoal.tasks?.map((task) => {
+      if (task.id === taskId) {
+        return {
+          ...task,
+          completed: !isCompleted,
+        };
+      }
+      return task;
+    });
   } catch (error) {
     console.error("Error updating task completion status:", error);
+
+    //throw error; // Rethrow the error so it can be handled by the caller.
   }
 };

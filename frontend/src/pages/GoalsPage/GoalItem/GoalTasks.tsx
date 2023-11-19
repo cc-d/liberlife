@@ -10,13 +10,15 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { GoalTaskOut, GoalOut } from "../../../api";
+import GoalTaskItem from "./GoalTaskItem";
 
 interface GoalTasksProps {
   newTaskText: string;
   setNewTaskText: (text: string) => void;
   handleAddTask: any;
   handleDeleteTask: any;
-  goal: GoalOut | null;
+  tasks: GoalTaskOut[];
+  taskGoal: GoalOut;
   onToggle: any;
 }
 
@@ -24,11 +26,11 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
   newTaskText,
   setNewTaskText,
   handleAddTask,
-  goal,
+  taskGoal,
+  tasks, // Receive tasks as a prop
   onToggle,
   handleDeleteTask,
 }) => {
-  const tasks: GoalTaskOut[] = goal ? goal.tasks : [];
   return (
     <Box
       sx={{
@@ -91,53 +93,15 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
             mb: 1,
           }}
         >
-          {goal &&
+          {tasks &&
             tasks.map((task) => (
-              <Box
-                display="flex"
-                alignItems="center"
-                sx={{
-                  cursor: "pointer",
-                  flexGrow: 1,
-                  pt: 0.25,
-                  pb: 0.25,
-                  width: "100%",
-                  "&:active": {
-                    backgroundColor: "#303030",
-                  },
-                  "@media (pointer: fine)": {
-                    "&:hover": {
-                      backgroundColor: "#303030",
-                    },
-                  },
-                }}
-                key={task.id}
-                onClick={() => onToggle(goal.id, task.id, task.completed)}
-              >
-                <Checkbox
-                  checked={task.completed}
-                  sx={{ m: 0, p: 0.5, mr: 0.5 }}
-                />
-                <Box
-                  sx={{
-                    textDecoration: task.completed ? "line-through" : "none",
-                    color: "inherit",
-                    opacity: task.completed ? 0.75 : 1,
-                    flexGrow: 1,
-                    overflowWrap: "anywhere",
-                  }}
-                >
-                  <Typography variant="subtitle1">{task.text}</Typography>
-                </Box>
-                <IconButton
-                  onClick={(event) => {
-                    event.stopPropagation(); // Prevent triggering the onToggle when deleting
-                    handleDeleteTask(goal.id, task.id);
-                  }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </Box>
+              <GoalTaskItem
+                key={task.id} // Ensure key prop is set
+                taskGoal={taskGoal}
+                task={task}
+                onToggle={onToggle}
+                handleDeleteTask={handleDeleteTask}
+              />
             ))}
         </Box>
       </Box>

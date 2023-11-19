@@ -12,23 +12,21 @@ import {
 } from "./actions";
 import GoalBoardElem from "./GoalBoardElem";
 import ShowHideTextButton from "../../components/ShowHideTooltip";
+import { useAuth } from "../../contexts/AuthContext";
 
 import SortButton, { SortOrder, sortGoals, sortOrders } from "./SortButton";
 interface GoalBoardProps {
   goals: GoalOut[];
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>;
-  newGoalText: string;
-  setNewGoalText: (text: string) => void;
   isSnapshot?: boolean;
 }
 
 const GoalBoard: React.FC<GoalBoardProps> = ({
   goals,
   setGoals,
-  newGoalText,
-  setNewGoalText,
   isSnapshot = false,
 }) => {
+  let [newGoalText, setNewGoalText] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<SortOrder>(
     () => (localStorage.getItem("sortOrder") as SortOrder) || SortOrder.Default
   );
@@ -48,13 +46,6 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
     }
   };
 
-  const toggleTaskCompletion = async (
-    goalId: number,
-    taskId: number,
-    isCompleted: boolean
-  ) => {
-    return actionTaskCompletion(goals, setGoals, goalId, taskId, isCompleted);
-  };
   const handleAddTaskToGoal = async (goalId: number, taskText: string) => {
     return actionAddTaskToGoal(goals, setGoals, goalId, taskText);
   };
@@ -98,12 +89,12 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
     [goals, sortOrder]
   );
 
-  useEffect(() => {
+  useMemo(() => {
     setCurrentGoals(sortedGoals.filter((goal) => !goal.archived));
 
     !hideArchived &&
       setArchivedGoals(sortedGoals.filter((goal) => goal.archived));
-  }, [sortedGoals]);
+  }, [sortedGoals, hideArchived]);
 
   return (
     <Box
@@ -153,10 +144,14 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
               variant="outlined"
               placeholder="New goal..."
               value={newGoalText}
-              onChange={(e) => setNewGoalText(e.target.value)}
+              onChange={(e) =>
+                e.target.value !== newGoalText && setNewGoalText(e.target.value)
+              }
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   handleAddGoal();
+                } else if (e.key === "Escape") {
+                  setNewGoalText("");
                 }
               }}
               sx={{
@@ -185,7 +180,6 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
 
       <GoalBoardElem
         goals={currentGoals}
-        toggleTaskCompletion={toggleTaskCompletion}
         handleGoalDelete={handleGoalDelete}
         handleAddTaskToGoal={handleAddTaskToGoal}
         handleGoalUpdate={handleGoalUpdate}
@@ -203,7 +197,6 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
       {!hideArchived && (
         <GoalBoardElem
           goals={archivedGoals}
-          toggleTaskCompletion={toggleTaskCompletion}
           handleGoalDelete={handleGoalDelete}
           handleAddTaskToGoal={handleAddTaskToGoal}
           handleGoalUpdate={handleGoalUpdate}

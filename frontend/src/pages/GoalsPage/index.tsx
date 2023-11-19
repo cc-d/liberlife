@@ -43,12 +43,7 @@ const GoalsPage: React.FC = () => {
         backgroundColor: "black",
       }}
     >
-      <GoalBoard
-        goals={goals}
-        setGoals={setGoals}
-        newGoalText={newGoalText}
-        setNewGoalText={setNewGoalText}
-      />
+      <GoalBoard goals={goals} setGoals={setGoals} />
     </Container>
   );
 };

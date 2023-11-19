@@ -6,7 +6,6 @@ import SaveIcon from "@mui/icons-material/Save";
 
 interface GoalNotesProps {
   goal: GoalOut;
-  maxNotesWidth: string;
   onSaveNotes: (notes: string | null) => void;
   latestUpdate: string | null;
 }
@@ -80,7 +79,7 @@ const removeNewlines = (
 
 export const GoalNotes: React.FC<GoalNotesProps> = ({
   goal,
-  maxNotesWidth,
+
   onSaveNotes,
   latestUpdate,
 }) => {
@@ -126,7 +125,6 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
               m: 0,
               p: 0,
               borderRadius: 0,
-              maxWidth: maxNotesWidth,
               width: "100%",
             }}
           />
@@ -185,14 +183,17 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
         variant="caption"
         color="textSecondary"
         sx={{
+          textAlign: "right",
+          flexGrow: 1,
           display: "flex",
           justifyContent: "flex-end",
+
           m: 0,
           p: 0,
           mr: 0.5,
         }}
       >
-        updated: {latestUpdate}
+        {latestUpdate}
       </Typography>
     </Box>
   );
