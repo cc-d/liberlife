@@ -21,6 +21,8 @@ from api.app.utils.security import decode_jwt, hash_pass
 
 from .utils import assert_token, headers, login, register, ume_resp
 
+app.dependency_overrides[get_adb] = get_test_adb
+
 
 # Define a session-scoped event loop fixture
 @pytest_asyncio.fixture(scope="session")
@@ -46,11 +48,9 @@ async def create_db(event_loop):
 
 # Modify client fixture to ensure it does not directly depend on event_loop
 @pytest_asyncio.fixture(scope="module")
-async def client(create_db):
-    app.dependency_overrides[get_adb] = get_test_adb
+async def client(event_loop, create_db):
     async with AsyncClient(app=app, base_url="http://test") as client_instance:
         yield client_instance
-    del app.dependency_overrides[get_adb]
 
 
 @pytest_asyncio.fixture(scope="module")
