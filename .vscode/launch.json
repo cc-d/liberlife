@@ -6,7 +6,8 @@
       "name": "Run Tests",
       "module": "pytest",
       "env": {
-        "LOGF_USE_PRINT": "true",
+        "LOGF_LEVEL": "INFO",
+        "LOGF_USE_PRINT": "true"
       },
       "args": [
         "tests",
@@ -15,10 +16,9 @@
         "--show-capture=all",
         "-x",
         "--cov",
-        "--cov-report=term-missing",
+        "--cov-report=term-missing"
       ],
-      "cwd": "${workspaceFolder}/api",
+      "cwd": "${workspaceFolder}/api"
     }
-
   ]
 }

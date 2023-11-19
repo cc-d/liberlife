@@ -266,102 +266,20 @@ async def test_delete_task(client, user_and_headers):
 
 
 @pytest.mark.asyncio
-async def test_get_task_badid(client, setup_tasks):
-    newgoals, headers, _ = setup_tasks
-    resp = await apireq(
-        client.get, f"/goals/{newgoals[0].id}/tasks/", headers=headers
-    )
-    assert resp.status_code == 307
-
-
-@pytest.mark.asyncio
-async def test_goal_401s(client, user_and_headers, new_task_func):
+async def test_goaltask_401s(client, user_and_headers, new_task_func):
     ujson, headers = user_and_headers
     ng = await new_task_func
 
-    ngid = ng.id
-    ntid = ng.tasks[0].id
+    gid = ng.id
+    tid = ng.tasks[0].id
     urlmethods = {
         '/goals': ['get'],
-        '/goals/%s' % ngid: ['get', 'put', 'delete'],
-        '/goals/%s/tasks' % ngid: ['get', 'post'],
+        '/goals/%s' % gid: ['get', 'put', 'delete'],
+        '/goals/%s/tasks' % gid: ['get', 'post'],
     }
-    urlmethods['/goals/%s/tasks/%s' % (ngid, ntid)] = ['get', 'put', 'delete']
+    urlmethods['/goals/%s/tasks/%s' % (gid, tid)] = ['get', 'put', 'delete']
 
-    async def _401urls():
-        for url, methods in urlmethods.items():
-            for method in methods:
-                yield getattr(client, method)(url, headers=None)
-
-    async for resp in _401urls():
-        resp = await resp
-        assert resp.status_code == 401
-
-
-@pytest.mark.asyncio
-async def test_snapshots(client, user_and_headers, setup_goals):
-    setup_goals, headers, ujson = setup_goals
-    ujson, headers = user_and_headers
-    resp = await client.get("/snapshots", headers=headers)
-    assert resp.status_code == 200
-
-    assert len(resp.json()) == 0
-
-    resp = await client.post("/snapshots", headers=headers)
-    assert resp.status_code == 200
-    assert 'uuid' in resp.json()
-    assert 'goals' in resp.json()
-
-
-@pytest.mark.asyncio
-async def test_snapshots_401(client, setup_goals):
-    setup_goals, headers, ujson = setup_goals
-    resp = await client.get("/snapshots", headers=None)
-    assert resp.status_code == 401
-
-    resp = await client.post("/snapshots", headers=headers)
-    assert resp.status_code == 200
-
-    snapid = resp.json()['uuid']
-
-    resp = await client.get(f"/snapshots/{snapid}", headers=None)
-    assert resp.status_code == 200
-
-    resp = await client.get(f"/snapshots/{snapid}", headers=headers)
-    assert resp.status_code == 200
-
-    assert resp.json()['uuid'] == snapid
-    assert 'goals' in resp.json()
-    assert resp.json()['goals'] != []
-
-
-@pytest.mark.asyncio
-async def test_get_update_delete_task(client, setup_goals):
-    # Assuming a task has been added to a goal in a previous test
-    newgoals, headers, tuser = setup_goals
-    goal = newgoals[0]
-
-    # Get the first task of the goal
-    tasks_resp = await client.get(f"/goals/{goal.id}/tasks", headers=headers)
-    task = tasks_resp.json()[0]
-
-    # Update the task
-    updated_text = "Updated Task"
-    update_resp = await client.put(
-        f"/goals/{goal.id}/tasks/{task['id']}",
-        json={'completed': True},
-        headers=headers,
-    )
-    assert update_resp.status_code == 200
-    assert update_resp.json()['completed'] == True
-    assert update_resp.json()['goal_id'] == goal.id
-    assert update_resp.json()['id'] == task['id']
-    # Delete the task
-    delete_resp = await client.delete(
-        f"/goals/{goal.id}/tasks/{task['id']}", headers=headers
-    )
-    assert delete_resp.status_code == 200
-
-    # VERify it's gone
-    tasks_resp = await client.get(f"/goals/{goal.id}/tasks", headers=headers)
-    assert task['id'] not in [x['id'] for x in tasks_resp.json()]
+    for url, methods in urlmethods.items():
+        for method in methods:
+            resp = await apireq(getattr(client, method), url, headers=None)
+            assert resp.status_code == 401

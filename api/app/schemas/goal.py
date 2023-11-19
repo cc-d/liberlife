@@ -23,7 +23,9 @@ class GoalTaskIn(GoalBase):
 
 
 class GoalTaskUpdate(GoalTaskBase):
-    pass
+    text: Optional[str] = None
+    completed: Optional[bool] = None
+    notes: Optional[str] = None
 
 
 class GoalTaskOut(GoalTaskBase, DBCommon):

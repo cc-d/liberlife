@@ -40,10 +40,10 @@ async def get_user_goals(
 
 
 async def get_goal_task_from_id(
-    task_id: int, db: AsyncSession = Depends(get_adb)
+    task_id: int | str, db: AsyncSession = Depends(get_adb)
 ) -> Optional[Goal]:
     goal_task = await db.execute(
-        select(GoalTask).where(GoalTask.id == task_id)
+        select(GoalTask).where(GoalTask.id == int(task_id))
     )
     goal_task = goal_task.scalar_one_or_none()
     return goal_task

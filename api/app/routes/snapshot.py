@@ -51,7 +51,6 @@ async def create_snapshot(
 
 
 @router.get('', response_model=list[SnapSchema.SnapshotOut])
-@logf(level='warning', use_print=True)
 async def list_snapshots(
     curuser: SnapSchema.UserOut = Depends(get_current_user),
     db: AsyncSession = Depends(get_adb),
@@ -69,7 +68,6 @@ async def list_snapshots(
 
 
 @router.get('/{snap_id}', response_model=SnapSchema.SnapshotOut)
-@logf(level='warning')
 async def get_snapshot(snap_id: str, db: AsyncSession = Depends(get_adb)):
     snap = await get_snap_from_uuid(snap_id, db=db)
 

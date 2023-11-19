@@ -146,15 +146,21 @@ async def list_tasks_for_goal(
     "/{goal_id}/tasks/{task_id}", response_model=GoalSchema.GoalTaskOut
 )
 async def get_task(
-    task: GoalTask = Depends(
-        get_goal_task_from_id
-    ),  # You'll need to implement this
+    task_id: int,
     goal: Goal = Depends(get_goal_from_id),
     cur_user=Depends(get_current_user),
+    db: AsyncSession = Depends(get_adb),
 ):
+
+    if goal is None:
+        raise HTTP404
     if goal.user_id != cur_user.id:
         raise HTTP401
-    return task
+
+    taskmap = {t.id: t for t in goal.tasks}
+    if task_id not in taskmap:
+        raise HTTP404
+    return taskmap[task_id]
 
 
 @router.put(
@@ -171,9 +177,11 @@ async def update_task(
 ):
     if goal.user_id != cur_user.id:
         raise HTTP401
-
     for key, value in task_update.model_dump().items():
+        if value is None:
+            continue
         setattr(task, key, value)
+
     db.add(task)
     goal.updated_on = func.now()
     db.add(goal)
