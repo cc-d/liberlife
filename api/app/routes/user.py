@@ -13,7 +13,7 @@ from ..db.common import async_addcomref
 from ..crud import user as CrudUser
 from ..utils.dependencies import get_current_user
 from ..utils.security import verify_pass, hash_pass, encode_jwt
-
+from ..utils.httperrors import HTTP401, HTTP404, HTTP400, HTTP409
 
 router = APIRouter(prefix='/u', tags=['user'])
 
@@ -26,10 +26,7 @@ async def register(
         data.username, must_exist=False, db=db
     )
     if existing_user:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Username already exists",
-        )
+        raise HTTP409(detail="User already exists")
     hpass = hash_pass(data.password)
     new_user = User(username=data.username, hpassword=hpass)
 

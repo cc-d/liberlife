@@ -29,11 +29,10 @@ def event_loop():
 
 
 @pytest_asyncio.fixture(scope="module")
-async def create_db() -> AsyncSession:
+async def create_db():
     metadata_main = MetaData()
     metadata_main.reflect(bind=sync_engine)
     async with test_engine.begin() as conn:
-        # print("Creating tables", metadata_main.tables)
         await conn.run_sync(metadata_main.create_all)
     yield
     async with test_engine.begin() as conn:
@@ -50,40 +49,20 @@ async def client(create_db) -> AsyncClient:
 
 
 @pytest.fixture(scope="module")
-async def loginresp(client, reguser):
-    uh = await login(client)
-    return uh
-
-
-@pytest.fixture
-async def funclogin(client):
-    return await login(client)
-
-
-@pytest.fixture
-async def funcnewuser(client) -> tuple[SchemaUser.UserOut, dict]:
-    uname, upass = ranstr(20), ranstr(20)
-    ujson = {"username": uname, "password": upass}
-    uhead = await register(client, ujson)
-    assert uhead.status_code == 200
-    um = await client.get("/u/me", headers=headers(uhead))
-    assert um.status_code == 200
-
-    return um, uhead.json()
-
-
-@pytest.fixture(scope="module")
 async def reguser(client):
     return await register(client)
 
 
 @pytest.fixture(scope="module")
 async def userme(client, reguser):
+    await login(client)
     return await ume_resp(client)
 
 
 @pytest_asyncio.fixture(scope="module")
-async def user_and_headers(loginresp, userme):
-    lr = await loginresp
-    ume = await userme
-    return ume.json(), headers(lr)
+async def user_and_headers(client, userme):
+    await userme
+    loginresp = await login(client)
+    heads = headers(loginresp)
+    ume = await ume_resp(client)
+    return ume.json(), heads

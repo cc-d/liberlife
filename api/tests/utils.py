@@ -3,28 +3,22 @@ from .data import LOGINJSON
 
 
 def assert_token(resp, rjson=None):
-    if rjson is None:
+    if not rjson:
         rjson = resp.json()
-
     assert resp.status_code == 200
     assert "access_token" in rjson
     assert resp.json()["token_type"] == "bearer"
     _decoded = decode_jwt(rjson["access_token"])
-    assert "sub" in _decoded
-
-    assert 'exp' in _decoded
+    assert all(k in _decoded for k in ["sub", "exp"])
 
 
 def headers(resp, ujson=None):
-    if ujson is None:
+    if not ujson:
         ujson = LOGINJSON
     rjson = resp.json()
-
-    assert resp.status_code == 200
     assert_token(resp, rjson)
-    token = rjson["access_token"]
     return {
-        'Authorization': f'Bearer {token}',
+        'Authorization': f'Bearer {rjson["access_token"]}',
         'Content-Type': 'application/json',
     }
 

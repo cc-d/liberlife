@@ -7,7 +7,7 @@ from typing import Optional, Union
 from ..db import get_adb
 from ..db.models import User
 from ..schemas import user as SchemaUser
-
+from ..utils.httperrors import HTTP401, HTTP404, HTTP400, HTTP409
 from ..utils.security import decode_jwt, oauth_scheme, verify_pass, encode_jwt
 
 
@@ -25,15 +25,10 @@ async def get_from_username(
 
     if must_exist is not None:
         if must_exist and user is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"User with username {username} not found",
-            )
+            raise HTTP404
         elif not must_exist and user is not None:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"User with username {username} already exists",
-            )
+            raise HTTP409(detail="User already exists")
+
     return user
 
 

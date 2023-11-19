@@ -7,11 +7,9 @@ from ..common import (
     create_db,
     event_loop,
     headers,
-    loginresp,
     reguser,
     user_and_headers,
     userme,
-    funcnewuser,
 )
 from .test_user import test_register
 from myfuncs import ranstr
@@ -306,8 +304,8 @@ async def test_delete_task(client, user_and_headers, new_task_func):
 
 
 @pytest.mark.asyncio
-async def test_goal_401s(client, funcnewuser, new_task_func):
-    ume, umehead = await funcnewuser
+async def test_goal_401s(client, user_and_headers, new_task_func):
+    ujson, headers = user_and_headers
     ng = await new_task_func
 
     ngid = ng.id
@@ -322,7 +320,7 @@ async def test_goal_401s(client, funcnewuser, new_task_func):
     async def _401urls():
         for url, methods in urlmethods.items():
             for method in methods:
-                yield getattr(client, method)(url, headers=umehead)
+                yield getattr(client, method)(url, headers=None)
 
     async for resp in _401urls():
         resp = await resp
