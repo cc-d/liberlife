@@ -35,19 +35,6 @@ class MainActivity : AppCompatActivity() {
             "https://life.liberfy.ai/"
         )
 
-
-
-        webView.webViewClient = object : WebViewClient() {
-            override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
-                super.onReceivedError(view, request, error)
-                // Log or handle errors
-            }
-
-            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-                return false
-            }
-        }
-
         WebView.setWebContentsDebuggingEnabled(true)
     }
 }
