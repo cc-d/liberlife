@@ -1,5 +1,8 @@
+from httpx import AsyncClient
+from logfunc import logf
 from ..app.utils.security import decode_jwt
 from .data import LOGINJSON
+from typing import Callable
 
 
 def assert_token(resp, rjson=None):
@@ -36,3 +39,16 @@ async def ume_resp(client):
     uh = headers(uh)
     resp = await client.get("/u/me", headers=uh)
     return resp
+
+
+@logf()
+async def apireq(
+    clientmeth: Callable,
+    url: str,
+    json: dict = None,
+    headers: dict = None,
+    **kwargs,
+):
+    if clientmeth.__name__ in ["post", "put", "patch"]:
+        return await clientmeth(url, json=json, headers=headers, **kwargs)
+    return await clientmeth(url, headers=headers, **kwargs)

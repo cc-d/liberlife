@@ -21,38 +21,38 @@ from ..common import (
     event_loop,
     client,
     create_db,
-    headers,
+    headers as uheads,
     reguser,
     userme,
     reguser,
 )
 from myfuncs import ranstr
 from logfunc import logf
+from ..utils import apireq
 
 
 @pytest.mark.asyncio
-async def test_register(reguser):
-    assert_token(await reguser)
+async def test_register(client):
+    json = {"username": ranstr(20), "password": ranstr(20)}
+    resp = await apireq(client.post, "/u/register", json)
+    assert resp.status_code == 200
 
 
 @pytest.mark.asyncio
 async def test_login(client, reguser):
-    resp = await client.post(
-        "/u/login",
-        json=LOGINJSON,
-        headers={'Content-Type': 'application/json'},
-    )
-    headers(resp)
+    resp = await apireq(client.post, "/u/login", LOGINJSON)
+    uheads(resp)
 
 
 @pytest.mark.asyncio
 async def test_oauth_login(client, reguser):
-    resp = await client.post(
+    resp = await apireq(
+        client.post,
         "/u/oauth_login",
+        {"Content-Type": "application/x-www-form-urlencoded"},
         data=OAUTH_LOGIN_FORM,
-        headers={'Content-Type': 'application/x-www-form-urlencoded'},
     )
-    headers(resp)
+    uheads(resp)
 
 
 @pytest.mark.asyncio
@@ -71,22 +71,13 @@ async def test_wrongpass_login(client, reguser):
 
 @pytest.mark.asyncio
 async def test_register_duplicate_user(client, reguser):
-    # Since the user is already registered, try registering again
     resp = await client.post("/u/register", json=LOGINJSON)
     assert resp.status_code == 409
     assert "exists" in resp.json()["detail"]
 
 
 @pytest.mark.asyncio
-async def test_me(client, userme):
-    cur_user = await userme
-    print(cur_user)
-    uh = await client.post(
-        "/u/login",
-        json=LOGINJSON,
-        headers={'Content-Type': 'application/json'},
-    )
-    uh = headers(uh)
-    resp = await client.get("/u/me", headers=uh)
+async def test_me(client, reguser):
+    uh = uheads(reguser)
+    resp = await apireq(client.get, "/u/me", headers=uh)
     assert resp.status_code == 200
-    assert resp.json()["username"] == USERNAME

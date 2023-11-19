@@ -49,21 +49,20 @@ async def client(create_db) -> AsyncClient:
     del app.dependency_overrides[get_adb]
 
 
-@pytest.fixture(scope="module")
+@pytest_asyncio.fixture(scope="module")
 async def reguser(client):
     return await register(client)
 
 
-@pytest.fixture(scope="module")
+@pytest_asyncio.fixture(scope="module")
 async def userme(client, reguser):
-    await login(client)
-    return await ume_resp(client)
+    resp = client.get("/u/me", headers=headers(reguser))
+    return resp
 
 
 @pytest_asyncio.fixture(scope="module")
-async def user_and_headers(client, userme):
-    await userme
-    loginresp = await login(client)
-    heads = headers(loginresp)
-    ume = await ume_resp(client)
-    return ume.json(), heads
+async def user_and_headers(reguser, userme):
+    uh = headers(reguser)
+    ume = await userme
+
+    return ume.json(), uh

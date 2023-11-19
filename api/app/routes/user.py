@@ -41,25 +41,22 @@ async def oauth_login(
     data: OAuth2PasswordRequestForm = Depends(),
     db: AsyncSession = Depends(get_adb),
 ):
-    token = await CrudUser.get_token_from_login(
+    return await CrudUser.get_token_from_login(
         data.username, data.password, db=db
     )
-    return token
 
 
 @router.post("/login", response_model=SchemaUser.Token)
 async def json_login(
     data: SchemaUser.UserIn, db: AsyncSession = Depends(get_adb)
 ):
-    token = await CrudUser.get_token_from_login(
+    return await CrudUser.get_token_from_login(
         data.username, data.password, db=db
     )
-    return token
 
 
 @router.get("/me", response_model=SchemaUser.UserOut)
 async def me(cur_user=Depends(get_current_user)):
     if not cur_user:
         raise HTTPException(status_code=404, detail="User not found")
-
     return cur_user
