@@ -22,11 +22,3 @@ OAUTH_LOGIN_FORM = {
     "username": USERNAME,
     "password": PASSWORD,
 }
-
-
-class GOALS:
-    TEXTS = ['TESTGOAL%s' % i for i in range(2)]
-
-
-class TASKS:
-    TEXTS = ['TESTTASK%s' % i for i in range(2)]

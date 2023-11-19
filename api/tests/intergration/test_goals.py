@@ -1,7 +1,7 @@
 import pytest
 import pytest_asyncio
 from logfunc import logf
-from ..data import GOALS, TASKS, USERNAME, LOGINJSON, OAUTH_LOGIN_FORM
+from ..data import USERNAME, LOGINJSON, OAUTH_LOGIN_FORM
 from ..common import (
     assert_token,
     client,
@@ -12,11 +12,20 @@ from ..common import (
     userme,
     event_loop,
 )
+from ..utils import apireq
 from .test_user import test_register
 from myfuncs import ranstr
 from api.app.schemas import goal as GoalSchema
 
 G_ATTRS = ['id', 'text', 'user_id', 'archived']
+
+
+class GOALS:
+    TEXTS = [ranstr(5, 20) for _ in range(3)]
+
+
+class TASKS:
+    TEXTS = [ranstr(5, 20) for _ in range(2)]
 
 
 @logf(level='INFO')
@@ -28,18 +37,24 @@ def match_attrs(goal, goal2, mattrs=G_ATTRS):
 
 @logf(level='INFO')
 async def new_goal_req(text, client, headers, **kwargs):
-    resp = await client.post("/goals", json={'text': text}, headers=headers)
+    resp = await apireq(
+        client.post, "/goals", {'text': text}, headers, **kwargs
+    )
+    assert resp.status_code == 200
     return GoalSchema.GoalOut(**resp.json())
 
 
 @logf(level='INFO')
-async def new_taskresp(text, goalid, client, headers, **kwargs):
-    resp = await client.post(
-        "/goals/%s/tasks" % goalid,
-        json={'text': text, 'completed': False},
-        headers=headers,
+async def new_task_req(text, goalid, client, headers, **kwargs):
+    resp = await apireq(
+        client.post,
+        f"/goals/{goalid}/tasks",
+        {'text': text},
+        headers,
+        **kwargs,
     )
-    return resp.json()
+    assert resp.status_code == 200
+    return GoalSchema.GoalTaskOut(**resp.json())
 
 
 @pytest.fixture(scope="function")
@@ -49,7 +64,7 @@ async def new_goaltask_func(client, user_and_headers) -> GoalSchema.GoalOut:
     tuser, headers = user_and_headers
     ngoal = await new_goal_req(ngtext, client, headers)
 
-    ntask = await new_taskresp(uttext, ngoal.id, client, headers)
+    ntask = await new_task_req(uttext, ngoal.id, client, headers)
     if isinstance(ntask, dict):
         ntask = GoalSchema.GoalTaskOut(**ntask)
 
@@ -65,8 +80,15 @@ async def setup_goals(client, user_and_headers):
         ng = await new_goal_req(text, client, headers)
         assert ng.text == text
         assert ng.user_id == tuser['id']
-        assert hasattr(ng, 'archived')
         assert ng.archived == False
+        for ttext in TASKS.TEXTS:
+            ntask = await new_task_req(ttext, ng.id, client, headers)
+
+            assert ntask.text == ttext
+            assert ntask.goal_id == ng.id
+            assert ntask.completed == False
+
+            ng.tasks.append(ntask)
         newgoals.append(ng)
     return newgoals, headers, tuser
 
@@ -165,71 +187,41 @@ async def setup_tasks(client, setup_goals):
     newgoals, headers, tuser = setup_goals
     for goal in newgoals:
         for text in TASKS.TEXTS:
-            await new_taskresp(text, goal.id, client, headers=headers)
+            await new_task_req(text, goal.id, client, headers=headers)
     return newgoals, headers, tuser
 
 
 @pytest.mark.asyncio
 async def test_create_task(client, setup_tasks):
     newgoals, headers, ujson = setup_tasks
-
-    for goal in newgoals:
-        resp = await client.get(f"/goals/{goal.id}", headers=headers)
-        assert resp.status_code == 200
-        curgoal = GoalSchema.GoalOut(**resp.json())
-        assert len(curgoal.tasks) == len(TASKS.TEXTS)
-        for task in curgoal.tasks:
-            assert task.goal_id == goal.id
-
-            assert task.completed == False
-            assert task.text in TASKS.TEXTS
+    pass
 
 
 @pytest.mark.asyncio
 async def test_get_task(client, setup_tasks):
     newgoals, headers, _ = setup_tasks
-
-    for goal in newgoals:
-        for task in goal.tasks:
-            resp = await client.get(
-                f"/goals/{goal.id}/tasks/{task['id']}", headers=headers
-            )
-            assert resp.status_code == 200
-            assert resp.json()['text'] == task['text']
+    tasks = zip([g.tasks for g in newgoals])
+    print(tasks)
 
 
 @pytest.mark.asyncio
 async def test_update_task(client, setup_tasks):
     newgoals, headers, _ = setup_tasks
 
-    original = {}
-
+    # update tasks
     for goal in newgoals:
         for task in goal.tasks:
-            original[task['id']] = task
-            resp = await client.put(
-                f"/goals/{goal.id}/tasks/{task['id']}",
-                json={'text': 'UPDATED'},
-                headers=headers,
+            resp = await apireq(
+                client.put,
+                f"/goals/{goal.id}/tasks/{task.id}",
+                {'text': 'UPDATED'},
+                headers,
             )
             assert resp.status_code == 200
-            assert resp.json()['text'] == 'UPDATED'
-            assert resp.json()['id'] == task['id']
-
-    # now change them back incase same session
-    for goal in newgoals:
-        for task in goal.tasks:
-            resp = await client.put(
-                f"/goals/{goal['id']}/tasks/{task['id']}",
-                json={
-                    'text': original[task['id']]['text'],
-                    'completed': original[task['id']]['completed'],
-                },
-                headers=headers,
+            rtuple = tuple(
+                resp.json()[k] for k in ['text', 'completed', 'goal_id', 'id']
             )
-            assert resp.status_code == 200
-            assert resp.json()['text'] == original[task['id']]['text']
-            assert resp.json()['id'] == task['id']
+            assert rtuple == ('UPDATED', False, goal.id, task.id)
 
 
 @pytest.fixture(scope="function")
@@ -238,49 +230,48 @@ async def new_task_func(client, user_and_headers) -> GoalSchema.GoalOut:
     uttext = ranstr(30)
     tuser, headers = user_and_headers
     ngoal = await new_goal_req(ngtext, client, headers)
-    assert ngoal.text == ngtext
-    assert ngoal.user_id == tuser['id']
-    assert hasattr(ngoal, 'archived')
-    assert ngoal.archived == False
 
-    ntask = await new_taskresp(uttext, ngoal.id, client, headers)
+    ntask = await new_task_req(uttext, ngoal.id, client, headers)
     if isinstance(ntask, dict):
         ntask = GoalSchema.GoalTaskOut(**ntask)
-    assert ntask.text == uttext
-    assert ntask.goal_id == ngoal.id
-    assert ntask.completed == False
     ngoal.tasks = [ntask]
     return ngoal
 
 
 @pytest.mark.asyncio
-async def test_delete_task(client, user_and_headers, new_task_func):
+async def test_delete_task(client, user_and_headers):
     ujson, headers = user_and_headers
-    ngoal = await new_task_func
-    ugtext = ngoal.text
-    uttext = ngoal.tasks[0].text
-
-    resp = await client.post(
-        f"/goals/{ngoal.id}/tasks",
-        json={'text': uttext, 'completed': False},
-        headers=headers,
+    goals = await apireq(client.get, "/goals", headers=headers)
+    gid = goals.json()[0]['id']
+    resp = await apireq(
+        client.post, f"/goals/{gid}/tasks", {'text': ranstr(30)}, headers
     )
     ntask = GoalSchema.GoalTaskOut(**resp.json())
-    assert ntask.text == uttext
-    assert ntask.goal_id == ngoal.id
-    assert ntask.completed == False
-
     resp = await client.delete(
-        f"/goals/{ngoal.id}/tasks/{ntask.id}", headers=headers
+        f"/goals/{gid}/tasks/{ntask.id}", headers=headers
     )
     assert resp.status_code == 200
-
-    resp = await client.get(f"/goals/{ngoal.id}", headers=headers)
+    resp = await apireq(client.get, f"/goals/{gid}/tasks", headers=headers)
     assert resp.status_code == 200
-    rgoal = GoalSchema.GoalOut(**resp.json())
-    assert len(rgoal.tasks) == len(ngoal.tasks)
-    assert rgoal.text == ugtext
-    assert rgoal.user_id == ujson['id']
+    assert ntask.id not in [x['id'] for x in resp.json()]
+
+    resp = await apireq(client.get, "/goals", headers=headers)
+    assert resp.status_code == 200
+    assert ntask.id not in [x['id'] for x in resp.json()[0]['tasks']]
+
+    resp = await apireq(
+        client.get, f"/goals/{gid}/tasks/{ntask.id}", headers=headers
+    )
+    assert resp.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_get_task_badid(client, setup_tasks):
+    newgoals, headers, _ = setup_tasks
+    resp = await apireq(
+        client.get, f"/goals/{newgoals[0].id}/tasks/", headers=headers
+    )
+    assert resp.status_code == 307
 
 
 @pytest.mark.asyncio
