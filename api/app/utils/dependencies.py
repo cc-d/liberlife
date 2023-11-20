@@ -5,6 +5,7 @@ from .security import decode_jwt, oauth_scheme
 from ..schemas import user as UserSchema, goal as GoalSchema
 from ..db import get_adb, AsyncSession
 from ..crud.user import get_from_username
+from ..utils.httperrors import HTTP401
 
 
 from fastapi import Depends, HTTPException, Security
@@ -20,9 +21,7 @@ async def get_current_user(
         payload = decode_jwt(token)
         user = payload.get("sub")
     except (PyJWTError, ValidationError):
-        raise HTTPException(
-            status_code=401, detail="Could not validate credentials"
-        )
+        raise HTTP401('Could not validate credentials')
 
     user = await get_from_username(user, must_exist=True, db=db)
 
