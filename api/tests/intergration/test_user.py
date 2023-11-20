@@ -29,6 +29,8 @@ from ..common import (
 from myfuncs import ranstr
 from logfunc import logf
 from ..utils import apireq
+from api.app.utils.dependencies import get_current_user
+from api.app.db import get_test_adb
 
 
 @pytest.mark.asyncio
@@ -81,3 +83,13 @@ async def test_me(client, reguser):
     uh = uheads(reguser)
     resp = await apireq(client.get, "/u/me", headers=uh)
     assert resp.status_code == 200
+
+
+@pytest.mark.asyncio
+async def test_get_curuser_error():
+    async for db in get_test_adb():
+        try:
+            err = await get_current_user(token="asdf", db=db)
+        except Exception as e:
+            assert e.status_code == 401
+            assert e.detail == "Could not validate credentials"
