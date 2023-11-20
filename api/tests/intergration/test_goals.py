@@ -16,6 +16,8 @@ from ..utils import apireq
 from .test_user import test_register
 from myfuncs import ranstr
 from api.app.schemas import goal as GoalSchema
+from api.app.crud import goal as GoalCrud
+from api.app.db import get_test_adb
 
 G_ATTRS = ['id', 'text', 'user_id', 'archived']
 
@@ -283,3 +285,15 @@ async def test_goaltask_401s(client, user_and_headers, new_task_func):
         for method in methods:
             resp = await apireq(getattr(client, method), url, headers=None)
             assert resp.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_goalcrud_fromid(client, setup_goals):
+    newgoals, headers, _ = setup_goals
+
+    # Use anext to get the AsyncSession from the async generator
+    async for db in get_test_adb():
+        for goal in newgoals:
+            g = await GoalCrud.get_goal_from_id(goal.id, db=db)
+            assert g is not None
+            assert match_attrs(goal, g)

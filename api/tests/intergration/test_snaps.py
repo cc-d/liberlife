@@ -31,7 +31,9 @@ from api.app.schemas import snapshot as SnapSchema
 
 
 @pytest_asyncio.fixture(scope="module")
-async def setup_snap(client, setup_goals):
+async def setup_snap(
+    client, setup_goals
+) -> tuple[SnapSchema.SnapshotOut, dict, UserSchema.UserOut]:
     setup_goals, headers, ujson = setup_goals
     resp = await client.post("/snapshots", headers=headers)
     assert resp.status_code == 200
@@ -82,3 +84,14 @@ async def test_snapshots_401(client, setup_snap):
     resp = await client.get(f"/snapshots/{snap.uuid}", headers=uheads)
     assert resp.status_code == 200
     assert resp.json()['uuid'] == snap.uuid
+
+
+@pytest.mark.asyncio
+async def test_snapgoalstasks(client, setup_snap):
+    snap, uheads, me = setup_snap
+    assert snap.goals is not None
+    assert len(snap.goals) >= 1
+    assert snap.goals[0].text is not None
+    assert snap.goals[0].tasks is not None
+    assert len(snap.goals[0].tasks) >= 1
+    assert snap.goals[0].tasks[0].text is not None
