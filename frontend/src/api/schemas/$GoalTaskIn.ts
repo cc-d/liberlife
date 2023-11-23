@@ -8,8 +8,5 @@ export const $GoalTaskIn = {
             type: 'string',
             isRequired: true,
         },
-        completed: {
-            type: 'boolean',
-        },
     },
 } as const;

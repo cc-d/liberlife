@@ -18,8 +18,8 @@ export const $SnapshotTaskOut = {
             type: 'number',
             isRequired: true,
         },
-        completed: {
-            type: 'boolean',
+        status: {
+            type: 'TaskStatus',
             isRequired: true,
         },
         goal_id: {

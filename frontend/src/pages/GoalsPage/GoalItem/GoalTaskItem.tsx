@@ -1,7 +1,10 @@
 import React from "react";
 import { Box, Checkbox, Typography, IconButton } from "@mui/material";
-import { GoalTaskOut, GoalOut } from "../../../api";
+import { GoalTaskOut, GoalOut, TaskStatus } from "../../../api";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined"; // For "not_started"
+import PendingIcon from "@mui/icons-material/Pending"; // For "in_progress"
+import CheckCircleIcon from "@mui/icons-material/CheckCircle"; // For "completed"
 import { useEffect, useMemo } from "react";
 export const GoalTaskItem: React.FC<{
   taskGoal: GoalOut;
@@ -9,6 +12,12 @@ export const GoalTaskItem: React.FC<{
   onToggle: Function;
   handleDeleteTask: Function;
 }> = ({ taskGoal, task, onToggle, handleDeleteTask }) => {
+  const StatusIcon =
+    task.status === TaskStatus.NOT_STARTED
+      ? CircleOutlinedIcon
+      : task.status === TaskStatus.IN_PROGRESS
+      ? PendingIcon
+      : CheckCircleIcon;
   return (
     <Box
       display="flex"
@@ -29,14 +38,25 @@ export const GoalTaskItem: React.FC<{
         },
       }}
       key={task.id}
-      onClick={() => onToggle(task.id, task.completed, taskGoal.id)}
+      onClick={() => onToggle(task.id, task.status)}
     >
-      <Checkbox checked={task.completed} sx={{ m: 0, p: 0.5, mr: 0.5 }} />
+      <StatusIcon
+        sx={{
+          color:
+            task.status === TaskStatus.NOT_STARTED
+              ? "#FFC107"
+              : task.status === TaskStatus.IN_PROGRESS
+              ? "#2196F3"
+              : "#4CAF50",
+          mr: 0.5,
+        }}
+      />
       <Box
         sx={{
-          textDecoration: task.completed ? "line-through" : "none",
+          textDecoration:
+            task.status === TaskStatus.COMPLETED ? "line-through" : "none",
           color: "inherit",
-          opacity: task.completed ? 0.75 : 1,
+          opacity: task.status === TaskStatus.COMPLETED ? 0.75 : 1,
           flexGrow: 1,
           overflowWrap: "anywhere",
         }}

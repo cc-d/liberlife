@@ -41,8 +41,7 @@ async def create_snapshot(
             archived=ng.archived,
         )
         newsg.tasks = [
-            SnapshotGoalTask(text=nt.text, completed=nt.completed)
-            for nt in ng.tasks
+            SnapshotGoalTask(text=nt.text, status=nt.status) for nt in ng.tasks
         ]
         new_snapgoals.append(newsg)
     new_snap.goals = new_snapgoals

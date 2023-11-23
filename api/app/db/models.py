@@ -1,9 +1,19 @@
 from uuid import uuid4
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import Integer, String, Text, ForeignKey, DateTime, Boolean
+from sqlalchemy import (
+    Integer,
+    String,
+    Text,
+    ForeignKey,
+    DateTime,
+    Boolean,
+    Enum,
+)
 from sqlalchemy.sql import func
 from myfuncs import default_repr
 from .session import Base
+from ..schemas.goal import TaskStatus
+from logfunc import logf
 
 _STRLEN = 255
 
@@ -82,7 +92,22 @@ class SnapshotGoal(CommonGoal):
 class CommonGoalTask(CommonBase):
     __abstract__ = True
     text: Mapped[str] = mapped_column(Text, nullable=False, default='new task')
-    completed: Mapped[bool] = mapped_column(Boolean, default=False)
+    status: Mapped[str] = mapped_column(
+        String, default=TaskStatus.NOT_STARTED, nullable=False
+    )
+
+    @logf(level='info')
+    def update_status(self) -> TaskStatus:
+        """update the instance status without saving"""
+        if self.status == TaskStatus.NOT_STARTED:
+            self.status = TaskStatus.IN_PROGRESS
+        elif self.status == TaskStatus.IN_PROGRESS:
+            self.status = TaskStatus.COMPLETED
+        elif self.status == TaskStatus.COMPLETED:
+            self.status = TaskStatus.NOT_STARTED
+        else:
+            raise ValueError(f'invalid status: {self.status}')
+        return self.status
 
 
 class GoalTask(CommonGoalTask):
@@ -118,6 +143,4 @@ class BoardSnapshot(TimestampMixin):
     )
 
     def __repr__(self):
-        from pprint import pformat
-
-        return default_repr(self, use_pformat=True)
+        return default_repr(self)

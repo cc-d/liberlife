@@ -1,37 +1,47 @@
 from pydantic import BaseModel
 from datetime import datetime
+from enum import Enum
 from typing import List, Optional, Union
 from .common import DBCommon
 from .user import UserOut, UserDB
 
 
-class GoalBase(BaseModel):
+class TextBase(BaseModel):
     text: str
 
 
-class GoalIn(GoalBase):
+class GoalBase(TextBase):
+    notes: Optional[str] = None
+    archived: bool = False
+
+
+class GoalIn(TextBase):
     pass
 
 
+class TaskStatus(str, Enum):
+    NOT_STARTED = 'not started'
+    IN_PROGRESS = 'in progress'
+    COMPLETED = 'completed'
+
+
 class GoalTaskBase(BaseModel):
-    completed: bool
+    status: str
 
 
-class GoalTaskIn(GoalBase):
-    completed: bool = False
-    text: str
+class GoalTaskIn(TextBase):
+    pass
 
 
 class GoalTaskUpdate(GoalTaskBase):
-    text: Optional[str] = None
-    completed: Optional[bool] = None
-    notes: Optional[str] = None
+    status: Optional[TaskStatus] = None
 
 
 class GoalTaskOut(GoalTaskBase, DBCommon):
     goal_id: int
-    id: int
     text: str
+    status: TaskStatus
+    id: int
 
 
 class GoalOut(GoalIn, DBCommon):

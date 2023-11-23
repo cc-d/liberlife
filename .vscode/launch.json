@@ -6,8 +6,7 @@
       "name": "Run Tests",
       "module": "pytest",
       "env": {
-        "LOGF_LEVEL": "INFO",
-        "LOGF_USE_PRINT": "true"
+        "LOGF_LEVEL": "DEBUG"
       },
       "args": [
         "tests",

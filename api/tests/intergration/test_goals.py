@@ -19,6 +19,7 @@ from api.app.schemas import goal as GoalSchema
 from api.app.crud import goal as GoalCrud
 from api.app.db import get_test_adb
 
+
 G_ATTRS = ['id', 'text', 'user_id', 'archived']
 
 
@@ -88,7 +89,7 @@ async def setup_goals(client, user_and_headers):
 
             assert ntask.text == ttext
             assert ntask.goal_id == ng.id
-            assert ntask.completed == False
+            assert ntask.status == GoalSchema.TaskStatus.NOT_STARTED
 
             ng.tasks.append(ntask)
         newgoals.append(ng)
@@ -213,17 +214,21 @@ async def test_update_task(client, setup_tasks):
     # update tasks
     for goal in newgoals:
         for task in goal.tasks:
-            resp = await apireq(
-                client.put,
-                f"/goals/{goal.id}/tasks/{task.id}",
-                {'text': 'UPDATED'},
-                headers,
+            tstatus = task.status
+            resp = await client.put(
+                f"/goals/{goal.id}/tasks/{task.id}", headers=headers
             )
             assert resp.status_code == 200
-            rtuple = tuple(
-                resp.json()[k] for k in ['text', 'completed', 'goal_id', 'id']
-            )
-            assert rtuple == ('UPDATED', False, goal.id, task.id)
+            if tstatus == GoalSchema.TaskStatus.NOT_STARTED:
+                assert (
+                    resp.json()['status'] == GoalSchema.TaskStatus.IN_PROGRESS
+                )
+            elif tstatus == GoalSchema.TaskStatus.IN_PROGRESS:
+                assert resp.json()['status'] == GoalSchema.TaskStatus.COMPLETED
+            elif tstatus == GoalSchema.TaskStatus.COMPLETED:
+                assert (
+                    resp.json()['status'] == GoalSchema.TaskStatus.NOT_STARTED
+                )
 
 
 @pytest.fixture(scope="function")
@@ -253,6 +258,9 @@ async def test_delete_task(client, user_and_headers):
         f"/goals/{gid}/tasks/{ntask.id}", headers=headers
     )
     assert resp.status_code == 200
+    assert resp.json()['detail'].find('deleted') != -1
+    assert 'updated_on' in resp.json()
+
     resp = await apireq(client.get, f"/goals/{gid}/tasks", headers=headers)
     assert resp.status_code == 200
     assert ntask.id not in [x['id'] for x in resp.json()]

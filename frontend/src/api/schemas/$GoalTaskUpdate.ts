@@ -4,26 +4,10 @@
 /* eslint-disable */
 export const $GoalTaskUpdate = {
     properties: {
-        completed: {
+        status: {
             type: 'any-of',
             contains: [{
-                type: 'boolean',
-            }, {
-                type: 'null',
-            }],
-        },
-        text: {
-            type: 'any-of',
-            contains: [{
-                type: 'string',
-            }, {
-                type: 'null',
-            }],
-        },
-        notes: {
-            type: 'any-of',
-            contains: [{
-                type: 'string',
+                type: 'TaskStatus',
             }, {
                 type: 'null',
             }],

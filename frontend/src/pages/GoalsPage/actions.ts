@@ -137,13 +137,10 @@ export const actionDeleteTask = async (
 
 export const actionTaskCompletion = async (
   taskId: number,
-  isCompleted: boolean,
   taskGoal: GoalOut
 ) => {
   try {
-    let resp = await apios.put(`/goals/${taskGoal.id}/tasks/${taskId}`, {
-      completed: isCompleted,
-    });
+    let resp = await apios.put(`/goals/${taskGoal.id}/tasks/${taskId}`, {});
 
     return resp.data;
   } catch (error) {

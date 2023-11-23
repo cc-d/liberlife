@@ -5,6 +5,5 @@
 
 export type GoalTaskIn = {
     text: string;
-    completed?: boolean;
 };
 

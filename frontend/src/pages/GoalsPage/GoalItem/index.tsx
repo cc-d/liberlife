@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import useTheme from "@mui/material/styles/useTheme";
 import { Box, Divider } from "@mui/material";
-import { GoalOut } from "../../../api";
+import { GoalOut, TaskStatus, GoalTaskOut } from "../../../api";
 import GoalHeader from "./GoalHeader";
 import GoalTasks from "./GoalTasks";
 import GoalNotes from "./GoalNotes";
@@ -64,21 +64,33 @@ export const GoalItem: React.FC<GoalItemProps> = ({
 
   const longestStr = getLongestStr(goal);
   const maxElementWidth = longestStr >= 13 ? "98vw" : "47.6vw";
-  const maxNotesWidth = `calc(${maxElementWidth} - 48px) !important`;
   const theme = useTheme();
   const latestUpdate = getLatestDate(goal);
 
-  const toggleTaskCompletion = async (taskId: number, isCompleted: boolean) => {
+  const toggleTaskCompletion = async (
+    taskId: number,
+    taskStatus: TaskStatus
+  ) => {
     const originalTasks = tasks;
     try {
       // Now, update the tasks state using the functional update form
       // to ensure we are working with the most recent state.
       setTasks((tasks) =>
         tasks.map((task) =>
-          task.id === taskId ? { ...task, completed: !isCompleted } : task
+          task.id === taskId
+            ? {
+                ...task,
+                status:
+                  taskStatus === TaskStatus.NOT_STARTED
+                    ? TaskStatus.IN_PROGRESS
+                    : taskStatus === TaskStatus.IN_PROGRESS
+                    ? TaskStatus.COMPLETED
+                    : TaskStatus.NOT_STARTED,
+              }
+            : task
         )
       );
-      await actionTaskCompletion(taskId, !isCompleted, goal);
+      await actionTaskCompletion(taskId, goal);
     } catch (error) {
       // Make sure to capture and handle any errors that might occur
       console.error("Failed to toggle task completion:", error);

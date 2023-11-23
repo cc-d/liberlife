@@ -220,7 +220,7 @@ export class GoalService {
     public static updateTaskGoalsGoalIdTasksTaskIdPut(
         taskId: (number | string),
         goalId: (number | string),
-        requestBody: GoalTaskUpdate,
+        requestBody?: (GoalTaskUpdate | null),
     ): CancelablePromise<GoalTaskOut> {
         return __request(OpenAPI, {
             method: 'PUT',

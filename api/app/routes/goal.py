@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status, Body
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -167,7 +167,7 @@ async def get_task(
     "/{goal_id}/tasks/{task_id}", response_model=GoalSchema.GoalTaskOut
 )
 async def update_task(
-    task_update: GoalSchema.GoalTaskUpdate,
+    task_update: Optional[GoalSchema.GoalTaskUpdate] = Body(None),
     task: GoalTask = Depends(
         get_goal_task_from_id
     ),  # You'll need to implement this
@@ -175,12 +175,16 @@ async def update_task(
     cur_user=Depends(get_current_user),
     db: AsyncSession = Depends(get_adb),
 ):
+
     if goal.user_id != cur_user.id:
         raise HTTP401
-    for key, value in task_update.model_dump().items():
-        if value is None:
-            continue
-        setattr(task, key, value)
+
+    if task_update is None:
+        task.update_status()
+    elif hasattr(task_update, "status") and task_update.status is None:
+        task.update_status()
+    else:
+        task.status = task_update.status
 
     db.add(task)
     goal.updated_on = func.now()

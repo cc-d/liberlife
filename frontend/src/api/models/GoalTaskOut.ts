@@ -3,11 +3,13 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import type { TaskStatus } from './TaskStatus';
+
 export type GoalTaskOut = {
     created_on: string;
     updated_on: string;
     id: number;
-    completed: boolean;
+    status: TaskStatus;
     goal_id: number;
     text: string;
 };

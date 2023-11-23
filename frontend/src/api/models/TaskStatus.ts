@@ -3,9 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { TaskStatus } from './TaskStatus';
-
-export type GoalTaskUpdate = {
-    status?: (TaskStatus | null);
-};
-
+export enum TaskStatus {
+    NOT_STARTED = 'not started',
+    IN_PROGRESS = 'in progress',
+    COMPLETED = 'completed',
+}
