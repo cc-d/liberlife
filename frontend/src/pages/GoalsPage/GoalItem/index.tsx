@@ -99,7 +99,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
     if (goal) {
       setTasks(goal.tasks);
     }
-  }, [goal, goal.tasks]);
+  }, [goal, tasks]);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
