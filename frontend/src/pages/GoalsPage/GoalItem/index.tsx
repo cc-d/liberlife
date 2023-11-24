@@ -82,6 +82,20 @@ export const GoalItem: React.FC<GoalItemProps> = ({
         )
       );
       await actionTaskCompletion(taskId, goal);
+      goal.tasks = tasks;
+      goal.tasks = goal.tasks.map((task) =>
+        task.id === taskId
+          ? {
+              ...task,
+              status:
+                taskStatus === TaskStatus.NOT_STARTED
+                  ? TaskStatus.IN_PROGRESS
+                  : taskStatus === TaskStatus.IN_PROGRESS
+                  ? TaskStatus.COMPLETED
+                  : TaskStatus.NOT_STARTED,
+            }
+          : task
+      );
     } catch (error) {
       // Make sure to capture and handle any errors that might occur
       console.error("Failed to toggle task completion:", error);
