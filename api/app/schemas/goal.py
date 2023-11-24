@@ -26,7 +26,7 @@ class TaskStatus(str, Enum):
 
 
 class GoalTaskBase(BaseModel):
-    status: str
+    status: TaskStatus
 
 
 class GoalTaskIn(TextBase):
