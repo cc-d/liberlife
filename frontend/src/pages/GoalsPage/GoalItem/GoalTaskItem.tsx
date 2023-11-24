@@ -1,23 +1,38 @@
 import React from "react";
-import { Box, Checkbox, Typography, IconButton } from "@mui/material";
+import { Box, Typography, IconButton } from "@mui/material";
 import { GoalTaskOut, GoalOut, TaskStatus } from "../../../api";
-import DeleteIcon from "@mui/icons-material/Delete";
-import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined"; // For "not_started"
-import PendingIcon from "@mui/icons-material/Pending"; // For "in_progress"
-import CheckCircleIcon from "@mui/icons-material/CheckCircle"; // For "completed"
-import { useEffect, useMemo } from "react";
+import {
+  CircleOutlined,
+  Pending,
+  CheckCircle,
+  Delete,
+} from "@mui/icons-material";
+import deepBlue from "@mui/material/colors/blue";
+import deepGreen from "@mui/material/colors/green";
+import deepGrey from "@mui/material/colors/grey";
+import theme from "../../../theme";
+const statusIconMap = {
+  [TaskStatus.NOT_STARTED]: (
+    <CircleOutlined sx={{ color: deepGrey[500], mr: 0.25 }} />
+  ),
+  [TaskStatus.IN_PROGRESS]: <Pending sx={{ color: deepBlue[500], mr: 0.25 }} />,
+  [TaskStatus.COMPLETED]: (
+    <CheckCircle sx={{ color: deepGreen[500], mr: 0.25 }} />
+  ),
+};
+
+export const TaskStatusIcon: React.FC<{ status: TaskStatus }> = ({
+  status,
+}) => {
+  return statusIconMap[status];
+};
+
 export const GoalTaskItem: React.FC<{
   taskGoal: GoalOut;
   task: GoalTaskOut;
-  onToggle: Function;
+  nextTaskStatus: Function;
   handleDeleteTask: Function;
-}> = ({ taskGoal, task, onToggle, handleDeleteTask }) => {
-  const StatusIcon =
-    task.status === TaskStatus.NOT_STARTED
-      ? CircleOutlinedIcon
-      : task.status === TaskStatus.IN_PROGRESS
-      ? PendingIcon
-      : CheckCircleIcon;
+}> = ({ taskGoal, task, nextTaskStatus, handleDeleteTask }) => {
   return (
     <Box
       display="flex"
@@ -28,48 +43,60 @@ export const GoalTaskItem: React.FC<{
         pt: 0.25,
         pb: 0.25,
         width: "100%",
+        color: "inherit",
+        userSelect: "none",
         "&:active": {
-          backgroundColor: "#303030",
+          backgroundColor: theme.palette.action.selected,
         },
         "@media (pointer: fine)": {
           "&:hover": {
-            backgroundColor: "#303030",
+            backgroundColor: theme.palette.action.hover,
           },
         },
       }}
       key={task.id}
-      onClick={() => onToggle(task.id, task.status)}
+      onClick={() => nextTaskStatus(task.id, task.status)}
     >
-      <StatusIcon
-        sx={{
-          color:
-            task.status === TaskStatus.NOT_STARTED
-              ? "#FFC107"
-              : task.status === TaskStatus.IN_PROGRESS
-              ? "#2196F3"
-              : "#4CAF50",
-          mr: 0.5,
-        }}
-      />
+      <TaskStatusIcon status={task.status} />
       <Box
         sx={{
           textDecoration:
-            task.status === TaskStatus.COMPLETED ? "line-through" : "none",
-          color: "inherit",
-          opacity: task.status === TaskStatus.COMPLETED ? 0.75 : 1,
+            task.status === TaskStatus.COMPLETED ? "line-through" : "inherit",
+          color:
+            task.status === TaskStatus.COMPLETED
+              ? theme.palette.text.primary
+              : task.status === TaskStatus.IN_PROGRESS
+              ? theme.palette.text.primary
+              : theme.palette.text.primary,
           flexGrow: 1,
+
           overflowWrap: "anywhere",
         }}
       >
-        <Typography variant="subtitle1">{task.text}</Typography>
+        <Typography
+          sx={{
+            flexGrow: 1,
+            overflowWrap: "anywhere",
+          }}
+          variant="subtitle1"
+        >
+          {task.text}
+        </Typography>
       </Box>
       <IconButton
+        sx={{
+          color: theme.palette.text.primary,
+        }}
         onClick={(event) => {
           event.stopPropagation(); // Prevent triggering the onToggle when deleting
           handleDeleteTask(taskGoal?.id, task.id);
         }}
       >
-        <DeleteIcon />
+        <Delete
+          sx={{
+            color: "inherit",
+          }}
+        />
       </IconButton>
     </Box>
   );

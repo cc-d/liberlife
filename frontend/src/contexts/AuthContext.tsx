@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import { decodePayload } from "./helpers";
+import { decodePayload } from "../pages/utils/helpers";
 
 export interface AuthContextProps {
   user: string | null;

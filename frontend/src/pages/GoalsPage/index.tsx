@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Container } from "@mui/material";
 import apios from "../../apios";
-import { GoalOut, GoalTaskOut } from "../../api";
+import { GoalOut } from "../../api";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 import GoalBoard from "./GoalBoard";
 
 const GoalsPage: React.FC = () => {
   const [goals, setGoals] = useState<GoalOut[]>([]);
-  const [newGoalText, setNewGoalText] = useState<string>("");
   const navigate = useNavigate();
   const auth = useContext(AuthContext);
 

@@ -2,11 +2,9 @@ import React from "react";
 import { Box, Divider } from "@mui/material";
 import { GoalOut } from "../../api";
 import { GoalItem } from "./GoalItem";
-import ShowHideTextButton from "../../components/ShowHideTooltip";
 
 interface GoalBoardElemProps {
   goals: GoalOut[];
-  toggleTaskCompletion?: any;
   handleGoalDelete?: any;
   handleAddTaskToGoal?: any;
   handleGoalUpdate?: any;
@@ -16,7 +14,6 @@ interface GoalBoardElemProps {
 
 export const GoalBoardElem: React.FC<GoalBoardElemProps> = ({
   goals,
-  toggleTaskCompletion,
   handleGoalDelete,
   handleAddTaskToGoal,
   handleGoalUpdate,
@@ -42,7 +39,6 @@ export const GoalBoardElem: React.FC<GoalBoardElemProps> = ({
             <GoalItem
               key={goal.id}
               goal={goal}
-              toggleTaskCompletion={() => {}}
               handleGoalDelete={() => {}}
               handleAddTaskToGoal={() => {}}
               handleGoalUpdate={() => {}}
@@ -52,7 +48,6 @@ export const GoalBoardElem: React.FC<GoalBoardElemProps> = ({
             <GoalItem
               key={goal.id}
               goal={goal}
-              toggleTaskCompletion={toggleTaskCompletion}
               handleGoalDelete={handleGoalDelete}
               handleAddTaskToGoal={handleAddTaskToGoal}
               handleGoalUpdate={handleGoalUpdate}

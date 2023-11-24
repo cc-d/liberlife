@@ -1,17 +1,12 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import useTheme from "@mui/material/styles/useTheme";
 import { Box, Divider } from "@mui/material";
-import { GoalOut, TaskStatus, GoalTaskOut } from "../../../api";
+import { GoalOut, TaskStatus } from "../../../api";
 import GoalHeader from "./GoalHeader";
 import GoalTasks from "./GoalTasks";
 import GoalNotes from "./GoalNotes";
-import {
-  actionUpdateGoal,
-  actionDeleteTask,
-  actionAddTaskToGoal,
-  actionTaskCompletion,
-  actihandleGoalDelete,
-} from "../actions";
+import deepGrey from "@mui/material/colors/grey";
+import { actionTaskCompletion } from "../actions";
 
 interface GoalItemProps {
   goal: GoalOut;
@@ -19,7 +14,6 @@ interface GoalItemProps {
   handleAddTaskToGoal: Function;
   handleGoalUpdate: Function;
   handleDeleteTask: Function;
-  toggleTaskCompletion: Function;
 }
 
 export const getLatestDate = (goal: GoalOut): string | null => {
@@ -67,10 +61,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
   const theme = useTheme();
   const latestUpdate = getLatestDate(goal);
 
-  const toggleTaskCompletion = async (
-    taskId: number,
-    taskStatus: TaskStatus
-  ) => {
+  const nextTaskStatus = async (taskId: number, taskStatus: TaskStatus) => {
     const originalTasks = tasks;
     try {
       // Now, update the tasks state using the functional update form
@@ -108,7 +99,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
     if (goal) {
       setTasks(goal.tasks);
     }
-  }, [goal.tasks]);
+  }, [goal]);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -159,7 +150,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
         display: "flex", // This turns it into a flex container
         flexDirection: "column", // Stack children vertically
         flexGrow: 1,
-        backgroundColor: `#0f0f0f`,
+        backgroundColor: theme.palette.background.default,
 
         overflowWrap: "anywhere",
         opacity: goal.archived ? 0.5 : 1,
@@ -205,7 +196,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
           }
         }}
         tasks={tasks} // Pass the state here
-        onToggle={toggleTaskCompletion}
+        nextTaskStatus={nextTaskStatus}
         handleDeleteTask={handleDeleteTask}
         taskGoal={goal}
       />

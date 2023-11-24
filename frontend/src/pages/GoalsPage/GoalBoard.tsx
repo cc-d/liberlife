@@ -1,18 +1,15 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Box, Typography, TextField, Button, Divider } from "@mui/material";
+import { Box, Typography, TextField, Button } from "@mui/material";
 import { GoalOut } from "../../api";
-import { GoalItem } from "./GoalItem";
 import apios from "../../apios";
 import {
   actionUpdateGoal,
   actionDeleteTask,
   actionAddTaskToGoal,
-  actionTaskCompletion,
   actihandleGoalDelete,
 } from "./actions";
 import GoalBoardElem from "./GoalBoardElem";
 import ShowHideTextButton from "../../components/ShowHideTooltip";
-import { useAuth } from "../../contexts/AuthContext";
 
 import SortButton, { SortOrder, sortGoals, sortOrders } from "./SortButton";
 interface GoalBoardProps {

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Typography, Container } from "@mui/material";
-import GoalBoardElem from "../../pages/GoalsPage/GoalBoardElem";
+import { Typography, Container } from "@mui/material";
 import GoalBoard from "../../pages/GoalsPage/GoalBoard";
 import apios from "../../apios";
 import { GoalOut } from "../../api";

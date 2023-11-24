@@ -1,16 +1,9 @@
 import React from "react";
-import {
-  Box,
-  TextField,
-  IconButton,
-  Checkbox,
-  Typography,
-  Divider,
-} from "@mui/material";
+import { Box, TextField, IconButton, Divider } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { GoalTaskOut, GoalOut } from "../../../api";
 import GoalTaskItem from "./GoalTaskItem";
+import theme from "../../../theme";
 
 interface GoalTasksProps {
   newTaskText: string;
@@ -19,7 +12,7 @@ interface GoalTasksProps {
   handleDeleteTask: any;
   tasks: GoalTaskOut[];
   taskGoal: GoalOut;
-  onToggle: any;
+  nextTaskStatus: Function;
 }
 
 export const GoalTasks: React.FC<GoalTasksProps> = ({
@@ -28,7 +21,7 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
   handleAddTask,
   taskGoal,
   tasks, // Receive tasks as a prop
-  onToggle,
+  nextTaskStatus,
   handleDeleteTask,
 }) => {
   return (
@@ -42,7 +35,7 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
     >
       <Divider
         sx={{
-          backgroundColor: "#303030",
+          backgroundColor: theme.palette.background.default,
           m: 0,
           p: 0,
           ml: 0.5,
@@ -99,7 +92,7 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
                 key={task.id} // Ensure key prop is set
                 taskGoal={taskGoal}
                 task={task}
-                onToggle={onToggle}
+                nextTaskStatus={nextTaskStatus}
                 handleDeleteTask={handleDeleteTask}
               />
             ))}

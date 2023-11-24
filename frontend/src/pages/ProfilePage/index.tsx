@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Container, Divider, Button } from "@mui/material";
-import { UserOut, SnapshotOut } from "../../api";
+import { Typography, Container, Divider, Button } from "@mui/material";
+import { SnapshotOut } from "../../api";
 import { useAuth } from "../../contexts/AuthContext";
 import apios from "../../apios";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
@@ -8,6 +8,7 @@ import { useNavigate, Link as RouterLink } from "react-router-dom";
 const ProfilePage: React.FC = () => {
   const auth = useAuth();
   const [snapshots, setSnapshots] = useState<SnapshotOut[]>([]);
+  //eslint-disable-next-line
   const [loading, setLoading] = useState(true);
   const nav = useNavigate();
 

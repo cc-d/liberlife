@@ -5,7 +5,7 @@ import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import SortIcon from "@mui/icons-material/Sort"; // This is the default icon for 'Sort'
 import FilterListIcon from "@mui/icons-material/FilterList"; // New icon for 'Default'
 import { GoalOut } from "../../api";
-
+import theme from "../../theme";
 export interface SortIconMapping {
   icon: React.ElementType;
   label: string;
@@ -108,7 +108,15 @@ const SortButton: React.FC<SortButtonProps> = ({ sortOrder, onSort }) => {
 
       {/* Clickable sort order and icon */}
       <Button onClick={onSort} sx={{ textTransform: "none", m: 0, p: 0 }}>
-        <Typography variant="subtitle2" sx={{ userSelect: "none", m: 0, p: 0 }}>
+        <Typography
+          variant="subtitle2"
+          sx={{
+            userSelect: "none",
+            m: 0,
+            p: 0,
+            color: theme.palette.primary.main,
+          }}
+        >
           {label}
         </Typography>
         <SortIconComponent sx={{ fontSize: "1rem", m: 0, p: 0 }} />
