@@ -12,7 +12,7 @@ interface GoalTasksProps {
   handleDeleteTask: any;
   tasks: GoalTaskOut[];
   taskGoal: GoalOut;
-  nextTaskStatus: Function;
+  handleTaskStatus: Function;
 }
 
 export const GoalTasks: React.FC<GoalTasksProps> = ({
@@ -21,7 +21,7 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
   handleAddTask,
   taskGoal,
   tasks, // Receive tasks as a prop
-  nextTaskStatus,
+  handleTaskStatus,
   handleDeleteTask,
 }) => {
   return (
@@ -92,7 +92,7 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
                 key={task.id} // Ensure key prop is set
                 taskGoal={taskGoal}
                 task={task}
-                nextTaskStatus={nextTaskStatus}
+                handleTaskStatus={handleTaskStatus}
                 handleDeleteTask={handleDeleteTask}
               />
             ))}

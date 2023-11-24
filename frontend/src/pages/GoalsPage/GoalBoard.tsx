@@ -7,6 +7,7 @@ import {
   actionDeleteTask,
   actionAddTaskToGoal,
   actihandleGoalDelete,
+  actionTaskStatus,
 } from "./actions";
 import GoalBoardElem from "./GoalBoardElem";
 import ShowHideTextButton from "../../components/ShowHideTooltip";
@@ -49,6 +50,10 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
 
   const handleGoalDelete = async (goalId: number) => {
     return actihandleGoalDelete(goals, setGoals, goalId);
+  };
+
+  const handleTaskStatus = async (goalId: number, taskId: number) => {
+    return actionTaskStatus(goalId, taskId, goals, setGoals);
   };
 
   const handleGoalUpdate = async (
@@ -181,6 +186,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
         handleAddTaskToGoal={handleAddTaskToGoal}
         handleGoalUpdate={handleGoalUpdate}
         handleDeleteTask={handleDeleteTask}
+        handleTaskStatus={handleTaskStatus}
       />
 
       <Box p={0.5} m={0.5} mt={2}>
@@ -198,6 +204,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
           handleAddTaskToGoal={handleAddTaskToGoal}
           handleGoalUpdate={handleGoalUpdate}
           handleDeleteTask={handleDeleteTask}
+          handleTaskStatus={handleTaskStatus}
         />
       )}
     </Box>

@@ -13,8 +13,10 @@ from ..schemas.goal import GoalOut, GoalIn
 from ..utils.security import decode_jwt, oauth_scheme, verify_pass, encode_jwt
 from ..db.common import async_addcomref
 from ..utils.httperrors import HTTP401, HTTP404, HTTP400, HTTP409
+from logfunc import logf
 
 
+@logf(use_print=True)
 async def get_goal_from_id(
     goal_id: int | str, db: AsyncSession = Depends(get_adb)
 ) -> Optional[Goal]:

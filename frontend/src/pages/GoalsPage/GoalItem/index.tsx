@@ -6,7 +6,7 @@ import GoalHeader from "./GoalHeader";
 import GoalTasks from "./GoalTasks";
 import GoalNotes from "./GoalNotes";
 import deepGrey from "@mui/material/colors/grey";
-import { actionTaskCompletion } from "../actions";
+import { actionTaskStatus } from "../actions";
 
 interface GoalItemProps {
   goal: GoalOut;
@@ -14,6 +14,7 @@ interface GoalItemProps {
   handleAddTaskToGoal: Function;
   handleGoalUpdate: Function;
   handleDeleteTask: Function;
+  handleTaskStatus: Function;
 }
 
 export const getLatestDate = (goal: GoalOut): string | null => {
@@ -48,6 +49,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
   handleAddTaskToGoal,
   handleDeleteTask,
   handleGoalUpdate,
+  handleTaskStatus,
 }) => {
   const [newTaskText, setNewTaskText] = useState<string>("");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -60,48 +62,6 @@ export const GoalItem: React.FC<GoalItemProps> = ({
   const maxElementWidth = longestStr >= 13 ? "98vw" : "47.6vw";
   const theme = useTheme();
   const latestUpdate = getLatestDate(goal);
-
-  const nextTaskStatus = async (taskId: number, taskStatus: TaskStatus) => {
-    const originalTasks = tasks;
-    try {
-      // Now, update the tasks state using the functional update form
-      // to ensure we are working with the most recent state.
-      setTasks((tasks) =>
-        tasks.map((task) =>
-          task.id === taskId
-            ? {
-                ...task,
-                status:
-                  taskStatus === TaskStatus.NOT_STARTED
-                    ? TaskStatus.IN_PROGRESS
-                    : taskStatus === TaskStatus.IN_PROGRESS
-                    ? TaskStatus.COMPLETED
-                    : TaskStatus.NOT_STARTED,
-              }
-            : task
-        )
-      );
-      await actionTaskCompletion(taskId, goal);
-      goal.tasks = tasks;
-      goal.tasks = goal.tasks.map((task) =>
-        task.id === taskId
-          ? {
-              ...task,
-              status:
-                taskStatus === TaskStatus.NOT_STARTED
-                  ? TaskStatus.IN_PROGRESS
-                  : taskStatus === TaskStatus.IN_PROGRESS
-                  ? TaskStatus.COMPLETED
-                  : TaskStatus.NOT_STARTED,
-            }
-          : task
-      );
-    } catch (error) {
-      // Make sure to capture and handle any errors that might occur
-      console.error("Failed to toggle task completion:", error);
-      setTasks(originalTasks);
-    }
-  };
 
   useMemo(() => {
     if (goal) {
@@ -210,7 +170,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
           }
         }}
         tasks={tasks} // Pass the state here
-        nextTaskStatus={nextTaskStatus}
+        handleTaskStatus={handleTaskStatus}
         handleDeleteTask={handleDeleteTask}
         taskGoal={goal}
       />

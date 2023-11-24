@@ -30,9 +30,9 @@ export const TaskStatusIcon: React.FC<{ status: TaskStatus }> = ({
 export const GoalTaskItem: React.FC<{
   taskGoal: GoalOut;
   task: GoalTaskOut;
-  nextTaskStatus: Function;
+  handleTaskStatus: Function;
   handleDeleteTask: Function;
-}> = ({ taskGoal, task, nextTaskStatus, handleDeleteTask }) => {
+}> = ({ taskGoal, task, handleTaskStatus, handleDeleteTask }) => {
   return (
     <Box
       display="flex"
@@ -55,7 +55,7 @@ export const GoalTaskItem: React.FC<{
         },
       }}
       key={task.id}
-      onClick={() => nextTaskStatus(task.id, task.status)}
+      onClick={() => handleTaskStatus(taskGoal.id, task.id)}
     >
       <TaskStatusIcon status={task.status} />
       <Box

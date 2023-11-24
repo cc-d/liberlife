@@ -9,6 +9,7 @@ interface GoalBoardElemProps {
   handleAddTaskToGoal?: any;
   handleGoalUpdate?: any;
   handleDeleteTask?: any;
+  handleTaskStatus: Function;
   isSnapshot?: boolean;
 }
 
@@ -18,6 +19,7 @@ export const GoalBoardElem: React.FC<GoalBoardElemProps> = ({
   handleAddTaskToGoal,
   handleGoalUpdate,
   handleDeleteTask,
+  handleTaskStatus: handleTaskStatus,
   isSnapshot = false,
 }) => {
   return (
@@ -43,6 +45,7 @@ export const GoalBoardElem: React.FC<GoalBoardElemProps> = ({
               handleAddTaskToGoal={() => {}}
               handleGoalUpdate={() => {}}
               handleDeleteTask={() => {}}
+              handleTaskStatus={() => {}}
             />
           ) : (
             <GoalItem
@@ -52,6 +55,7 @@ export const GoalBoardElem: React.FC<GoalBoardElemProps> = ({
               handleAddTaskToGoal={handleAddTaskToGoal}
               handleGoalUpdate={handleGoalUpdate}
               handleDeleteTask={handleDeleteTask}
+              handleTaskStatus={handleTaskStatus}
             />
           )
         )}

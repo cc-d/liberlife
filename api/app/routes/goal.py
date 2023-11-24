@@ -167,11 +167,11 @@ async def get_task(
     "/{goal_id}/tasks/{task_id}", response_model=GoalSchema.GoalTaskOut
 )
 async def update_task(
-    task_update: Optional[GoalSchema.GoalTaskUpdate] = Body(None),
     task: GoalTask = Depends(
         get_goal_task_from_id
     ),  # You'll need to implement this
     goal: Goal = Depends(get_goal_from_id),
+    task_update: Optional[GoalSchema.GoalTaskUpdate] = Body(None),
     cur_user=Depends(get_current_user),
     db: AsyncSession = Depends(get_adb),
 ):

@@ -1,6 +1,6 @@
 import React from "react";
 import apios from "../../apios";
-import { GoalOut, GoalTaskOut } from "../../api";
+import { GoalOut, GoalTaskOut, TaskStatus } from "../../api";
 
 export const actionUpdateGoal = async (
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>,
@@ -135,17 +135,45 @@ export const actionDeleteTask = async (
   }
 };
 
-export const actionTaskCompletion = async (
+export const actionTaskStatus = async (
+  goalId: number,
   taskId: number,
-  taskGoal: GoalOut
+  goals: GoalOut[],
+  setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>
 ) => {
-  try {
-    let resp = await apios.put(`/goals/${taskGoal.id}/tasks/${taskId}`, {});
+  const originalGoals = goals;
+  setGoals(
+    goals.map((goal) => {
+      if (goal.id === goalId) {
+        const updatedTasks = goal.tasks?.map((task) => {
+          if (task.id === taskId) {
+            return {
+              ...task,
+              status:
+                task.status === TaskStatus.NOT_STARTED
+                  ? TaskStatus.IN_PROGRESS
+                  : task.status === TaskStatus.IN_PROGRESS
+                  ? TaskStatus.COMPLETED
+                  : TaskStatus.NOT_STARTED,
+            };
+          }
+          return task;
+        });
+        return {
+          ...goal,
+          tasks: updatedTasks,
+          updated_on: new Date().toISOString(),
+        };
+      }
+      return goal;
+    })
+  );
 
-    return resp.data;
+  try {
+    const resp = await apios.put(`/goals/${goalId}/tasks/${taskId}`);
   } catch (error) {
     console.error("Error updating task completion status:", error);
-
+    setGoals(originalGoals); // revert to original goals
     //throw error; // Rethrow the error so it can be handled by the caller.
   }
 };
