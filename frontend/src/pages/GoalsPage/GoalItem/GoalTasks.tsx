@@ -1,18 +1,19 @@
-import React from "react";
-import { Box, TextField, IconButton, Divider } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import { GoalTaskOut, GoalOut } from "../../../api";
-import GoalTaskItem from "./GoalTaskItem";
-import theme from "../../../theme";
+import React from 'react';
+import { Box, TextField, IconButton, Divider } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import { GoalTaskOut, GoalOut } from '../../../api';
+import GoalTaskItem from './GoalTaskItem'; // Update the import statement
+import theme from '../../../theme';
 
-interface GoalTasksProps {
+export interface GoalTasksProps {
   newTaskText: string;
-  setNewTaskText: (text: string) => void;
-  handleAddTask: any;
-  handleDeleteTask: any;
+  setNewTaskText: any;
+  handleAddTask: () => void;
   tasks: GoalTaskOut[];
+  handleTaskStatus: (goalId: number, taskId: number) => Promise<void>;
   taskGoal: GoalOut;
-  handleTaskStatus: Function;
+  giDeleteTask: (taskId: number) => Promise<void>; // Add this line
+  giAddTask: () => Promise<void>; // Add this line
 }
 
 export const GoalTasks: React.FC<GoalTasksProps> = ({
@@ -22,15 +23,15 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
   taskGoal,
   tasks, // Receive tasks as a prop
   handleTaskStatus,
-  handleDeleteTask,
+  giDeleteTask, // Add this line
 }) => {
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        width: "100%",
-        height: "100%",
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        height: '100%',
       }}
     >
       <Divider
@@ -46,18 +47,18 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
       <Box
         sx={{
           flexGrow: 1,
-          display: "flex",
-          flexDirection: "column",
+          display: 'flex',
+          flexDirection: 'column',
           ml: 0.5,
           mr: 0.5,
-          height: "100%",
+          height: '100%',
         }}
       >
         <Box
           sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
             mt: 1,
           }}
         >
@@ -69,7 +70,7 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
             placeholder="Add task..."
             sx={{ flexGrow: 1, marginRight: 1 }}
             onKeyDown={(e) => {
-              if (e.key === "Enter") {
+              if (e.key === 'Enter') {
                 handleAddTask();
               }
             }}
@@ -93,7 +94,7 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
                 taskGoal={taskGoal}
                 task={task}
                 handleTaskStatus={handleTaskStatus}
-                handleDeleteTask={handleDeleteTask}
+                handleDeleteTask={giDeleteTask}
               />
             ))}
         </Box>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Container } from '@mui/material';
-import apios from '../../apios';
+import apios from '../../utils/apios';
 import { GoalOut } from '../../api';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';

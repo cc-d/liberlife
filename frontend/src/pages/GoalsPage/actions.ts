@@ -1,6 +1,6 @@
-import React from "react";
-import apios from "../../apios";
-import { GoalOut, GoalTaskOut, TaskStatus } from "../../api";
+import React from 'react';
+import apios from '../../utils/apios';
+import { GoalOut, GoalTaskOut, TaskStatus } from '../../api';
 
 export const actionUpdateGoal = async (
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>,
@@ -38,7 +38,7 @@ export const actionUpdateGoal = async (
     }
   } catch (error) {
     console.error(
-      `Error updating goal ${updatedText ? "text" : "notes"}:`,
+      `Error updating goal ${updatedText ? 'text' : 'notes'}:`,
       error
     );
   }
@@ -52,7 +52,7 @@ export const actihandleGoalDelete = async (
 ) => {
   // prompt user if they are sure and only delete if so
   const confirmed = window.confirm(
-    "Are you sure you want to delete this goal?"
+    'Are you sure you want to delete this goal?'
   );
   if (!confirmed) {
     return;
@@ -64,7 +64,7 @@ export const actihandleGoalDelete = async (
       setGoals(goals.filter((goal) => goal.id !== goalId));
     }
   } catch (error) {
-    console.error("Error deleting goal:", error);
+    console.error('Error deleting goal:', error);
   }
 };
 
@@ -96,7 +96,7 @@ export const actionAddTaskToGoal = async (
       );
     }
   } catch (error) {
-    console.error("Error adding task:", error);
+    console.error('Error adding task:', error);
   }
 };
 
@@ -126,12 +126,12 @@ export const actionDeleteTask = async (
       );
     } else {
       console.error(
-        "Delete operation successful but unexpected response format: ",
+        'Delete operation successful but unexpected response format: ',
         response.data
       );
     }
   } catch (error) {
-    console.error("Error deleting task:", error);
+    console.error('Error deleting task:', error);
   }
 };
 
@@ -172,7 +172,7 @@ export const actionTaskStatus = async (
   try {
     const resp = await apios.put(`/goals/${goalId}/tasks/${taskId}`);
   } catch (error) {
-    console.error("Error updating task completion status:", error);
+    console.error('Error updating task completion status:', error);
     setGoals(originalGoals); // revert to original goals
     //throw error; // Rethrow the error so it can be handled by the caller.
   }

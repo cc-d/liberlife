@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState } from "react";
-import { decodePayload } from "../pages/utils/helpers";
+import React, { createContext, useContext, useState } from 'react';
+import { decodePayload } from '../utils/helpers';
 
 export interface AuthContextProps {
   user: string | null;
@@ -21,7 +21,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const [user, setUser] = useState<string | null>(() => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem('token');
       if (token) {
         const username = decodePayload(token);
         if (username) {
@@ -30,7 +30,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
       }
     } catch (error) {
-      console.error("Error during user initialization", error);
+      console.error('Error during user initialization', error);
     }
     setUserLoading(false);
     return null;
@@ -38,12 +38,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = (username: string, token: string) => {
     setUser(username);
-    localStorage.setItem("token", token);
+    localStorage.setItem('token', token);
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("token");
+    localStorage.removeItem('token');
   };
 
   return (
@@ -56,7 +56,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };

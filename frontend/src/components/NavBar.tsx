@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import useTheme from '@mui/material/styles/useTheme';
 import {
   AppBar,
@@ -47,7 +47,11 @@ const NavBarUserElem: React.FC<NavBarUserElemProps> = ({
         aria-label="account of current user"
         aria-controls="menu-appbar"
         aria-haspopup="true"
-        onClick={() => nav('/profile')}
+        onClick={(e) => {
+          e.preventDefault();
+          nav('/profile');
+        }}
+        href="/profile"
         sx={{ mr: 1 }}
       >
         <AccountCircleIcon />
@@ -55,7 +59,7 @@ const NavBarUserElem: React.FC<NavBarUserElemProps> = ({
           {auth.user}
         </Typography>
       </IconButton>
-      <IconButton color="inherit" onClick={handleLogout} sx={{ mr: 2 }}>
+      <IconButton color="inherit" onClick={handleLogout}>
         <LogoutIcon />
       </IconButton>
     </Box>
@@ -80,10 +84,11 @@ const NavBar: React.FC = () => {
       return;
     } else if ((!auth || !auth.user) && !auth?.userLoading) {
       if (!window.location.pathname.startsWith('/snapshots')) {
+        alert('Redirecting to login page');
         navigate('/login');
       }
     }
-  }, [auth, navigate]);
+  }, [auth?.userLoading]);
 
   if (window.location.pathname === '/login') {
     return null;
@@ -98,7 +103,10 @@ const NavBar: React.FC = () => {
           alignItems: 'center',
           justifyContent: 'space-between',
           color: 'inherit',
+          pl: 1,
+          pr: 1,
         }}
+        disableGutters
       >
         <Box
           sx={{
@@ -114,7 +122,11 @@ const NavBar: React.FC = () => {
             color="inherit"
             sx={{ textDecoration: 'none', '&:hover': { cursor: 'pointer' } }}
             component="a"
-            onClick={() => navigate('/')}
+            href="/"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate('');
+            }}
           >
             life.liberfy.ai
           </Typography>

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Box, Divider, Button } from '@mui/material';
+import { Typography, Box, Divider, Button, IconButton } from '@mui/material';
 import { SnapshotOut } from '../../api';
 import { useAuth } from '../../contexts/AuthContext';
-import apios from '../../apios';
+import apios from '../../utils/apios';
+import grey from '@mui/material/colors/grey';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useThemeContext } from '../../contexts/ThemeContext';
 
@@ -48,18 +50,33 @@ const ProfilePage: React.FC = () => {
         <Typography variant="body1">Loading...</Typography>
       ) : (
         <Box>
-          <Typography variant="body1">Logged in as: {auth.user}</Typography>
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: theme.theme.palette.background.paper,
-            }}
-            onClick={() => {
+          <Typography variant="h4">Logged in as: {auth.user}</Typography>
+          <IconButton
+            color="inherit"
+            aria-label="toggle theme"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={(e) => {
+              e.preventDefault();
               theme.toggleTheme();
             }}
+            sx={{
+              backgroundColor: 'inherit',
+              ':hover': {
+                backgroundColor:
+                  theme.currentTheme === 'dark' ? grey[800] : grey[300],
+              },
+              ':active': {
+                backgroundColor:
+                  theme.currentTheme === 'dark' ? grey[700] : grey[200],
+              },
+
+              borderRadius: 5,
+            }}
           >
-            {theme.currentTheme === 'dark' ? 'Light' : 'Dark'} theme
-          </Button>
+            <Brightness4Icon />
+            {theme.currentTheme === 'dark' ? 'light mode' : 'dark mode'}
+          </IconButton>
         </Box>
       )}
 
@@ -69,7 +86,6 @@ const ProfilePage: React.FC = () => {
         <Typography variant="h4">Snapshots</Typography>
         <Button
           variant="contained"
-          color="primary"
           onClick={() => newSnapshot()}
           sx={{ ml: 2 }}
         >

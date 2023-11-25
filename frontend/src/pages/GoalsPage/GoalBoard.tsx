@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Typography, TextField, Button } from '@mui/material';
 import { GoalOut } from '../../api';
-import apios from '../../apios';
+import apios from '../../utils/apios';
 import GoalBoardElem from './GoalBoardElem';
 import ShowHideTextButton from '../../components/ShowHideTooltip';
 import { useThemeContext } from '../../contexts/ThemeContext';
@@ -62,7 +62,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
 
     !hideArchived &&
       setArchivedGoals(sortedGoals.filter((goal) => goal.archived));
-  }, [sortedGoals, hideArchived]);
+  }, [sortedGoals, hideArchived, sortOrder, goals.length]);
 
   return (
     <Box>

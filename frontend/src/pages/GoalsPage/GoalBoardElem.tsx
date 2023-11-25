@@ -1,14 +1,12 @@
-import React from "react";
-import { Box, Divider } from "@mui/material";
-import { GoalOut } from "../../api";
-import { GoalItem } from "./GoalItem";
+import React from 'react';
+import { Box, Divider } from '@mui/material';
+import { GoalOut } from '../../api';
+import GoalItem from './GoalItem';
 import {
   actionUpdateGoal,
-  actionDeleteTask,
-  actionAddTaskToGoal,
   actihandleGoalDelete,
   actionTaskStatus,
-} from "./actions";
+} from './actions';
 
 interface GoalBoardElemProps {
   goals: GoalOut[];
@@ -21,10 +19,6 @@ export const GoalBoardElem: React.FC<GoalBoardElemProps> = ({
   setGoals,
   isSnapshot = false,
 }) => {
-  const handleAddTaskToGoal = async (goalId: number, taskText: string) => {
-    return actionAddTaskToGoal(goals, setGoals, goalId, taskText);
-  };
-
   const handleGoalDelete = async (goalId: number) => {
     return actihandleGoalDelete(goals, setGoals, goalId);
   };
@@ -48,19 +42,15 @@ export const GoalBoardElem: React.FC<GoalBoardElemProps> = ({
     );
   };
 
-  const handleDeleteTask = async (goalId: number, taskId: number) => {
-    return actionDeleteTask(goals, setGoals, goalId, taskId);
-  };
-
   return (
     <>
       <Divider className="gboard-divider" />
       <Box
         sx={{
-          display: "flex",
-          flexDirection: "row",
-          flexWrap: "wrap",
-          justifyContent: "left",
+          display: 'flex',
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          justifyContent: 'left',
           m: 0,
           p: 0,
           mt: 1,
@@ -71,21 +61,21 @@ export const GoalBoardElem: React.FC<GoalBoardElemProps> = ({
             <GoalItem
               key={goal.id}
               goal={goal}
+              goals={goals}
+              setGoals={setGoals}
+              handleGoalUpdate={handleGoalUpdate} // Correct the function reference
               handleGoalDelete={() => {}}
-              handleAddTaskToGoal={() => {}}
-              handleGoalUpdate={() => {}}
-              handleDeleteTask={() => {}}
-              handleTaskStatus={() => {}}
+              handleTaskStatus={handleTaskStatus} // Correct the function reference
             />
           ) : (
             <GoalItem
               key={goal.id}
               goal={goal}
-              handleGoalDelete={handleGoalDelete}
-              handleAddTaskToGoal={handleAddTaskToGoal}
-              handleGoalUpdate={handleGoalUpdate}
-              handleDeleteTask={handleDeleteTask}
-              handleTaskStatus={handleTaskStatus}
+              goals={goals}
+              setGoals={setGoals}
+              handleGoalUpdate={handleGoalUpdate} // Correct the function reference
+              handleGoalDelete={() => {}}
+              handleTaskStatus={handleTaskStatus} // Correct the function reference
             />
           )
         )}

@@ -1,37 +1,34 @@
-import React, { useState, useMemo } from 'react';
-import useTheme from '@mui/material/styles/useTheme';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Box, Divider } from '@mui/material';
-import { GoalOut, TaskStatus } from '../../../api';
+import { GoalOut } from '../../../api'; // Updated import
 import GoalHeader from './GoalHeader';
 import GoalTasks from './GoalTasks';
 import GoalNotes from './GoalNotes';
-import deepGrey from '@mui/material/colors/grey';
-import { actionTaskStatus } from '../actions';
+import { actionAddTaskToGoal, actionDeleteTask } from '../actions'; // Import actionDeleteTask
+import { useThemeContext } from '../../../contexts/ThemeContext';
 
-interface GoalItemProps {
+export interface GoalItemProps {
   goal: GoalOut;
-  handleGoalDelete: Function;
-  handleAddTaskToGoal: Function;
-  handleGoalUpdate: Function;
-  handleDeleteTask: Function;
-  handleTaskStatus: Function;
+  goals: GoalOut[];
+  setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>;
+  handleGoalDelete: (goalId: number) => void;
+  handleGoalUpdate: any; // Update this line
+  handleTaskStatus: any; // Update this line
 }
 
-export const getLatestDate = (goal: GoalOut): string | null => {
-  const goalDate: Number = new Date(goal.updated_on).getTime();
-  let latestDate: Date = new Date(goal.updated_on);
-
+const getLatestDate = (goal: GoalOut): string | null => {
+  let latestDate = new Date(goal.updated_on);
   goal.tasks.forEach((task) => {
-    const taskDate: Number = new Date(task.updated_on).getTime();
-    if (taskDate > goalDate) {
-      latestDate = new Date(task.updated_on);
+    const taskDate = new Date(task.updated_on);
+    if (taskDate > latestDate) {
+      latestDate = taskDate;
     }
   });
-  return latestDate ? latestDate.toLocaleString() : new Date().toLocaleString();
+  return latestDate.toLocaleString();
 };
 
-export const getLongestStr = (goal: GoalOut): number => {
-  let longestStr: number = goal.text.length;
+const getLongestStr = (goal: GoalOut): number => {
+  let longestStr = goal.text.length;
   if (goal.notes && goal.notes.length > longestStr) {
     longestStr = goal.notes.length;
   }
@@ -43,11 +40,11 @@ export const getLongestStr = (goal: GoalOut): number => {
   return longestStr;
 };
 
-export const GoalItem: React.FC<GoalItemProps> = ({
+const GoalItem: React.FC<GoalItemProps> = ({
   goal,
+  goals,
+  setGoals,
   handleGoalDelete,
-  handleAddTaskToGoal,
-  handleDeleteTask,
   handleGoalUpdate,
   handleTaskStatus,
 }) => {
@@ -55,20 +52,11 @@ export const GoalItem: React.FC<GoalItemProps> = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editedText, setEditedText] = useState<string>('');
-
   const [tasks, setTasks] = useState<GoalOut['tasks']>(goal.tasks);
-
-  const longestStr = getLongestStr(goal);
+  const longestStr = useMemo(() => getLongestStr(goal), [goal]);
   const maxElementWidth = longestStr >= 13 ? '98vw' : '47.6vw';
-  const theme = useTheme();
-  const latestUpdate = getLatestDate(goal);
-
-  useMemo(() => {
-    if (goal) {
-      setEditedText(goal.text);
-      setTasks(goal.tasks);
-    }
-  }, [goal]);
+  const theme = useThemeContext();
+  const latestUpdate = useMemo(() => getLatestDate(goal), [goal]);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -100,30 +88,72 @@ export const GoalItem: React.FC<GoalItemProps> = ({
   };
 
   const handleArchive = async () => {
-    await handleGoalUpdate(
-      goal.id,
-      undefined,
-      undefined,
-      true ? !goal.archived : false
-    );
+    await handleGoalUpdate(goal.id, undefined, undefined, !goal.archived);
     handleMenuClose();
   };
+  const giAddTask = async () => {
+    if (newTaskText.trim()) {
+      await actionAddTaskToGoal(goals, setGoals, goal.id, newTaskText);
+      setNewTaskText('');
+      setGoals((prevGoals: GoalOut[]) =>
+        prevGoals.map((g: any) => {
+          if (g.id === goal.id) {
+            const updatedTasks = [
+              ...(g.tasks || []),
+              {
+                id: 0, // Note: Ensure proper ID assignment here
+                text: newTaskText,
+                updated_on: new Date().toISOString(),
+              },
+            ];
+            setTasks(updatedTasks); // Update tasks state
+            return {
+              ...g,
+              tasks: updatedTasks,
+            };
+          }
+          return g;
+        })
+      );
+    }
+  };
 
-  const giWidth = longestStr < 13 ? `${1 + longestStr * 16}px` : `100%`; // 1rem for the checkbox
+  const giDeleteTask = async (taskId: number) => {
+    await actionDeleteTask(goals, setGoals, goal.id, taskId);
+    setGoals((prevGoals: GoalOut[]) =>
+      prevGoals.map((g: GoalOut) => {
+        if (g.id === goal.id) {
+          const updatedTasks = (g.tasks || []).filter(
+            (task: any) => task.id !== taskId
+          );
+          setTasks(updatedTasks); // Update tasks state
+          return {
+            ...g,
+            tasks: updatedTasks,
+          };
+        }
+        return g;
+      })
+    );
+  };
+
+  const giWidth = longestStr < 13 ? `${1 + longestStr * 16}px` : `100%`;
+
+  useEffect(() => {
+    setTasks(goal.tasks);
+  }, [goal.tasks]);
 
   return (
     <Box
       sx={{
         borderRadius: 1,
-        border: `2px solid ${theme.palette.divider}`,
-        display: 'flex', // This turns it into a flex container
-        flexDirection: 'column', // Stack children vertically
+        border: `2px solid ${theme.theme.palette.divider}`,
+        display: 'flex',
+        flexDirection: 'column',
         flexGrow: 1,
-        backgroundColor: theme.palette.background.paper,
-
+        backgroundColor: theme.theme.palette.background.paper,
         overflowWrap: 'anywhere',
         opacity: goal.archived ? 0.5 : 1,
-
         p: 0,
         m: 0,
         ml: 0.25,
@@ -135,7 +165,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
         },
         maxWidth: {
           xs: longestStr < 13 ? `calc(max(${longestStr}, 150px))` : '100%',
-          sm: '100%',
+          sm: longestStr < 13 ? `calc(max(${longestStr}, 150px))` : '100%',
         },
         mb: 0.5,
       }}
@@ -160,21 +190,21 @@ export const GoalItem: React.FC<GoalItemProps> = ({
         setNewTaskText={setNewTaskText}
         handleAddTask={() => {
           if (newTaskText.trim()) {
-            handleAddTaskToGoal(goal.id, newTaskText);
+            actionAddTaskToGoal(goals, setGoals, goal.id, newTaskText);
             setNewTaskText('');
           }
         }}
-        tasks={tasks} // Pass the state here
+        tasks={tasks || []}
         handleTaskStatus={handleTaskStatus}
-        handleDeleteTask={handleDeleteTask}
         taskGoal={goal}
+        giDeleteTask={giDeleteTask}
+        giAddTask={giAddTask}
       />
       <Divider
         sx={{
-          backgroundColor: '#303030',
+          backgroundColor: theme.theme.palette.divider,
         }}
       />
-
       <GoalNotes
         goal={goal}
         onSaveNotes={handleSaveNotes}

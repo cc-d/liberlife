@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { Box, Typography, TextField, IconButton, Link } from "@mui/material";
-import { GoalOut } from "../../../api";
-import EditIcon from "@mui/icons-material/Edit";
-import SaveIcon from "@mui/icons-material/Save";
+import React, { useState } from 'react';
+import { Box, Typography, TextField, IconButton, Link } from '@mui/material';
+import { GoalOut } from '../../../api';
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
+import { useThemeContext } from '../../../contexts/ThemeContext';
 
 interface GoalNotesProps {
   goal: GoalOut;
@@ -13,13 +14,13 @@ interface GoalNotesProps {
 const renderFormattedNotes = (goal: GoalOut) => {
   let i = 0;
   const elements: JSX.Element[] = [];
-  const notes = goal?.notes || "";
+  const notes = goal?.notes || '';
 
   while (i < notes.length) {
-    const startLinkText = notes.indexOf("[", i);
-    const endLinkText = notes.indexOf("]", startLinkText + 1); // Ensure we're looking after the start
-    const startLinkURL = notes.indexOf("(", endLinkText + 1); // Ensure we're looking after the end of link text
-    const endLinkURL = notes.indexOf(")", startLinkURL + 1); // Ensure we're looking after the start of link URL
+    const startLinkText = notes.indexOf('[', i);
+    const endLinkText = notes.indexOf(']', startLinkText + 1); // Ensure we're looking after the start
+    const startLinkURL = notes.indexOf('(', endLinkText + 1); // Ensure we're looking after the end of link text
+    const endLinkURL = notes.indexOf(')', startLinkURL + 1); // Ensure we're looking after the start of link URL
 
     // If any of the tags aren't found, break the loop
     if (
@@ -67,12 +68,12 @@ const renderFormattedNotes = (goal: GoalOut) => {
 
 const removeNewlines = (
   text: string,
-  removeChars: string = "\n\n",
-  replaceChars: string = "\n"
+  removeChars: string = '\n\n',
+  replaceChars: string = '\n'
 ) => {
-  let newText = text.replaceAll("\r\n", "\n");
+  let newText = text.replaceAll('\r\n', '\n');
   while (newText.includes(removeChars)) {
-    newText = newText.replaceAll(removeChars, "\n");
+    newText = newText.replaceAll(removeChars, '\n');
   }
   return newText;
 };
@@ -85,7 +86,7 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
 }) => {
   const [isEditingNotes, setIsEditingNotes] = useState<boolean>(false);
   const [editedNotes, setEditedNotes] = useState<string | null | undefined>(
-    goal?.notes || ""
+    goal?.notes || ''
   );
 
   const handleSaveNotes = () => {
@@ -94,29 +95,29 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
     setIsEditingNotes(false);
   };
 
-  const editBoxHeight = editedNotes?.split("\n").length || 1;
-
+  const editBoxHeight = editedNotes?.split('\n').length || 1;
+  const theme = useThemeContext();
   return (
     <Box
       sx={{
         m: 0,
 
-        maxWidth: "100%",
+        maxWidth: '100%',
       }}
     >
       {isEditingNotes ? (
         <Box
           sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "stretch",
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'stretch',
             flexGrow: 1,
-            maxWidth: "100%",
-            width: "100%",
+            maxWidth: '100%',
+            width: '100%',
           }}
         >
           <TextField
-            value={editedNotes || ""}
+            value={editedNotes || ''}
             onChange={(e) => setEditedNotes(e.target.value)}
             multiline
             rows={editBoxHeight}
@@ -125,14 +126,14 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
               m: 0,
               p: 0,
               borderRadius: 0,
-              width: "100%",
+              width: '100%',
             }}
           />
           <IconButton
             onClick={handleSaveNotes}
             sx={{
-              display: "flex",
-              alignItems: "center",
+              display: 'flex',
+              alignItems: 'center',
               borderRadius: 0,
               m: 0,
             }}
@@ -148,29 +149,29 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
           sx={{
             flexGrow: 1,
 
-            width: "100%",
+            width: '100%',
           }}
         >
           <Typography
-            color={goal?.notes ? "textPrimary" : "textSecondary"}
+            color={goal?.notes ? 'textPrimary' : 'textSecondary'}
             sx={{
               flexGrow: 1,
-              width: "100%",
-              whiteSpace: "pre-wrap",
+              width: '100%',
+              whiteSpace: 'pre-wrap',
               p: 0,
               m: 0,
               pt: 0.5,
               pl: 1,
             }}
           >
-            {goal?.notes ? renderFormattedNotes(goal) : "add notes..."}
+            {goal?.notes ? renderFormattedNotes(goal) : 'add notes...'}
           </Typography>
           <IconButton
             onClick={() => setIsEditingNotes(true)}
             sx={{
-              alignSelf: "stretch",
-              display: "flex",
-              alignItems: "center",
+              alignSelf: 'stretch',
+              display: 'flex',
+              alignItems: 'center',
               borderRadius: 0,
             }}
           >
@@ -181,13 +182,14 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
 
       <Typography
         variant="caption"
-        color="textSecondary"
+        color={theme.theme.palette.text.secondary}
+        noWrap
         sx={{
-          textAlign: "right",
+          textAlign: 'right',
           flexGrow: 1,
-          display: "flex",
-          justifyContent: "flex-end",
-
+          display: 'flex',
+          justifyContent: 'flex-end',
+          fontVariant: 'small-caps',
           m: 0,
           p: 0,
           mr: 0.5,

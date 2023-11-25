@@ -27,7 +27,7 @@ export const TaskStatusIcon: React.FC<{ status: TaskStatus }> = ({
   return statusIconMap[status];
 };
 
-export const GoalTaskItem: React.FC<{
+const GoalTaskItem: React.FC<{
   taskGoal: GoalOut;
   task: GoalTaskOut;
   handleTaskStatus: Function;
