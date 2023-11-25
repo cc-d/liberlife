@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { Typography, Container, Divider, Button } from "@mui/material";
-import { SnapshotOut } from "../../api";
-import { useAuth } from "../../contexts/AuthContext";
-import apios from "../../apios";
-import { useNavigate, Link as RouterLink } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { Typography, Container, Divider, Button } from '@mui/material';
+import { SnapshotOut } from '../../api';
+import { useAuth } from '../../contexts/AuthContext';
+import apios from '../../apios';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 
 const ProfilePage: React.FC = () => {
   const auth = useAuth();
@@ -14,10 +14,10 @@ const ProfilePage: React.FC = () => {
 
   const newSnapshot = async () => {
     try {
-      const response = await apios.post("/snapshots");
+      const response = await apios.post('/snapshots');
       nav(`/snapshots/${response.data.uuid}`);
     } catch (error) {
-      console.error("Error creating snapshot:", error);
+      console.error('Error creating snapshot:', error);
       // Handle error appropriately
     }
   };
@@ -25,10 +25,10 @@ const ProfilePage: React.FC = () => {
   useEffect(() => {
     const fetchSnapshots = async () => {
       try {
-        const response = await apios.get("/snapshots");
+        const response = await apios.get('/snapshots');
         setSnapshots(response.data);
       } catch (error) {
-        console.error("Error fetching snapshots:", error);
+        console.error('Error fetching snapshots:', error);
         // Handle error appropriately
       } finally {
         setLoading(false);
@@ -39,10 +39,10 @@ const ProfilePage: React.FC = () => {
   }, [auth?.user]);
 
   return (
-    <Container maxWidth="xl" sx={{ backgroundColor: "black" }}>
+    <>
       <Typography variant="h2">Profile</Typography>
       <Typography variant="body1">
-        {auth?.userLoading ? "Loading..." : auth?.user}
+        {auth?.userLoading ? 'Loading...' : auth?.user}
       </Typography>
       <Typography variant="h2">Snapshots</Typography>
       <Button
@@ -60,13 +60,13 @@ const ProfilePage: React.FC = () => {
           <Typography
             key={snapshot.uuid}
             variant="body1"
-            sx={{ cursor: "pointer" }}
+            sx={{ cursor: 'pointer' }}
           >
             {snapshot.uuid}
           </Typography>
         </RouterLink>
       ))}
-    </Container>
+    </>
   );
 };
 

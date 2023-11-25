@@ -1,16 +1,23 @@
-import React, { createContext, useContext, useState, useMemo } from "react";
-import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useMemo,
+  useEffect,
+} from "react";
+import { ThemeProvider as MuiThemeProvider, Theme } from "@mui/material/styles";
 import { darkTheme, lightTheme } from "../theme";
 
-// Define the theme context
+type DarkLight = "dark" | "light";
+
 interface ThemeContextType {
-  currentTheme: "dark" | "light";
+  currentTheme: DarkLight;
   toggleTheme: () => void;
+  theme: Theme;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-// Custom hook to access the theme context
 export const useThemeContext = () => {
   const context = useContext(ThemeContext);
   if (!context) {
@@ -25,21 +32,19 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const [currentTheme, setCurrentTheme] = useState<"dark" | "light">("dark");
+  const locTheme = (localStorage.getItem("theme") || "dark") as DarkLight;
+  const [currentTheme, setCurrentTheme] = useState<DarkLight>(locTheme);
 
-  // Function to toggle between dark and light themes
   const toggleTheme = () => {
-    setCurrentTheme((prevTheme) => (prevTheme === "dark" ? "light" : "dark"));
+    const nextTheme = currentTheme === "dark" ? "light" : "dark";
+    localStorage.setItem("theme", nextTheme);
+    setCurrentTheme(nextTheme);
   };
 
-  // Select the theme based on the current theme value
-  const theme = useMemo(
-    () => (currentTheme === "dark" ? darkTheme : lightTheme),
-    [currentTheme]
-  );
+  const theme = currentTheme === "dark" ? darkTheme : lightTheme;
 
   return (
-    <ThemeContext.Provider value={{ currentTheme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, currentTheme, toggleTheme }}>
       <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>
     </ThemeContext.Provider>
   );

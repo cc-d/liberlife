@@ -7,18 +7,18 @@ import {
   CheckCircle,
   Delete,
 } from "@mui/icons-material";
-import deepBlue from "@mui/material/colors/blue";
-import deepGreen from "@mui/material/colors/green";
-import deepGrey from "@mui/material/colors/grey";
+import blue from "@mui/material/colors/blue";
+import green from "@mui/material/colors/green";
+import grey from "@mui/material/colors/grey";
+import { useThemeContext } from "../../../contexts/ThemeContext";
+
 import theme from "../../../theme";
 const statusIconMap = {
   [TaskStatus.NOT_STARTED]: (
-    <CircleOutlined sx={{ color: deepGrey[500], mr: 0.25 }} />
+    <CircleOutlined sx={{ color: grey[500], mr: 0.25 }} />
   ),
-  [TaskStatus.IN_PROGRESS]: <Pending sx={{ color: deepBlue[500], mr: 0.25 }} />,
-  [TaskStatus.COMPLETED]: (
-    <CheckCircle sx={{ color: deepGreen[500], mr: 0.25 }} />
-  ),
+  [TaskStatus.IN_PROGRESS]: <Pending sx={{ color: blue[200], mr: 0.25 }} />,
+  [TaskStatus.COMPLETED]: <CheckCircle sx={{ color: green[200], mr: 0.25 }} />,
 };
 
 export const TaskStatusIcon: React.FC<{ status: TaskStatus }> = ({
@@ -33,6 +33,7 @@ export const GoalTaskItem: React.FC<{
   handleTaskStatus: Function;
   handleDeleteTask: Function;
 }> = ({ taskGoal, task, handleTaskStatus, handleDeleteTask }) => {
+  const theme = useThemeContext();
   return (
     <Box
       display="flex"
@@ -46,11 +47,11 @@ export const GoalTaskItem: React.FC<{
         color: "inherit",
         userSelect: "none",
         "&:active": {
-          backgroundColor: theme.palette.action.selected,
+          backgroundColor: theme.theme.palette.action.selected,
         },
         "@media (pointer: fine)": {
           "&:hover": {
-            backgroundColor: theme.palette.action.hover,
+            backgroundColor: theme.theme.palette.action.hover,
           },
         },
       }}
@@ -64,10 +65,10 @@ export const GoalTaskItem: React.FC<{
             task.status === TaskStatus.COMPLETED ? "line-through" : "inherit",
           color:
             task.status === TaskStatus.COMPLETED
-              ? theme.palette.text.primary
+              ? theme.theme.palette.text.primary
               : task.status === TaskStatus.IN_PROGRESS
-              ? theme.palette.text.primary
-              : theme.palette.text.primary,
+              ? theme.theme.palette.text.primary
+              : theme.theme.palette.text.primary,
           flexGrow: 1,
 
           overflowWrap: "anywhere",
@@ -85,7 +86,7 @@ export const GoalTaskItem: React.FC<{
       </Box>
       <IconButton
         sx={{
-          color: theme.palette.text.primary,
+          color: theme.theme.palette.text.primary,
         }}
         onClick={(event) => {
           event.stopPropagation(); // Prevent triggering the onToggle when deleting

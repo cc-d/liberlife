@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { Box, Typography, TextField, Button } from "@mui/material";
-import { GoalOut } from "../../api";
-import apios from "../../apios";
-import GoalBoardElem from "./GoalBoardElem";
-import ShowHideTextButton from "../../components/ShowHideTooltip";
+import React, { useState, useEffect, useMemo } from 'react';
+import { Box, Typography, TextField, Button } from '@mui/material';
+import { GoalOut } from '../../api';
+import apios from '../../apios';
+import GoalBoardElem from './GoalBoardElem';
+import ShowHideTextButton from '../../components/ShowHideTooltip';
+import { useThemeContext } from '../../contexts/ThemeContext';
+import grey from '@mui/material/colors/grey';
 
-import SortButton, { SortOrder, sortGoals, sortOrders } from "./SortButton";
+import SortButton, { SortOrder, sortGoals, sortOrders } from './SortButton';
 interface GoalBoardProps {
   goals: GoalOut[];
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>;
@@ -17,19 +19,21 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
   setGoals,
   isSnapshot = false,
 }) => {
-  let [newGoalText, setNewGoalText] = useState<string>("");
+  const { theme } = useThemeContext();
+
+  let [newGoalText, setNewGoalText] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<SortOrder>(
-    () => (localStorage.getItem("sortOrder") as SortOrder) || SortOrder.Default
+    () => (localStorage.getItem('sortOrder') as SortOrder) || SortOrder.Default
   );
   const [hideArchived, setHideArchived] = useState<boolean>(
-    localStorage.getItem("hideArchived") === "true"
+    localStorage.getItem('hideArchived') === 'true'
   );
   const [currentGoals, setCurrentGoals] = useState<GoalOut[]>([]);
   const [archivedGoals, setArchivedGoals] = useState<GoalOut[]>([]);
 
   // Effect to update local storage whenever sortOrder changes
   useEffect(() => {
-    localStorage.setItem("sortOrder", sortOrder);
+    localStorage.setItem('sortOrder', sortOrder);
   }, [sortOrder]);
 
   const handleSortClick = () => {
@@ -45,10 +49,10 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
 
   const handleAddGoal = async () => {
     if (newGoalText.trim()) {
-      const response = await apios.post("/goals", { text: newGoalText });
+      const response = await apios.post('/goals', { text: newGoalText });
       if (response.data) {
         setGoals([...goals, response.data]);
-        setNewGoalText("");
+        setNewGoalText('');
       }
     }
   };
@@ -61,31 +65,26 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
   }, [sortedGoals, hideArchived]);
 
   return (
-    <Box
-      sx={{
-        backgroundColor: "black",
-        m: 1,
-      }}
-    >
+    <>
       <Box
         sx={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "left",
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'left',
           mb: 1,
-          width: "100%",
-          maxWidth: "100%",
+          width: '100%',
+          maxWidth: '100%',
         }}
       >
         <Box
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
             m: 0,
             flexGrow: 1,
             p: 0,
-            height: "100%",
+            height: '100%',
           }}
         >
           <Typography
@@ -94,10 +93,10 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
             sx={{
               m: 0,
               p: 0,
-              userSelect: "none",
+              userSelect: 'none',
             }}
           >
-            {isSnapshot ? "GOAL BOARD SNAPSHOT" : "Goal Board"}
+            {isSnapshot ? 'GOAL BOARD SNAPSHOT' : 'Goal Board'}
           </Typography>
           <SortButton sortOrder={sortOrder} onSort={handleSortClick} />
         </Box>
@@ -112,10 +111,10 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
                 e.target.value !== newGoalText && setNewGoalText(e.target.value)
               }
               onKeyDown={(e) => {
-                if (e.key === "Enter") {
+                if (e.key === 'Enter') {
                   handleAddGoal();
-                } else if (e.key === "Escape") {
-                  setNewGoalText("");
+                } else if (e.key === 'Escape') {
+                  setNewGoalText('');
                 }
               }}
               sx={{
@@ -131,8 +130,8 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
               sx={{
                 m: 0,
 
-                maxWidth: "100%",
-                minHeight: "100%",
+                maxWidth: '100%',
+                minHeight: '100%',
               }}
               onClick={handleAddGoal}
             >
@@ -155,7 +154,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
       {!hideArchived && (
         <GoalBoardElem goals={archivedGoals} setGoals={setCurrentGoals} />
       )}
-    </Box>
+    </>
   );
 };
 

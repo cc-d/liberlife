@@ -1,5 +1,5 @@
-import React, { useContext, useEffect } from "react";
-import useTheme from "@mui/material/styles/useTheme";
+import React, { useContext, useEffect } from 'react';
+import useTheme from '@mui/material/styles/useTheme';
 import {
   AppBar,
   Toolbar,
@@ -7,11 +7,12 @@ import {
   IconButton,
   Box,
   Button,
-} from "@mui/material";
-import LogoutIcon from "@mui/icons-material/Logout";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle"; // User icon
-import { useNavigate } from "react-router-dom";
-import { AuthContext, AuthContextProps } from "../contexts/AuthContext";
+} from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'; // User icon
+import { useNavigate } from 'react-router-dom';
+import { AuthContext, AuthContextProps } from '../contexts/AuthContext';
+import { useThemeContext } from '../contexts/ThemeContext';
 
 interface NavBarUserElemProps {
   auth: AuthContextProps | undefined;
@@ -25,7 +26,7 @@ const NavBarUserElem: React.FC<NavBarUserElemProps> = ({
   const nav = useNavigate();
   if (!auth || auth?.userLoading) {
     return (
-      <Typography variant="h6" sx={{ mr: 2, color: "inherit" }}>
+      <Typography variant="h6" sx={{ mr: 2, color: 'inherit' }}>
         Loading...
       </Typography>
     );
@@ -33,25 +34,25 @@ const NavBarUserElem: React.FC<NavBarUserElemProps> = ({
 
   if (!auth.user) {
     return (
-      <Button variant="text" color="inherit" onClick={() => nav("/login")}>
+      <Button variant="text" color="inherit" onClick={() => nav('/login')}>
         Login
       </Button>
     );
   }
 
   return (
-    <Box sx={{ display: "flex", alignItems: "center" }}>
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <IconButton
         color="inherit"
         aria-label="account of current user"
         aria-controls="menu-appbar"
         aria-haspopup="true"
-        onClick={() => nav("/profile")}
+        onClick={() => nav('/profile')}
         sx={{ mr: 1 }}
         href="/profile"
       >
         <AccountCircleIcon />
-        <Typography variant="h6" sx={{ mr: 0, color: "inherit" }}>
+        <Typography variant="h6" sx={{ mr: 0, color: 'inherit' }}>
           {auth.user}
         </Typography>
       </IconButton>
@@ -65,53 +66,48 @@ const NavBarUserElem: React.FC<NavBarUserElemProps> = ({
 const NavBar: React.FC = () => {
   const navigate = useNavigate();
   const auth = useContext(AuthContext);
-  const theme = useTheme();
+  const theme = useThemeContext();
 
-  const isLoginPage = window.location.pathname === "/login";
-  const isSnapPage = window.location.pathname.startsWith("/snapshot");
+  const isLoginPage = window.location.pathname === '/login';
+  const isSnapPage = window.location.pathname.startsWith('/snapshot');
 
   const handleLogout = () => {
     auth?.logout();
-    navigate("/login");
+    navigate('/login');
   };
 
   useEffect(() => {
     if (isLoginPage) {
       return;
     } else if ((!auth || !auth.user) && !auth?.userLoading) {
-      if (!window.location.pathname.startsWith("/snapshots")) {
-        navigate("/login");
+      if (!window.location.pathname.startsWith('/snapshots')) {
+        navigate('/login');
       }
     }
   }, [auth, navigate]);
 
-  if (window.location.pathname === "/login") {
+  if (window.location.pathname === '/login') {
     return null;
   }
 
   return (
-    <AppBar
-      position="static"
-      sx={{
-        boxShadow: 0,
-      }}
-    >
+    <AppBar position="static" sx={{}}>
       <Toolbar
         variant="dense"
         sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          backgroundColor: `${theme.palette.background.default}`,
-          color: `${theme.palette.text.primary}`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          color: 'inherit',
         }}
       >
         <Box
           sx={{
             flexGrow: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            color: 'inherit',
           }}
         >
           <Typography
@@ -119,7 +115,11 @@ const NavBar: React.FC = () => {
             color="inherit"
             component="a"
             href="/"
-            sx={{ textDecoration: "none" }}
+            sx={{ textDecoration: 'none' }}
+            onClick={(e) => {
+              e.preventDefault();
+              navigate('/');
+            }}
           >
             life.liberfy.ai
           </Typography>

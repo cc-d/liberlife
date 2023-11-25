@@ -1,9 +1,0 @@
-#root, body, html {
-    background-color: black;
-}
-
-.gboard-divider {
-    height: 2px;
-    display: block;
-    color: #333;
-}

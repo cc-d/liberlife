@@ -1,28 +1,28 @@
-import { createTheme, darken } from "@mui/material/styles";
-import deepGreen from "@mui/material/colors/green";
-import deepGrey from "@mui/material/colors/grey";
-import deepPurple from "@mui/material/colors/deepPurple";
+import { createTheme, darken, lighten } from "@mui/material/styles";
+import green from "@mui/material/colors/green";
+import purple from "@mui/material/colors/purple";
+import grey from "@mui/material/colors/grey";
 
-export const primaryColor = deepGreen[600];
-export const secondaryColor = deepPurple[900];
+export const primary = green[900];
+export const secondary = purple[900];
 
 export const darkTheme = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: primaryColor, // SeaGreen
+      main: primary,
     },
 
     text: {
-      primary: deepGrey[50], // White
-      secondary: deepGrey[500], // LightGrey
+      primary: grey[50],
+      secondary: grey[400],
     },
     secondary: {
-      main: secondaryColor, // DarkGreen
+      main: secondary,
     },
     background: {
-      default: darken(deepGrey[900], 0.5),
-      paper: deepGrey[800], // Dark paper background
+      default: darken(grey[900], 1),
+      paper: darken(grey[900], 0.1),
     },
   },
 });
@@ -31,14 +31,18 @@ export const lightTheme = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: primaryColor, // SeaGreen
+      main: primary,
     },
     secondary: {
-      main: secondaryColor, // DarkGreen
+      main: secondary,
+    },
+    text: {
+      primary: darken(grey[900], 0.1),
+      secondary: lighten(grey[900], 0.1),
     },
     background: {
-      default: deepGrey[100], // Light background color
-      paper: deepGrey[50], // Light paper background
+      default: grey[100],
+      paper: grey[50],
     },
   },
 });
