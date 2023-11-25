@@ -65,7 +65,7 @@ export const GoalTaskItem: React.FC<{
             task.status === TaskStatus.COMPLETED ? 'line-through' : 'inherit',
           color:
             task.status === TaskStatus.COMPLETED
-              ? theme.theme.palette.text.primary
+              ? theme.theme.palette.text.secondary
               : task.status === TaskStatus.IN_PROGRESS
               ? theme.theme.palette.text.primary
               : theme.theme.palette.text.primary,
