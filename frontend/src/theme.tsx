@@ -1,14 +1,14 @@
-import { createTheme, darken, lighten } from "@mui/material/styles";
-import green from "@mui/material/colors/green";
-import purple from "@mui/material/colors/purple";
-import grey from "@mui/material/colors/grey";
+import { createTheme, darken, lighten } from '@mui/material/styles';
+import green from '@mui/material/colors/green';
+import purple from '@mui/material/colors/purple';
+import grey from '@mui/material/colors/grey';
 
 export const primary = green[900];
 export const secondary = purple[900];
 
 export const darkTheme = createTheme({
   palette: {
-    mode: "dark",
+    mode: 'dark',
     primary: {
       main: primary,
     },
@@ -29,7 +29,7 @@ export const darkTheme = createTheme({
 
 export const lightTheme = createTheme({
   palette: {
-    mode: "light",
+    mode: 'light',
     primary: {
       main: primary,
     },
@@ -41,8 +41,8 @@ export const lightTheme = createTheme({
       secondary: lighten(grey[900], 0.1),
     },
     background: {
-      default: grey[100],
-      paper: grey[50],
+      default: grey[50],
+      paper: grey[900],
     },
   },
 });

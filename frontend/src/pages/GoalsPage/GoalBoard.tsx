@@ -65,17 +65,9 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
   }, [sortedGoals, hideArchived]);
 
   return (
-    <>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'left',
-          mb: 1,
-          width: '100%',
-          maxWidth: '100%',
-        }}
-      >
+    <Box>
+      {/* Header */}
+      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
         <Box
           sx={{
             display: 'flex',
@@ -101,8 +93,16 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
           <SortButton sortOrder={sortOrder} onSort={handleSortClick} />
         </Box>
 
-        {isSnapshot ? null : (
-          <>
+        {!isSnapshot ? (
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              m: 0,
+              p: 0,
+            }}
+          >
             <TextField
               variant="outlined"
               placeholder="New goal..."
@@ -124,25 +124,24 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
               }}
             />
             <Button
-              size="small"
               variant="contained"
-              color="primary"
               sx={{
-                m: 0,
-
-                maxWidth: '100%',
-                minHeight: '100%',
+                height: '100%',
+                pt: 2,
+                pb: 2,
               }}
               onClick={handleAddGoal}
             >
               Create
             </Button>
-          </>
-        )}
+          </Box>
+        ) : null}
       </Box>
 
+      {/* Actual GoalBoard */}
       <GoalBoardElem goals={currentGoals} setGoals={setCurrentGoals} />
 
+      {/* Archived Goals */}
       <Box p={0.5} m={0.5} mt={2}>
         <ShowHideTextButton
           text="Archived"
@@ -154,7 +153,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
       {!hideArchived && (
         <GoalBoardElem goals={archivedGoals} setGoals={setCurrentGoals} />
       )}
-    </>
+    </Box>
   );
 };
 

@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Container, Divider, Button } from '@mui/material';
+import { Typography, Box, Divider, Button } from '@mui/material';
 import { SnapshotOut } from '../../api';
 import { useAuth } from '../../contexts/AuthContext';
 import apios from '../../apios';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import { useThemeContext } from '../../contexts/ThemeContext';
 
 const ProfilePage: React.FC = () => {
   const auth = useAuth();
   const [snapshots, setSnapshots] = useState<SnapshotOut[]>([]);
   //eslint-disable-next-line
   const [loading, setLoading] = useState(true);
+  const theme = useThemeContext();
   const nav = useNavigate();
 
   const newSnapshot = async () => {
@@ -39,22 +41,42 @@ const ProfilePage: React.FC = () => {
   }, [auth?.user]);
 
   return (
-    <>
-      <Typography variant="h2">Profile</Typography>
-      <Typography variant="body1">
-        {auth?.userLoading ? 'Loading...' : auth?.user}
-      </Typography>
-      <Typography variant="h2">Snapshots</Typography>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => newSnapshot()}
-        sx={{ mb: 2 }}
-      >
-        Create snapshot
-      </Button>
-      <Divider />
-      <Typography variant="h3">Created</Typography>
+    <Box className="ProfilePage">
+      <Typography variant="h3">Profile</Typography>
+
+      {auth.userLoading ? (
+        <Typography variant="body1">Loading...</Typography>
+      ) : (
+        <Box>
+          <Typography variant="body1">Logged in as: {auth.user}</Typography>
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: theme.theme.palette.background.paper,
+            }}
+            onClick={() => {
+              theme.toggleTheme();
+            }}
+          >
+            {theme.currentTheme === 'dark' ? 'Light' : 'Dark'} theme
+          </Button>
+        </Box>
+      )}
+
+      <Divider sx={{ mt: 1, mb: 1 }} />
+
+      <Box display="flex" flexDirection="row" alignItems="center">
+        <Typography variant="h4">Snapshots</Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => newSnapshot()}
+          sx={{ ml: 2 }}
+        >
+          Create snapshot
+        </Button>
+      </Box>
+
       {snapshots.map((snapshot) => (
         <RouterLink to={`/snapshots/${snapshot.uuid}`}>
           <Typography
@@ -66,7 +88,7 @@ const ProfilePage: React.FC = () => {
           </Typography>
         </RouterLink>
       ))}
-    </>
+    </Box>
   );
 };
 

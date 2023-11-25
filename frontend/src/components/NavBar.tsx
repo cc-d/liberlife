@@ -49,7 +49,6 @@ const NavBarUserElem: React.FC<NavBarUserElemProps> = ({
         aria-haspopup="true"
         onClick={() => nav('/profile')}
         sx={{ mr: 1 }}
-        href="/profile"
       >
         <AccountCircleIcon />
         <Typography variant="h6" sx={{ mr: 0, color: 'inherit' }}>
@@ -113,13 +112,9 @@ const NavBar: React.FC = () => {
           <Typography
             variant="h6"
             color="inherit"
+            sx={{ textDecoration: 'none', '&:hover': { cursor: 'pointer' } }}
             component="a"
-            href="/"
-            sx={{ textDecoration: 'none' }}
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/');
-            }}
+            onClick={() => navigate('/')}
           >
             life.liberfy.ai
           </Typography>

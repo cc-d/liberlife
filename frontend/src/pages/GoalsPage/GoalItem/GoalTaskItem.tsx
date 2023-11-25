@@ -1,24 +1,24 @@
-import React from "react";
-import { Box, Typography, IconButton } from "@mui/material";
-import { GoalTaskOut, GoalOut, TaskStatus } from "../../../api";
+import React from 'react';
+import { Box, Typography, IconButton } from '@mui/material';
+import { GoalTaskOut, GoalOut, TaskStatus } from '../../../api';
 import {
   CircleOutlined,
   Pending,
   CheckCircle,
   Delete,
-} from "@mui/icons-material";
-import blue from "@mui/material/colors/blue";
-import green from "@mui/material/colors/green";
-import grey from "@mui/material/colors/grey";
-import { useThemeContext } from "../../../contexts/ThemeContext";
+} from '@mui/icons-material';
+import blue from '@mui/material/colors/blue';
+import green from '@mui/material/colors/green';
+import grey from '@mui/material/colors/grey';
+import { useThemeContext } from '../../../contexts/ThemeContext';
 
-import theme from "../../../theme";
+import theme from '../../../theme';
 const statusIconMap = {
   [TaskStatus.NOT_STARTED]: (
     <CircleOutlined sx={{ color: grey[500], mr: 0.25 }} />
   ),
-  [TaskStatus.IN_PROGRESS]: <Pending sx={{ color: blue[200], mr: 0.25 }} />,
-  [TaskStatus.COMPLETED]: <CheckCircle sx={{ color: green[200], mr: 0.25 }} />,
+  [TaskStatus.IN_PROGRESS]: <Pending sx={{ color: blue[500], mr: 0.25 }} />,
+  [TaskStatus.COMPLETED]: <CheckCircle sx={{ color: green[500], mr: 0.25 }} />,
 };
 
 export const TaskStatusIcon: React.FC<{ status: TaskStatus }> = ({
@@ -39,18 +39,18 @@ export const GoalTaskItem: React.FC<{
       display="flex"
       alignItems="center"
       sx={{
-        cursor: "pointer",
+        cursor: 'pointer',
         flexGrow: 1,
         pt: 0.25,
         pb: 0.25,
-        width: "100%",
-        color: "inherit",
-        userSelect: "none",
-        "&:active": {
+        width: '100%',
+        color: 'inherit',
+        userSelect: 'none',
+        '&:active': {
           backgroundColor: theme.theme.palette.action.selected,
         },
-        "@media (pointer: fine)": {
-          "&:hover": {
+        '@media (pointer: fine)': {
+          '&:hover': {
             backgroundColor: theme.theme.palette.action.hover,
           },
         },
@@ -62,7 +62,7 @@ export const GoalTaskItem: React.FC<{
       <Box
         sx={{
           textDecoration:
-            task.status === TaskStatus.COMPLETED ? "line-through" : "inherit",
+            task.status === TaskStatus.COMPLETED ? 'line-through' : 'inherit',
           color:
             task.status === TaskStatus.COMPLETED
               ? theme.theme.palette.text.primary
@@ -71,13 +71,13 @@ export const GoalTaskItem: React.FC<{
               : theme.theme.palette.text.primary,
           flexGrow: 1,
 
-          overflowWrap: "anywhere",
+          overflowWrap: 'anywhere',
         }}
       >
         <Typography
           sx={{
             flexGrow: 1,
-            overflowWrap: "anywhere",
+            overflowWrap: 'anywhere',
           }}
           variant="subtitle1"
         >
@@ -95,7 +95,7 @@ export const GoalTaskItem: React.FC<{
       >
         <Delete
           sx={{
-            color: "inherit",
+            color: 'inherit',
           }}
         />
       </IconButton>
