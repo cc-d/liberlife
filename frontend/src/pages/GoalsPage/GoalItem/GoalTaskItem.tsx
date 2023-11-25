@@ -34,6 +34,7 @@ const GoalTaskItem: React.FC<{
   handleDeleteTask: Function;
 }> = ({ taskGoal, task, handleTaskStatus, handleDeleteTask }) => {
   const theme = useThemeContext();
+  console.log('taskGoal', taskGoal);
   return (
     <Box
       display="flex"
@@ -90,7 +91,7 @@ const GoalTaskItem: React.FC<{
         }}
         onClick={(event) => {
           event.stopPropagation();
-          handleDeleteTask(taskGoal?.id, task.id);
+          handleDeleteTask(taskGoal.id, task.id);
         }}
       >
         <Delete

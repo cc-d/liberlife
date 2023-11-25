@@ -96,13 +96,12 @@ const GoalItem: React.FC<GoalItemProps> = ({
     if (newTaskText.trim()) {
       await actionAddTaskToGoal(goals, setGoals, goal.id, newTaskText);
       setNewTaskText('');
-      setGoals((prevGoals: GoalOut[]) =>
-        prevGoals.map((g: any) => {
+      setGoals((goals: GoalOut[]) =>
+        goals.map((g: any) => {
           if (g.id === goal.id) {
             const updatedTasks = [
               ...(g.tasks || []),
               {
-                id: 0,
                 text: newTaskText,
                 updated_on: new Date().toISOString(),
               },
@@ -119,27 +118,35 @@ const GoalItem: React.FC<GoalItemProps> = ({
     }
   };
 
-  const giDeleteTask = async (taskId: number) => {
-    const ogGoals = [...goals];
+  const giDeleteTask = async (goalId: number, taskId: number) => {
+    const ogGoals = goals;
+    const ogGoal = goal;
+    const ogTasks = tasks;
+
     try {
-      setGoals((prevGoals: GoalOut[]) =>
-        prevGoals.map((g: GoalOut) => {
+      // Perform the API call to delete the task
+      await actionDeleteTask(goals, setGoals, goal.id, taskId);
+      // Update the tasks state and the goals state
+      setTasks((currentTasks) =>
+        currentTasks.filter((task) => task.id !== taskId)
+      );
+      setGoals((prevGoals) =>
+        prevGoals.map((g) => {
           if (g.id === goal.id) {
-            const updatedTasks = (g.tasks || []).filter(
-              (task: any) => task.id !== taskId
-            );
-            setTasks(updatedTasks);
             return {
               ...g,
-              tasks: updatedTasks,
+              tasks: g.tasks.filter((task) => task.id !== taskId),
             };
           }
           return g;
         })
       );
-      await actionDeleteTask(goals, setGoals, goal.id, taskId);
     } catch (e) {
+      // Handle errors (e.g., display a notification or log the error)
+      console.error('Failed to delete task:', e);
       setGoals(ogGoals);
+
+      setTasks(ogTasks);
     }
   };
 

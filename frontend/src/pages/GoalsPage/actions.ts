@@ -104,33 +104,8 @@ export const actionDeleteTask = async (
   goalId: number,
   taskId: number
 ) => {
-  try {
-    const response = await apios.delete(`/goals/${goalId}/tasks/${taskId}`);
-    if (response.data) {
-      setGoals(
-        goals.map((goal) => {
-          if (goal.id === goalId) {
-            const updatedTasks = goal.tasks?.filter(
-              (task) => task.id !== taskId
-            );
-            return {
-              ...goal,
-              tasks: updatedTasks,
-              updated_on: response.data.updated_on,
-            };
-          }
-          return goal;
-        })
-      );
-    } else {
-      console.error(
-        'Delete operation successful but unexpected response format: ',
-        response.data
-      );
-    }
-  } catch (error) {
-    console.error('Error deleting task:', error);
-  }
+  const response = await apios.delete(`/goals/${goalId}/tasks/${taskId}`);
+  return response;
 };
 
 export const actionTaskStatus = async (

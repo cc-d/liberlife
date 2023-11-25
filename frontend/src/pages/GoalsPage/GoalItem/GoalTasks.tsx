@@ -12,7 +12,7 @@ export interface GoalTasksProps {
   tasks: GoalTaskOut[];
   handleTaskStatus: (goalId: number, taskId: number) => Promise<void>;
   taskGoal: GoalOut;
-  giDeleteTask: (taskId: number) => Promise<void>; // Add this line
+  giDeleteTask: Function;
   giAddTask: () => Promise<void>; // Add this line
 }
 

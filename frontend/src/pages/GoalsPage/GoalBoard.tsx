@@ -19,36 +19,31 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
   isSnapshot = false,
 }) => {
   const [newGoalText, setNewGoalText] = useState<string>('');
-  const [sortOrder, setSortOrder] = useState<SortOrder>(() => {
-    const storedSortOrder = localStorage.getItem('sortOrder');
-    return (storedSortOrder as SortOrder) || SortOrder.Default;
-  });
-  const [hideArchived, setHideArchived] = useState<boolean>(
-    () => localStorage.getItem('hideArchived') === 'true'
-  );
+  const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.Default);
+  const [hideArchived, setHideArchived] = useState<boolean>(false);
 
+  // Load initial states from localStorage
   useEffect(() => {
-    const storedSortOrder = localStorage.getItem('sortOrder');
-    const validSortOrder = Object.values(SortOrder).includes(
-      storedSortOrder as SortOrder
-    );
-    setSortOrder(
-      validSortOrder ? (storedSortOrder as SortOrder) : SortOrder.Default
-    );
-
+    const storedSortOrder = localStorage.getItem('sortOrder') as SortOrder;
     const storedHideArchived = localStorage.getItem('hideArchived') === 'true';
+
+    setSortOrder(storedSortOrder || SortOrder.Default);
     setHideArchived(storedHideArchived);
   }, []);
 
+  // Update localStorage when sortOrder or hideArchived changes
   useEffect(() => {
     localStorage.setItem('sortOrder', sortOrder);
     localStorage.setItem('hideArchived', hideArchived.toString());
   }, [sortOrder, hideArchived]);
 
+  // Memoize sorted goals
   const sortedGoals = useMemo(
     () => sortGoals(goals, sortOrder),
     [goals, sortOrder]
   );
+
+  // Filter current and archived goals
   const currentGoals = sortedGoals.filter((goal) => !goal.archived);
   const archivedGoals = sortedGoals.filter((goal) => goal.archived);
 

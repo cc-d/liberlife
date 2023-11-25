@@ -42,6 +42,7 @@ async def get_user_goals(
     return goals.unique().scalars().all()
 
 
+@logf()
 async def get_goal_task_from_id(
     task_id: int | str, db: AsyncSession = Depends(get_adb)
 ) -> Optional[Goal]:

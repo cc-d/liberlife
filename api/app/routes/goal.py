@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status, Body
+from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import joinedload, selectinload
@@ -193,25 +194,31 @@ async def update_task(
     return task
 
 
+from fastapi import HTTPException, Depends, APIRouter
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import NoResultFound  # Import SQLAlchemy exception
+
+
 @router.delete("/{goal_id}/tasks/{task_id}")
 async def delete_task(
-    task: GoalTask = Depends(
-        get_goal_task_from_id
-    ),  # You'll need to implement this
     goal: Goal = Depends(get_goal_from_id),
+    task: GoalTask = Depends(get_goal_task_from_id),
     cur_user=Depends(get_current_user),
     db: AsyncSession = Depends(get_adb),
 ):
-    if goal.user_id != cur_user.id:
-        raise HTTP401
-    goal.updated_on = func.now()
-    db.add(goal)
-    await db.delete(task)
-    await db.commit()
-    await db.refresh(goal)
+    try:
+        if goal.user_id != cur_user.id:
+            raise HTTP401
+        goal.updated_on = func.now()
+        db.add(goal)
+        await db.delete(task)
+        await db.commit()
+        await db.refresh(goal)
 
-    # Return the success detail alongside the updated_on timestamp
-    return {
-        "detail": "Task deleted successfully",
-        "updated_on": goal.updated_on,
-    }
+        return {
+            "detail": "Task deleted successfully",
+            "updated_on": goal.updated_on,
+        }
+    except NoResultFound:
+        # Handle the case where the task is not found
+        HTTP404('Task not found')
