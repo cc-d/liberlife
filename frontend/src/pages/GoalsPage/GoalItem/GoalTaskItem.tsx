@@ -34,7 +34,6 @@ const GoalTaskItem: React.FC<{
   handleDeleteTask: Function;
 }> = ({ taskGoal, task, handleTaskStatus, handleDeleteTask }) => {
   const theme = useThemeContext();
-  console.log('taskGoal', taskGoal);
   return (
     <Box
       display="flex"

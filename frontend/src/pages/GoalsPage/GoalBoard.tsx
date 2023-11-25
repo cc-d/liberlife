@@ -4,7 +4,7 @@ import { GoalOut } from '../../api';
 import apios from '../../utils/apios';
 import GoalBoardElem from './GoalBoardElem';
 import ShowHideTextButton from '../../components/ShowHideTooltip';
-import { useThemeContext } from '../../contexts/ThemeContext';
+import { debounce } from '../../utils/helpers';
 import SortButton, { SortOrder, sortGoals, sortOrders } from './SortButton';
 
 interface GoalBoardProps {
@@ -67,6 +67,14 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
     setHideArchived(!hideArchived);
   };
 
+  const handleTextChange = (val: string) => {
+    setNewGoalText(val);
+  };
+
+  const debouncedHandleTextChange = useMemo(
+    () => debounce(handleTextChange, 1),
+    []
+  );
   return (
     <Box>
       {/* Header */}
@@ -110,9 +118,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
               variant="outlined"
               placeholder="New goal..."
               value={newGoalText}
-              onChange={(e) =>
-                e.target.value !== newGoalText && setNewGoalText(e.target.value)
-              }
+              onChange={(e) => debouncedHandleTextChange(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   handleAddGoal();
