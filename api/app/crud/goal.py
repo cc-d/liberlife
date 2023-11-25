@@ -16,7 +16,7 @@ from ..utils.httperrors import HTTP401, HTTP404, HTTP400, HTTP409
 from logfunc import logf
 
 
-@logf(use_print=True)
+@logf()
 async def get_goal_from_id(
     goal_id: int | str, db: AsyncSession = Depends(get_adb)
 ) -> Optional[Goal]:

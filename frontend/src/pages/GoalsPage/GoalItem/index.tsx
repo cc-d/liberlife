@@ -66,14 +66,9 @@ export const GoalItem: React.FC<GoalItemProps> = ({
   useMemo(() => {
     if (goal) {
       setEditedText(goal.text);
-    }
-  }, [goal]);
-
-  useMemo(() => {
-    if (goal) {
       setTasks(goal.tasks);
     }
-  }, [goal, tasks]);
+  }, [goal]);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);

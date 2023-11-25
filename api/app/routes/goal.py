@@ -28,7 +28,7 @@ AUTHUID = int | None | UserSchema.UserOut | str | User
 from logfunc import logf
 
 
-@logf(use_print=True)
+@logf()
 def _raise(
     goal: GoalSchema.GoalOut | None, auth_uid: AUTHUID = None
 ) -> GoalSchema.GoalOut:
@@ -167,9 +167,7 @@ async def get_task(
     "/{goal_id}/tasks/{task_id}", response_model=GoalSchema.GoalTaskOut
 )
 async def update_task(
-    task: GoalTask = Depends(
-        get_goal_task_from_id
-    ),  # You'll need to implement this
+    task: GoalTask = Depends(get_goal_task_from_id),
     goal: Goal = Depends(get_goal_from_id),
     task_update: Optional[GoalSchema.GoalTaskUpdate] = Body(None),
     cur_user=Depends(get_current_user),

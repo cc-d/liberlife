@@ -2,13 +2,6 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Box, Typography, TextField, Button } from "@mui/material";
 import { GoalOut } from "../../api";
 import apios from "../../apios";
-import {
-  actionUpdateGoal,
-  actionDeleteTask,
-  actionAddTaskToGoal,
-  actihandleGoalDelete,
-  actionTaskStatus,
-} from "./actions";
 import GoalBoardElem from "./GoalBoardElem";
 import ShowHideTextButton from "../../components/ShowHideTooltip";
 
@@ -34,47 +27,6 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
   const [currentGoals, setCurrentGoals] = useState<GoalOut[]>([]);
   const [archivedGoals, setArchivedGoals] = useState<GoalOut[]>([]);
 
-  const handleAddGoal = async () => {
-    if (newGoalText.trim()) {
-      const response = await apios.post("/goals", { text: newGoalText });
-      if (response.data) {
-        setGoals([...goals, response.data]);
-        setNewGoalText("");
-      }
-    }
-  };
-
-  const handleAddTaskToGoal = async (goalId: number, taskText: string) => {
-    return actionAddTaskToGoal(goals, setGoals, goalId, taskText);
-  };
-
-  const handleGoalDelete = async (goalId: number) => {
-    return actihandleGoalDelete(goals, setGoals, goalId);
-  };
-
-  const handleTaskStatus = async (goalId: number, taskId: number) => {
-    return actionTaskStatus(goalId, taskId, goals, setGoals);
-  };
-
-  const handleGoalUpdate = async (
-    goalId: number,
-    updatedText?: string,
-    updatedNotes?: string | null,
-    archived?: boolean
-  ) => {
-    return actionUpdateGoal(
-      setGoals,
-      goalId,
-      updatedText,
-      updatedNotes,
-      archived
-    );
-  };
-
-  const handleDeleteTask = async (goalId: number, taskId: number) => {
-    return actionDeleteTask(goals, setGoals, goalId, taskId);
-  };
-
   // Effect to update local storage whenever sortOrder changes
   useEffect(() => {
     localStorage.setItem("sortOrder", sortOrder);
@@ -90,6 +42,16 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
     () => sortGoals(goals, sortOrder),
     [goals, sortOrder]
   );
+
+  const handleAddGoal = async () => {
+    if (newGoalText.trim()) {
+      const response = await apios.post("/goals", { text: newGoalText });
+      if (response.data) {
+        setGoals([...goals, response.data]);
+        setNewGoalText("");
+      }
+    }
+  };
 
   useMemo(() => {
     setCurrentGoals(sortedGoals.filter((goal) => !goal.archived));
@@ -180,14 +142,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
         )}
       </Box>
 
-      <GoalBoardElem
-        goals={currentGoals}
-        handleGoalDelete={handleGoalDelete}
-        handleAddTaskToGoal={handleAddTaskToGoal}
-        handleGoalUpdate={handleGoalUpdate}
-        handleDeleteTask={handleDeleteTask}
-        handleTaskStatus={handleTaskStatus}
-      />
+      <GoalBoardElem goals={currentGoals} setGoals={setCurrentGoals} />
 
       <Box p={0.5} m={0.5} mt={2}>
         <ShowHideTextButton
@@ -198,14 +153,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
       </Box>
 
       {!hideArchived && (
-        <GoalBoardElem
-          goals={archivedGoals}
-          handleGoalDelete={handleGoalDelete}
-          handleAddTaskToGoal={handleAddTaskToGoal}
-          handleGoalUpdate={handleGoalUpdate}
-          handleDeleteTask={handleDeleteTask}
-          handleTaskStatus={handleTaskStatus}
-        />
+        <GoalBoardElem goals={archivedGoals} setGoals={setCurrentGoals} />
       )}
     </Box>
   );

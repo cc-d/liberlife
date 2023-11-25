@@ -1,4 +1,4 @@
-import { createTheme } from "@mui/material/styles";
+import { createTheme, darken } from "@mui/material/styles";
 import deepGreen from "@mui/material/colors/green";
 import deepGrey from "@mui/material/colors/grey";
 import deepPurple from "@mui/material/colors/deepPurple";
@@ -15,13 +15,13 @@ export const darkTheme = createTheme({
 
     text: {
       primary: deepGrey[50], // White
-      secondary: deepGrey[300], // LightGrey
+      secondary: deepGrey[500], // LightGrey
     },
     secondary: {
       main: secondaryColor, // DarkGreen
     },
     background: {
-      default: "#121212", // Dark background color
+      default: darken(deepGrey[900], 0.5),
       paper: deepGrey[800], // Dark paper background
     },
   },
