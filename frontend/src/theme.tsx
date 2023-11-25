@@ -22,7 +22,7 @@ export const darkTheme = createTheme({
     },
     background: {
       default: darken(grey[900], 1),
-      paper: darken(grey[900], 0.75),
+      paper: darken(grey[900], 0.6),
     },
   },
 });
