@@ -23,7 +23,10 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
     const storedSortOrder = localStorage.getItem('sortOrder');
     return (storedSortOrder as SortOrder) || SortOrder.Default;
   });
-  const [hideArchived, setHideArchived] = useState<boolean>(false);
+  const [hideArchived, setHideArchived] = useState<boolean>(
+    () => localStorage.getItem('hideArchived') === 'true'
+  );
+
   useEffect(() => {
     const storedSortOrder = localStorage.getItem('sortOrder');
     const validSortOrder = Object.values(SortOrder).includes(
@@ -63,6 +66,10 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
         setNewGoalText('');
       }
     }
+  };
+
+  const toggleArchivedVisibility = () => {
+    setHideArchived(!hideArchived);
   };
 
   return (
@@ -148,6 +155,14 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
       {/* Archived Goals */}
       {/* ... */}
 
+      {/* Toggle Archived Goals Visibility */}
+      <Box p={0.5} m={0.5} mt={2}>
+        <ShowHideTextButton
+          text="Archived"
+          hideArchived={hideArchived}
+          setHideArchived={toggleArchivedVisibility}
+        />
+      </Box>
       {!hideArchived && (
         <GoalBoardElem
           goals={archivedGoals}
