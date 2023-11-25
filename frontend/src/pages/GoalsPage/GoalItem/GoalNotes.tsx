@@ -11,6 +11,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import { GoalOut } from '../../../api';
 import { useThemeContext } from '../../../contexts/ThemeContext';
+import green from '@mui/material/colors/green';
 
 interface GoalNotesProps {
   goal: GoalOut;
@@ -90,6 +91,9 @@ const renderFormattedNotes = (goal: GoalOut) => {
         key={endLinkText}
         target="_blank"
         rel="noopener noreferrer"
+        sx={{
+          color: (theme) => green[theme.palette.mode === 'dark' ? 400 : 900],
+        }}
       >
         {linkText}
       </Link>

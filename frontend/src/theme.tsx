@@ -37,12 +37,12 @@ export const lightTheme = createTheme({
       main: secondary,
     },
     text: {
-      primary: darken(grey[900], 0.5),
-      secondary: grey[900],
+      primary: darken(grey[900], 0.8),
+      secondary: darken(grey[900], 0.4),
     },
     background: {
       default: grey[50],
-      paper: grey[200],
+      paper: grey[100],
     },
   },
 });

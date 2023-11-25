@@ -34,7 +34,15 @@ const NavBarUserElem: React.FC<NavBarUserElemProps> = ({
 
   if (!auth.user) {
     return (
-      <Button variant="text" color="inherit" onClick={() => nav('/login')}>
+      <Button
+        variant="text"
+        color="inherit"
+        onClick={() => nav('/login')}
+        aria-label="login"
+        aria-controls="menu-appbar"
+        aria-haspopup="true"
+        sx={{ borderRadius: '8px' }}
+      >
         Login
       </Button>
     );
@@ -47,19 +55,28 @@ const NavBarUserElem: React.FC<NavBarUserElemProps> = ({
         aria-label="account of current user"
         aria-controls="menu-appbar"
         aria-haspopup="true"
+        aria-expanded={false}
         onClick={(e) => {
           e.preventDefault();
           nav('/profile');
         }}
         href="/profile"
-        sx={{ mr: 1 }}
+        sx={{ mr: 1, borderRadius: '8px' }}
       >
         <AccountCircleIcon />
         <Typography variant="h6" sx={{ mr: 0, color: 'inherit' }}>
           {auth.user}
         </Typography>
       </IconButton>
-      <IconButton color="inherit" onClick={handleLogout}>
+      <IconButton
+        color="inherit"
+        onClick={handleLogout}
+        aria-label="logout"
+        aria-controls="menu-appbar"
+        aria-haspopup="true"
+        aria-expanded={false}
+        sx={{ borderRadius: '8px' }}
+      >
         <LogoutIcon />
       </IconButton>
     </Box>
