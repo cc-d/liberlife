@@ -50,7 +50,6 @@ export const actihandleGoalDelete = async (
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>,
   goalId: number
 ) => {
-  // prompt user if they are sure and only delete if so
   const confirmed = window.confirm(
     'Are you sure you want to delete this goal?'
   );
@@ -60,7 +59,6 @@ export const actihandleGoalDelete = async (
   try {
     const response = await apios.delete(`/goals/${goalId}`);
     if (response.status === 200 || response.status === 204) {
-      // Assuming a successful delete returns 200 or 204 status
       setGoals(goals.filter((goal) => goal.id !== goalId));
     }
   } catch (error) {
@@ -173,7 +171,7 @@ export const actionTaskStatus = async (
     const resp = await apios.put(`/goals/${goalId}/tasks/${taskId}`);
   } catch (error) {
     console.error('Error updating task completion status:', error);
-    setGoals(originalGoals); // revert to original goals
-    //throw error; // Rethrow the error so it can be handled by the caller.
+    setGoals(originalGoals);
+    //throw error;
   }
 };

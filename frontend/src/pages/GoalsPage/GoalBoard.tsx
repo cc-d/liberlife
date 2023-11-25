@@ -19,8 +19,6 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
   setGoals,
   isSnapshot = false,
 }) => {
-  const { theme } = useThemeContext();
-
   let [newGoalText, setNewGoalText] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<SortOrder>(
     () => (localStorage.getItem('sortOrder') as SortOrder) || SortOrder.Default
@@ -31,7 +29,6 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
   const [currentGoals, setCurrentGoals] = useState<GoalOut[]>([]);
   const [archivedGoals, setArchivedGoals] = useState<GoalOut[]>([]);
 
-  // Effect to update local storage whenever sortOrder changes
   useEffect(() => {
     localStorage.setItem('sortOrder', sortOrder);
   }, [sortOrder]);
@@ -51,7 +48,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
     if (newGoalText.trim()) {
       const response = await apios.post('/goals', { text: newGoalText });
       if (response.data) {
-        setGoals([...goals, response.data]);
+        setGoals((prevGoals) => [...prevGoals, response.data]);
         setNewGoalText('');
       }
     }
@@ -137,21 +134,22 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
           </Box>
         ) : null}
       </Box>
-
       {/* Actual GoalBoard */}
-      <GoalBoardElem goals={currentGoals} setGoals={setCurrentGoals} />
+      <GoalBoardElem
+        goals={currentGoals}
+        setGoals={setGoals}
+        isSnapshot={isSnapshot}
+      />
 
       {/* Archived Goals */}
-      <Box p={0.5} m={0.5} mt={2}>
-        <ShowHideTextButton
-          text="Archived"
-          hideArchived={hideArchived}
-          setHideArchived={setHideArchived}
-        />
-      </Box>
+      {/* ... */}
 
       {!hideArchived && (
-        <GoalBoardElem goals={archivedGoals} setGoals={setCurrentGoals} />
+        <GoalBoardElem
+          goals={archivedGoals}
+          setGoals={setGoals}
+          isSnapshot={isSnapshot}
+        />
       )}
     </Box>
   );

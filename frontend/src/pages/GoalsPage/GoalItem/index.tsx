@@ -1,19 +1,20 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Box, Divider } from '@mui/material';
-import { GoalOut } from '../../../api'; // Updated import
+import { GoalOut } from '../../../api';
 import GoalHeader from './GoalHeader';
 import GoalTasks from './GoalTasks';
 import GoalNotes from './GoalNotes';
-import { actionAddTaskToGoal, actionDeleteTask } from '../actions'; // Import actionDeleteTask
+import { actionAddTaskToGoal, actionDeleteTask } from '../actions';
 import { useThemeContext } from '../../../contexts/ThemeContext';
 
 export interface GoalItemProps {
   goal: GoalOut;
   goals: GoalOut[];
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>;
-  handleGoalDelete: (goalId: number) => void;
-  handleGoalUpdate: any; // Update this line
-  handleTaskStatus: any; // Update this line
+  handleGoalDelete: any;
+  handleGoalUpdate: any;
+  handleTaskStatus: any;
+  isSnapshot?: boolean;
 }
 
 const getLatestDate = (goal: GoalOut): string | null => {
@@ -101,12 +102,12 @@ const GoalItem: React.FC<GoalItemProps> = ({
             const updatedTasks = [
               ...(g.tasks || []),
               {
-                id: 0, // Note: Ensure proper ID assignment here
+                id: 0,
                 text: newTaskText,
                 updated_on: new Date().toISOString(),
               },
             ];
-            setTasks(updatedTasks); // Update tasks state
+            setTasks(updatedTasks);
             return {
               ...g,
               tasks: updatedTasks,
@@ -119,22 +120,27 @@ const GoalItem: React.FC<GoalItemProps> = ({
   };
 
   const giDeleteTask = async (taskId: number) => {
-    await actionDeleteTask(goals, setGoals, goal.id, taskId);
-    setGoals((prevGoals: GoalOut[]) =>
-      prevGoals.map((g: GoalOut) => {
-        if (g.id === goal.id) {
-          const updatedTasks = (g.tasks || []).filter(
-            (task: any) => task.id !== taskId
-          );
-          setTasks(updatedTasks); // Update tasks state
-          return {
-            ...g,
-            tasks: updatedTasks,
-          };
-        }
-        return g;
-      })
-    );
+    const ogGoals = [...goals];
+    try {
+      setGoals((prevGoals: GoalOut[]) =>
+        prevGoals.map((g: GoalOut) => {
+          if (g.id === goal.id) {
+            const updatedTasks = (g.tasks || []).filter(
+              (task: any) => task.id !== taskId
+            );
+            setTasks(updatedTasks);
+            return {
+              ...g,
+              tasks: updatedTasks,
+            };
+          }
+          return g;
+        })
+      );
+      await actionDeleteTask(goals, setGoals, goal.id, taskId);
+    } catch (e) {
+      setGoals(ogGoals);
+    }
   };
 
   const giWidth = longestStr < 13 ? `${1 + longestStr * 16}px` : `100%`;
@@ -185,6 +191,7 @@ const GoalItem: React.FC<GoalItemProps> = ({
         maxElementWidth={maxElementWidth}
         handleArchive={handleArchive}
       />
+      <Divider sx={{ backgroundColor: theme.theme.palette.divider }} />
       <GoalTasks
         newTaskText={newTaskText}
         setNewTaskText={setNewTaskText}

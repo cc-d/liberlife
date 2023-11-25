@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
-import { Box, Typography, TextField, IconButton, Link } from '@mui/material';
-import { GoalOut } from '../../../api';
+import {
+  Box,
+  Typography,
+  TextField,
+  IconButton,
+  Grid,
+  Link,
+} from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
+import { GoalOut } from '../../../api';
 import { useThemeContext } from '../../../contexts/ThemeContext';
 
 interface GoalNotesProps {
@@ -10,6 +17,40 @@ interface GoalNotesProps {
   onSaveNotes: (notes: string | null) => void;
   latestUpdate: string | null;
 }
+
+interface NoNotesViewProps {
+  latestUpdate: string | null;
+  onEdit: () => void;
+}
+const NoNotesView: React.FC<NoNotesViewProps> = ({ latestUpdate, onEdit }) => {
+  const { theme } = useThemeContext();
+  const sharedPL = 0.5;
+
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }}
+    >
+      <Box sx={{ flexGrow: 1 }}>
+        <Typography variant="body2" color="textSecondary" sx={{ p: 0, m: 0 }}>
+          add notes...
+        </Typography>
+        <Typography
+          variant="caption"
+          sx={{ color: theme.palette.text.secondary, p: 0, m: 0 }}
+        >
+          {latestUpdate}
+        </Typography>
+      </Box>
+      <IconButton onClick={onEdit}>
+        <EditIcon />
+      </IconButton>
+    </Box>
+  );
+};
 
 const renderFormattedNotes = (goal: GoalOut) => {
   let i = 0;
@@ -80,31 +121,22 @@ const removeNewlines = (
 
 export const GoalNotes: React.FC<GoalNotesProps> = ({
   goal,
-
   onSaveNotes,
   latestUpdate,
 }) => {
-  const [isEditingNotes, setIsEditingNotes] = useState<boolean>(false);
-  const [editedNotes, setEditedNotes] = useState<string | null | undefined>(
-    goal?.notes || ''
-  );
+  const [isEditingNotes, setIsEditingNotes] = useState(false);
+  const [editedNotes, setEditedNotes] = useState(goal?.notes);
 
   const handleSaveNotes = () => {
-    const updatedNotes = editedNotes && editedNotes.trim() ? editedNotes : null;
+    const updatedNotes = editedNotes?.trim() || null;
     onSaveNotes(updatedNotes);
     setIsEditingNotes(false);
   };
 
-  const editBoxHeight = editedNotes?.split('\n').length || 1;
   const theme = useThemeContext();
-  return (
-    <Box
-      sx={{
-        m: 0,
 
-        maxWidth: '100%',
-      }}
-    >
+  return (
+    <Box sx={{ m: 0, maxWidth: '100%', p: 0.5 }}>
       {isEditingNotes ? (
         <Box
           sx={{
@@ -112,91 +144,88 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
             flexDirection: 'row',
             alignItems: 'stretch',
             flexGrow: 1,
-            maxWidth: '100%',
-            width: '100%',
           }}
         >
           <TextField
             value={editedNotes || ''}
             onChange={(e) => setEditedNotes(e.target.value)}
             multiline
-            rows={editBoxHeight}
-            sx={{
-              flexGrow: 1,
-              m: 0,
-              p: 0,
-              borderRadius: 0,
-              width: '100%',
-            }}
+            rows={editedNotes?.split('\n').length || 1}
+            fullWidth
+            margin="none"
+            InputProps={{ disableUnderline: true }}
           />
-          <IconButton
-            onClick={handleSaveNotes}
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              borderRadius: 0,
-              m: 0,
-            }}
-          >
+          <IconButton onClick={handleSaveNotes}>
             <SaveIcon />
           </IconButton>
         </Box>
-      ) : (
+      ) : goal?.notes ? (
         <Box
-          display="flex"
-          alignItems="stretch"
-          flexDirection="row"
           sx={{
+            flexDirection: 'column',
+            display: 'flex',
             flexGrow: 1,
-
-            width: '100%',
           }}
         >
-          <Typography
-            color={goal?.notes ? 'textPrimary' : 'textSecondary'}
+          <Box
+            display="flex"
+            alignItems="stretch"
+            flexDirection="row"
             sx={{
               flexGrow: 1,
-              width: '100%',
-              whiteSpace: 'pre-wrap',
-              p: 0,
-              m: 0,
-              pt: 0.5,
-              pl: 1,
-            }}
-          >
-            {goal?.notes ? renderFormattedNotes(goal) : 'add notes...'}
-          </Typography>
-          <IconButton
-            onClick={() => setIsEditingNotes(true)}
-            sx={{
-              alignSelf: 'stretch',
-              display: 'flex',
-              alignItems: 'center',
-              borderRadius: 0,
-            }}
-          >
-            <EditIcon />
-          </IconButton>
-        </Box>
-      )}
 
-      <Typography
-        variant="caption"
-        color={theme.theme.palette.text.secondary}
-        noWrap
-        sx={{
-          textAlign: 'right',
-          flexGrow: 1,
-          display: 'flex',
-          justifyContent: 'flex-end',
-          fontVariant: 'small-caps',
-          m: 0,
-          p: 0,
-          mr: 0.5,
-        }}
-      >
-        {latestUpdate}
-      </Typography>
+              width: '100%',
+            }}
+          >
+            <Typography
+              color={goal?.notes ? 'textPrimary' : 'textSecondary'}
+              sx={{
+                flexGrow: 1,
+                width: '100%',
+                whiteSpace: 'pre-wrap',
+                p: 0,
+                m: 0,
+                lineHeight: 1.25,
+              }}
+            >
+              {goal?.notes ? renderFormattedNotes(goal) : 'add notes...'}
+            </Typography>
+            <IconButton
+              onClick={() => setIsEditingNotes(true)}
+              sx={{
+                alignSelf: 'stretch',
+                display: 'flex',
+                alignItems: 'center',
+                borderRadius: 0,
+              }}
+            >
+              <EditIcon />
+            </IconButton>
+          </Box>
+          <Typography
+            variant="caption"
+            color={theme.theme.palette.text.secondary}
+            noWrap
+            sx={{
+              textAlign: 'right',
+              flexGrow: 1,
+              display: 'flex',
+              justifyContent: 'flex-end',
+              fontVariant: 'small-caps',
+              m: 0,
+              p: 0,
+              mr: 0.5,
+            }}
+          >
+            {latestUpdate}
+          </Typography>
+        </Box>
+      ) : (
+        <NoNotesView
+          latestUpdate={latestUpdate}
+          onEdit={() => setIsEditingNotes(true)}
+        />
+      )}
     </Box>
   );
 };

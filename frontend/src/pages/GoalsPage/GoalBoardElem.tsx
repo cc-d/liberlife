@@ -13,34 +13,39 @@ interface GoalBoardElemProps {
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>;
   isSnapshot?: boolean;
 }
-
 export const GoalBoardElem: React.FC<GoalBoardElemProps> = ({
   goals,
   setGoals,
   isSnapshot = false,
 }) => {
-  const handleGoalDelete = async (goalId: number) => {
-    return actihandleGoalDelete(goals, setGoals, goalId);
-  };
+  const handleGoalDelete = isSnapshot
+    ? () => {}
+    : async (goalId: number) => {
+        return actihandleGoalDelete(goals, setGoals, goalId);
+      };
 
-  const handleTaskStatus = async (goalId: number, taskId: number) => {
-    return actionTaskStatus(goalId, taskId, goals, setGoals);
-  };
+  const handleTaskStatus = isSnapshot
+    ? () => {}
+    : async (goalId: number, taskId: number) => {
+        return actionTaskStatus(goalId, taskId, goals, setGoals);
+      };
 
-  const handleGoalUpdate = async (
-    goalId: number,
-    updatedText?: string,
-    updatedNotes?: string | null,
-    archived?: boolean
-  ) => {
-    return actionUpdateGoal(
-      setGoals,
-      goalId,
-      updatedText,
-      updatedNotes,
-      archived
-    );
-  };
+  const handleGoalUpdate = isSnapshot
+    ? () => {}
+    : async (
+        goalId: number,
+        updatedText?: string,
+        updatedNotes?: string | null,
+        archived?: boolean
+      ) => {
+        return actionUpdateGoal(
+          setGoals,
+          goalId,
+          updatedText,
+          updatedNotes,
+          archived
+        );
+      };
 
   return (
     <>
@@ -56,29 +61,17 @@ export const GoalBoardElem: React.FC<GoalBoardElemProps> = ({
           mt: 1,
         }}
       >
-        {goals.map((goal: GoalOut) =>
-          isSnapshot ? (
-            <GoalItem
-              key={goal.id}
-              goal={goal}
-              goals={goals}
-              setGoals={setGoals}
-              handleGoalUpdate={handleGoalUpdate} // Correct the function reference
-              handleGoalDelete={() => {}}
-              handleTaskStatus={handleTaskStatus} // Correct the function reference
-            />
-          ) : (
-            <GoalItem
-              key={goal.id}
-              goal={goal}
-              goals={goals}
-              setGoals={setGoals}
-              handleGoalUpdate={handleGoalUpdate} // Correct the function reference
-              handleGoalDelete={() => {}}
-              handleTaskStatus={handleTaskStatus} // Correct the function reference
-            />
-          )
-        )}
+        {goals.map((goal: GoalOut) => (
+          <GoalItem
+            key={goal.id}
+            goal={goal}
+            goals={goals}
+            setGoals={setGoals}
+            handleGoalUpdate={handleGoalUpdate}
+            handleGoalDelete={handleGoalDelete}
+            handleTaskStatus={handleTaskStatus}
+          />
+        ))}
       </Box>
     </>
   );

@@ -89,7 +89,7 @@ const GoalTaskItem: React.FC<{
           color: theme.theme.palette.text.primary,
         }}
         onClick={(event) => {
-          event.stopPropagation(); // Prevent triggering the onToggle when deleting
+          event.stopPropagation();
           handleDeleteTask(taskGoal?.id, task.id);
         }}
       >
