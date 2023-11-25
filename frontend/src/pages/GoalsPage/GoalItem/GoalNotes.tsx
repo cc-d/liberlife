@@ -24,7 +24,6 @@ interface NoNotesViewProps {
 }
 const NoNotesView: React.FC<NoNotesViewProps> = ({ latestUpdate, onEdit }) => {
   const { theme } = useThemeContext();
-  const sharedPL = 0.5;
 
   return (
     <Box
@@ -207,7 +206,7 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
             color={theme.theme.palette.text.secondary}
             noWrap
             sx={{
-              textAlign: 'right',
+              textAlign: 'left',
               flexGrow: 1,
               display: 'flex',
               justifyContent: 'flex-end',

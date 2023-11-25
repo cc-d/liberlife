@@ -145,8 +145,8 @@ const GoalItem: React.FC<GoalItemProps> = ({
 
   const giWidth = longestStr < 13 ? `${1 + longestStr * 16}px` : `100%`;
 
-  useEffect(() => {
-    setTasks(goal.tasks);
+  useMemo(() => {
+    setTasks(goal.tasks.sort((a, b) => a.id - b.id));
   }, [goal.tasks]);
 
   return (

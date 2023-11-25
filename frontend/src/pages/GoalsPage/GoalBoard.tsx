@@ -5,9 +5,8 @@ import apios from '../../utils/apios';
 import GoalBoardElem from './GoalBoardElem';
 import ShowHideTextButton from '../../components/ShowHideTooltip';
 import { useThemeContext } from '../../contexts/ThemeContext';
-import grey from '@mui/material/colors/grey';
-
 import SortButton, { SortOrder, sortGoals, sortOrders } from './SortButton';
+
 interface GoalBoardProps {
   goals: GoalOut[];
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>;
@@ -19,30 +18,42 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
   setGoals,
   isSnapshot = false,
 }) => {
-  let [newGoalText, setNewGoalText] = useState<string>('');
-  const [sortOrder, setSortOrder] = useState<SortOrder>(
-    () => (localStorage.getItem('sortOrder') as SortOrder) || SortOrder.Default
-  );
-  const [hideArchived, setHideArchived] = useState<boolean>(
-    localStorage.getItem('hideArchived') === 'true'
-  );
-  const [currentGoals, setCurrentGoals] = useState<GoalOut[]>([]);
-  const [archivedGoals, setArchivedGoals] = useState<GoalOut[]>([]);
+  const [newGoalText, setNewGoalText] = useState<string>('');
+  const [sortOrder, setSortOrder] = useState<SortOrder>(() => {
+    const storedSortOrder = localStorage.getItem('sortOrder');
+    return (storedSortOrder as SortOrder) || SortOrder.Default;
+  });
+  const [hideArchived, setHideArchived] = useState<boolean>(false);
+  useEffect(() => {
+    const storedSortOrder = localStorage.getItem('sortOrder');
+    const validSortOrder = Object.values(SortOrder).includes(
+      storedSortOrder as SortOrder
+    );
+    setSortOrder(
+      validSortOrder ? (storedSortOrder as SortOrder) : SortOrder.Default
+    );
+
+    const storedHideArchived = localStorage.getItem('hideArchived') === 'true';
+    setHideArchived(storedHideArchived);
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('sortOrder', sortOrder);
-  }, [sortOrder]);
+    localStorage.setItem('hideArchived', hideArchived.toString());
+  }, [sortOrder, hideArchived]);
+
+  const sortedGoals = useMemo(
+    () => sortGoals(goals, sortOrder),
+    [goals, sortOrder]
+  );
+  const currentGoals = sortedGoals.filter((goal) => !goal.archived);
+  const archivedGoals = sortedGoals.filter((goal) => goal.archived);
 
   const handleSortClick = () => {
     const nextSortOrder =
       sortOrders[(sortOrders.indexOf(sortOrder) + 1) % sortOrders.length];
     setSortOrder(nextSortOrder);
   };
-
-  const sortedGoals = useMemo(
-    () => sortGoals(goals, sortOrder),
-    [goals, sortOrder]
-  );
 
   const handleAddGoal = async () => {
     if (newGoalText.trim()) {
@@ -53,13 +64,6 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
       }
     }
   };
-
-  useMemo(() => {
-    setCurrentGoals(sortedGoals.filter((goal) => !goal.archived));
-
-    !hideArchived &&
-      setArchivedGoals(sortedGoals.filter((goal) => goal.archived));
-  }, [sortedGoals, hideArchived, sortOrder, goals.length]);
 
   return (
     <Box>
