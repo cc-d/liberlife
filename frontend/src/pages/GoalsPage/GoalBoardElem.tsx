@@ -2,11 +2,7 @@ import React from 'react';
 import { Box, Divider } from '@mui/material';
 import { GoalOut } from '../../api';
 import GoalItem from './GoalItem';
-import {
-  actionUpdateGoal,
-  actihandleGoalDelete,
-  actionTaskStatus,
-} from './actions';
+import { actionUpdateGoal, actihandleGoalDelete } from './actions';
 
 interface GoalBoardElemProps {
   goals: GoalOut[];
@@ -22,12 +18,6 @@ export const GoalBoardElem: React.FC<GoalBoardElemProps> = ({
     ? () => {}
     : async (goalId: number) => {
         return actihandleGoalDelete(goals, setGoals, goalId);
-      };
-
-  const handleTaskStatus = isSnapshot
-    ? () => {}
-    : async (goalId: number, taskId: number) => {
-        return actionTaskStatus(goalId, taskId, goals, setGoals);
       };
 
   const handleGoalUpdate = isSnapshot
@@ -69,7 +59,6 @@ export const GoalBoardElem: React.FC<GoalBoardElemProps> = ({
             setGoals={setGoals}
             handleGoalUpdate={handleGoalUpdate}
             handleGoalDelete={handleGoalDelete}
-            handleTaskStatus={handleTaskStatus}
           />
         ))}
       </Box>

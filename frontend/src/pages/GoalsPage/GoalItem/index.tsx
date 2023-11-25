@@ -1,11 +1,13 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Box, Divider } from '@mui/material';
-import { GoalOut } from '../../../api';
+import { GoalOut, TaskStatus } from '../../../api';
 import GoalHeader from './GoalHeader';
 import GoalTasks from './GoalTasks';
 import GoalNotes from './GoalNotes';
 import { actionAddTaskToGoal, actionDeleteTask } from '../actions';
 import { useThemeContext } from '../../../contexts/ThemeContext';
+import apios from '../../../utils/apios';
+import { getTaskStatus } from '../../../utils/helpers';
 
 export interface GoalItemProps {
   goal: GoalOut;
@@ -13,7 +15,6 @@ export interface GoalItemProps {
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>;
   handleGoalDelete: any;
   handleGoalUpdate: any;
-  handleTaskStatus: any;
   isSnapshot?: boolean;
 }
 
@@ -47,13 +48,13 @@ const GoalItem: React.FC<GoalItemProps> = ({
   setGoals,
   handleGoalDelete,
   handleGoalUpdate,
-  handleTaskStatus,
 }) => {
   const [newTaskText, setNewTaskText] = useState<string>('');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editedText, setEditedText] = useState<string>('');
   const [tasks, setTasks] = useState<GoalOut['tasks']>(goal.tasks);
+
   const longestStr = useMemo(() => getLongestStr(goal), [goal]);
   const maxElementWidth = longestStr >= 13 ? '98vw' : '47.6vw';
   const theme = useThemeContext();
@@ -94,27 +95,15 @@ const GoalItem: React.FC<GoalItemProps> = ({
   };
   const giAddTask = async () => {
     if (newTaskText.trim()) {
-      await actionAddTaskToGoal(goals, setGoals, goal.id, newTaskText);
-      setNewTaskText('');
-      setGoals((goals: GoalOut[]) =>
-        goals.map((g: any) => {
-          if (g.id === goal.id) {
-            const updatedTasks = [
-              ...(g.tasks || []),
-              {
-                text: newTaskText,
-                updated_on: new Date().toISOString(),
-              },
-            ];
-            setTasks(updatedTasks);
-            return {
-              ...g,
-              tasks: updatedTasks,
-            };
-          }
-          return g;
-        })
+      await actionAddTaskToGoal(
+        goals,
+        setGoals,
+        goal.id,
+        newTaskText,
+        tasks,
+        setTasks
       );
+      setNewTaskText('');
     }
   };
 
@@ -150,11 +139,38 @@ const GoalItem: React.FC<GoalItemProps> = ({
     }
   };
 
-  const giWidth = longestStr < 13 ? `${1 + longestStr * 16}px` : `100%`;
-
   useMemo(() => {
     setTasks(goal.tasks.sort((a, b) => a.id - b.id));
   }, [goal.tasks]);
+  const handleTaskStatus = async (goalId: number, taskId: number) => {
+    // Determine the next status for the task
+    // Optimistically update the task status in the UI
+    const updatedTasks = tasks.map((task) =>
+      task.id === taskId
+        ? { ...task, status: getTaskStatus(task.status) as TaskStatus }
+        : task
+    );
+    setTasks(updatedTasks);
+
+    try {
+      // Send the update request to the server
+      await apios.put(`/goals/${goalId}/tasks/${taskId}`);
+
+      // Update the goals state with the new tasks array
+      setGoals((prevGoals) =>
+        prevGoals.map((g) =>
+          g.id === goalId ? { ...g, tasks: updatedTasks } : g
+        )
+      );
+    } catch (e) {
+      console.error('Failed to update task status:', e);
+
+      // Revert the tasks state to the original on failure
+      setTasks(tasks);
+    }
+  };
+
+  const giWidth = longestStr < 13 ? `${1 + longestStr * 16}px` : `100%`;
 
   return (
     <Box
@@ -204,8 +220,7 @@ const GoalItem: React.FC<GoalItemProps> = ({
         setNewTaskText={setNewTaskText}
         handleAddTask={() => {
           if (newTaskText.trim()) {
-            actionAddTaskToGoal(goals, setGoals, goal.id, newTaskText);
-            setNewTaskText('');
+            giAddTask();
           }
         }}
         tasks={tasks || []}

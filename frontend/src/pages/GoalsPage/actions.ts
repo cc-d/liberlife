@@ -70,23 +70,22 @@ export const actionAddTaskToGoal = async (
   goals: GoalOut[],
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>,
   goalId: number,
-  taskText: string
+  taskText: string,
+  tasks: GoalTaskOut[],
+  setTasks: React.Dispatch<React.SetStateAction<GoalTaskOut[]>>
 ) => {
   try {
     const response = await apios.post<GoalTaskOut>(`/goals/${goalId}/tasks`, {
       text: taskText,
     });
     if (response.data) {
+      setTasks(tasks.concat(response.data));
       setGoals(
         goals.map((goal) => {
           if (goal.id === goalId) {
-            const updatedTasks = goal.tasks
-              ? [...goal.tasks, response.data]
-              : [response.data];
             return {
               ...goal,
-              updated_on: response.data.updated_on,
-              tasks: updatedTasks,
+              tasks: goal.tasks ? goal.tasks.concat(response.data) : [],
             };
           }
           return goal;
@@ -106,47 +105,4 @@ export const actionDeleteTask = async (
 ) => {
   const response = await apios.delete(`/goals/${goalId}/tasks/${taskId}`);
   return response;
-};
-
-export const actionTaskStatus = async (
-  goalId: number,
-  taskId: number,
-  goals: GoalOut[],
-  setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>
-) => {
-  const originalGoals = goals;
-  setGoals(
-    goals.map((goal) => {
-      if (goal.id === goalId) {
-        const updatedTasks = goal.tasks?.map((task) => {
-          if (task.id === taskId) {
-            return {
-              ...task,
-              status:
-                task.status === TaskStatus.NOT_STARTED
-                  ? TaskStatus.IN_PROGRESS
-                  : task.status === TaskStatus.IN_PROGRESS
-                  ? TaskStatus.COMPLETED
-                  : TaskStatus.NOT_STARTED,
-            };
-          }
-          return task;
-        });
-        return {
-          ...goal,
-          tasks: updatedTasks,
-          updated_on: new Date().toISOString(),
-        };
-      }
-      return goal;
-    })
-  );
-
-  try {
-    const resp = await apios.put(`/goals/${goalId}/tasks/${taskId}`);
-  } catch (error) {
-    console.error('Error updating task completion status:', error);
-    setGoals(originalGoals);
-    //throw error;
-  }
 };
