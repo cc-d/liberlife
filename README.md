@@ -4,7 +4,13 @@
 
 This seems like a fun, simple little project that may end up being useful. It's primarily intended as a personal life tracker tool for my own use.
 
-![App Preview](/preview.png)
+#### Dark Mode Preview:
+
+![App Preview](/preview-dark.png)
+
+#### Light Mode Preview:
+
+![App Preview](/preview-light.png)
 
 ## Project Overview
 
