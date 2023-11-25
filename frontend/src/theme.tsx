@@ -22,7 +22,7 @@ export const darkTheme = createTheme({
     },
     background: {
       default: darken(grey[900], 1),
-      paper: darken(grey[900], 0.3),
+      paper: darken(grey[900], 0.5),
     },
   },
 });
@@ -37,8 +37,8 @@ export const lightTheme = createTheme({
       main: secondary,
     },
     text: {
-      primary: darken(grey[900], 0.1),
-      secondary: lighten(grey[900], 0.1),
+      primary: darken(grey[900], 0.5),
+      secondary: grey[900],
     },
     background: {
       default: grey[50],
