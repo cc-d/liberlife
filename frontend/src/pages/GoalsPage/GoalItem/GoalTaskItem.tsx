@@ -2,9 +2,9 @@ import React from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
 import { GoalTaskOut, GoalOut, TaskStatus } from '../../../api';
 import {
-  CircleOutlined,
-  Pending,
-  CheckCircle,
+  AssignmentOutlined as CircleOutlined,
+  AssignmentLate as Pending,
+  AssignmentTurnedIn as CheckCircle,
   Delete,
 } from '@mui/icons-material';
 import blue from '@mui/material/colors/blue';
