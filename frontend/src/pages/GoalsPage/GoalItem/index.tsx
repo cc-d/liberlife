@@ -1,12 +1,12 @@
-import React, { useState, useMemo } from "react";
-import useTheme from "@mui/material/styles/useTheme";
-import { Box, Divider } from "@mui/material";
-import { GoalOut, TaskStatus } from "../../../api";
-import GoalHeader from "./GoalHeader";
-import GoalTasks from "./GoalTasks";
-import GoalNotes from "./GoalNotes";
-import deepGrey from "@mui/material/colors/grey";
-import { actionTaskStatus } from "../actions";
+import React, { useState, useMemo } from 'react';
+import useTheme from '@mui/material/styles/useTheme';
+import { Box, Divider } from '@mui/material';
+import { GoalOut, TaskStatus } from '../../../api';
+import GoalHeader from './GoalHeader';
+import GoalTasks from './GoalTasks';
+import GoalNotes from './GoalNotes';
+import deepGrey from '@mui/material/colors/grey';
+import { actionTaskStatus } from '../actions';
 
 interface GoalItemProps {
   goal: GoalOut;
@@ -51,15 +51,15 @@ export const GoalItem: React.FC<GoalItemProps> = ({
   handleGoalUpdate,
   handleTaskStatus,
 }) => {
-  const [newTaskText, setNewTaskText] = useState<string>("");
+  const [newTaskText, setNewTaskText] = useState<string>('');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [editedText, setEditedText] = useState<string>("");
+  const [editedText, setEditedText] = useState<string>('');
 
-  const [tasks, setTasks] = useState<GoalOut["tasks"]>(goal.tasks);
+  const [tasks, setTasks] = useState<GoalOut['tasks']>(goal.tasks);
 
   const longestStr = getLongestStr(goal);
-  const maxElementWidth = longestStr >= 13 ? "98vw" : "47.6vw";
+  const maxElementWidth = longestStr >= 13 ? '98vw' : '47.6vw';
   const theme = useTheme();
   const latestUpdate = getLatestDate(goal);
 
@@ -116,12 +116,12 @@ export const GoalItem: React.FC<GoalItemProps> = ({
       sx={{
         borderRadius: 1,
         border: `2px solid ${theme.palette.divider}`,
-        display: "flex", // This turns it into a flex container
-        flexDirection: "column", // Stack children vertically
+        display: 'flex', // This turns it into a flex container
+        flexDirection: 'column', // Stack children vertically
         flexGrow: 1,
-        backgroundColor: theme.palette.background.default,
+        backgroundColor: theme.palette.background.paper,
 
-        overflowWrap: "anywhere",
+        overflowWrap: 'anywhere',
         opacity: goal.archived ? 0.5 : 1,
 
         p: 0,
@@ -131,11 +131,11 @@ export const GoalItem: React.FC<GoalItemProps> = ({
         minWidth: `150px`,
         width: {
           xs: giWidth,
-          sm: "fit-content",
+          sm: 'fit-content',
         },
         maxWidth: {
-          xs: longestStr < 13 ? `calc(max(${longestStr}, 150px))` : "100%",
-          sm: "100%",
+          xs: longestStr < 13 ? `calc(max(${longestStr}, 150px))` : '100%',
+          sm: '100%',
         },
         mb: 0.5,
       }}
@@ -161,7 +161,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
         handleAddTask={() => {
           if (newTaskText.trim()) {
             handleAddTaskToGoal(goal.id, newTaskText);
-            setNewTaskText("");
+            setNewTaskText('');
           }
         }}
         tasks={tasks} // Pass the state here
@@ -171,7 +171,7 @@ export const GoalItem: React.FC<GoalItemProps> = ({
       />
       <Divider
         sx={{
-          backgroundColor: "#303030",
+          backgroundColor: '#303030',
         }}
       />
 
