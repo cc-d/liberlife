@@ -16,7 +16,7 @@ function App() {
         <CssBaseline />
         <Router>
           <NavBar />
-          <Container maxWidth="xl" disableGutters sx={{ p: 1 }}>
+          <Container maxWidth={false} disableGutters sx={{ p: 1 }}>
             <Routes>
               <Route path="/" element={<GoalsPage />} />
               <Route path="/snapshots/:uuid" element={<SnapshotGoalBoard />} />

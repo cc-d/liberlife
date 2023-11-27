@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import useTheme from '@mui/material/styles/useTheme';
 import {
   AppBar,
@@ -7,12 +7,17 @@ import {
   IconButton,
   Box,
   Button,
+  Drawer,
 } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'; // User icon
 import { useNavigate } from 'react-router-dom';
 import { AuthContext, AuthContextProps } from '../contexts/AuthContext';
 import { useThemeContext } from '../contexts/ThemeContext';
+import { useNavBarContext } from '../contexts/NavBarContext';
+
+import MenuIcon from '@mui/icons-material/Menu'; // Importing MenuIcon
+import LeftDrawer from './LeftDrawer';
 
 interface NavBarUserElemProps {
   auth: AuthContextProps | undefined;
@@ -86,10 +91,18 @@ const NavBarUserElem: React.FC<NavBarUserElemProps> = ({
 const NavBar: React.FC = () => {
   const navigate = useNavigate();
   const auth = useContext(AuthContext);
+
+  const [drawerOpen, setDrawerOpen] = useState(false); // State for controlling drawer
   const theme = useThemeContext();
 
   const isLoginPage = window.location.pathname === '/login';
   const isSnapPage = window.location.pathname.startsWith('/snapshot');
+
+  const { showArchived, setShowArchived } = useNavBarContext();
+
+  const handleDrawerToggle = () => {
+    setDrawerOpen(!drawerOpen); // Toggles the state of the drawer
+  };
 
   const handleLogout = () => {
     auth?.logout();
@@ -134,25 +147,41 @@ const NavBar: React.FC = () => {
             color: 'inherit',
           }}
         >
-          <Typography
-            variant="h6"
-            color="inherit"
-            sx={{ textDecoration: 'none', '&:hover': { cursor: 'pointer' } }}
-            component="a"
-            href="/"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('');
-            }}
-          >
-            life.liberfy.ai
-          </Typography>
+          <Box>
+            <IconButton
+              color="inherit"
+              aria-label="toggle drawer"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2, borderRadius: '8px', display: 'inline', left: 0 }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography
+              variant="h6"
+              color="inherit"
+              sx={{ textDecoration: 'none', '&:hover': { cursor: 'pointer' } }}
+              component="a"
+              href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate('');
+              }}
+            >
+              life.liberfy.ai
+            </Typography>
+          </Box>
 
           {!isLoginPage && (
             <NavBarUserElem auth={auth} handleLogout={handleLogout} />
           )}
         </Box>
       </Toolbar>
+      <LeftDrawer
+        dIsOpen={drawerOpen}
+        dToggle={handleDrawerToggle}
+        showArchived={showArchived}
+        setShowArchived={setShowArchived}
+      />
     </AppBar>
   );
 };
