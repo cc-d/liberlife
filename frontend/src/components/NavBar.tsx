@@ -176,12 +176,15 @@ const NavBar: React.FC = () => {
           )}
         </Box>
       </Toolbar>
+      {/* Disabled to get width changes out while in dev */}
+      {/*
       <LeftDrawer
         dIsOpen={drawerOpen}
         dToggle={handleDrawerToggle}
         showArchived={showArchived}
         setShowArchived={setShowArchived}
       />
+      */}
     </AppBar>
   );
 };
