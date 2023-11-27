@@ -45,7 +45,7 @@ const NoNotesView: React.FC<NoNotesViewProps> = ({ latestUpdate, onEdit }) => {
           {latestUpdate}
         </Typography>
       </Box>
-      <IconButton onClick={onEdit}>
+      <IconButton onClick={onEdit} aria-label="edit notes">
         <EditIcon />
       </IconButton>
     </Box>
@@ -165,7 +165,7 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
             margin="none"
             InputProps={{ disableUnderline: true }}
           />
-          <IconButton onClick={handleSaveNotes}>
+          <IconButton onClick={handleSaveNotes} aria-label="save notes">
             <SaveIcon />
           </IconButton>
         </Box>
@@ -208,6 +208,7 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
                 alignItems: 'center',
                 borderRadius: 0,
               }}
+              aria-label="edit notes"
             >
               <EditIcon />
             </IconButton>

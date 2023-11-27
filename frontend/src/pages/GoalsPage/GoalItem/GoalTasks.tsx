@@ -75,7 +75,11 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
               }
             }}
           />
-          <IconButton onClick={handleAddTask}>
+          <IconButton
+            onClick={handleAddTask}
+            aria-label="add task"
+            sx={{ color: 'primary.main' }}
+          >
             <AddIcon />
           </IconButton>
         </Box>

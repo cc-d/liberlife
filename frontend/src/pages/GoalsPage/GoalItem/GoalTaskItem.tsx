@@ -58,7 +58,7 @@ const GoalTaskItem: React.FC<{
       key={task.id}
       onClick={() => handleTaskStatus(taskGoal.id, task.id)}
     >
-      <TaskStatusIcon status={task.status} />
+      <TaskStatusIcon status={task.status} aria-label="task status" />
       <Box
         sx={{
           textDecoration:
@@ -92,6 +92,7 @@ const GoalTaskItem: React.FC<{
           event.stopPropagation();
           handleDeleteTask(taskGoal.id, task.id);
         }}
+        aria-label="delete"
       >
         <Delete
           sx={{

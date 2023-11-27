@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Box,
   Typography,
@@ -6,11 +6,11 @@ import {
   TextField,
   Menu,
   MenuItem,
-} from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import CancelIcon from "@mui/icons-material/Cancel";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { GoalOut } from "../../../api";
+} from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import CancelIcon from '@mui/icons-material/Cancel';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { GoalOut } from '../../../api';
 
 interface GoalHeaderProps {
   goal: GoalOut;
@@ -43,25 +43,25 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
   maxElementWidth,
   handleArchive,
 }) => {
-  const archText = goal.archived ? "Unarchive" : "Archive";
+  const archText = goal.archived ? 'Unarchive' : 'Archive';
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
         flexGrow: 1,
-        width: "100%",
+        width: '100%',
         p: 0.5,
       }}
     >
       <Box
         sx={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
           flexGrow: 1,
-          width: "100%",
+          width: '100%',
         }}
       >
         {isEditing ? (
@@ -70,20 +70,20 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
               value={editedText}
               onChange={(e) => setEditedText(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter") {
+                if (e.key === 'Enter') {
                   handleSave();
                 }
               }}
               sx={{
-                display: "flex",
+                display: 'flex',
                 flexGrow: 1,
-                maxWidth: "100%",
+                maxWidth: '100%',
               }}
             />
-            <IconButton onClick={handleSave}>
+            <IconButton onClick={handleSave} aria-label="save">
               <EditIcon />
             </IconButton>
-            <IconButton onClick={handleCancel}>
+            <IconButton onClick={handleCancel} aria-label="cancel">
               <CancelIcon />
             </IconButton>
           </>
@@ -92,9 +92,9 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
             <Typography
               variant="h5"
               sx={{
-                display: "flex",
+                display: 'flex',
                 flexGrow: 1,
-                width: "100%",
+                width: '100%',
 
                 pl: 0.5,
               }}
@@ -102,7 +102,7 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
               {goal.text}
             </Typography>
 
-            <IconButton onClick={handleMenuClick}>
+            <IconButton onClick={handleMenuClick} aria-label="menu">
               <MoreVertIcon />
             </IconButton>
             <Menu
