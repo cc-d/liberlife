@@ -12,8 +12,6 @@ import SaveIcon from '@mui/icons-material/Save';
 import { GoalOut } from '../../../api';
 import { useThemeContext } from '../../../contexts/ThemeContext';
 import green from '@mui/material/colors/green';
-import grey from '@mui/material/colors/grey';
-import { blueGrey } from '@mui/material/colors';
 
 interface GoalNotesProps {
   goal: GoalOut;
