@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { CssBaseline } from '@mui/material';
 import { AuthProvider } from '../contexts/AuthContext';
 import { ThemeProvider } from '../contexts/ThemeContext';
+import { NavBarProvider } from '../contexts/NavBarContext';
 import Container from '@mui/material/Container';
 import LogRegPage from '../pages/LogRegPage';
 import GoalsPage from '../pages/GoalsPage';
@@ -15,15 +16,20 @@ function App() {
       <AuthProvider>
         <CssBaseline />
         <Router>
-          <NavBar />
-          <Container maxWidth={false} disableGutters sx={{ p: 1 }}>
-            <Routes>
-              <Route path="/" element={<GoalsPage />} />
-              <Route path="/snapshots/:uuid" element={<SnapshotGoalBoard />} />
-              <Route path="/login" element={<LogRegPage />} />
-              <Route path="/profile" element={<ProfilePage />} />
-            </Routes>
-          </Container>
+          <NavBarProvider>
+            <NavBar />
+            <Container maxWidth={false} disableGutters sx={{ p: 1 }}>
+              <Routes>
+                <Route path="/" element={<GoalsPage />} />
+                <Route
+                  path="/snapshots/:uuid"
+                  element={<SnapshotGoalBoard />}
+                />
+                <Route path="/login" element={<LogRegPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+              </Routes>
+            </Container>
+          </NavBarProvider>
         </Router>
       </AuthProvider>
     </ThemeProvider>

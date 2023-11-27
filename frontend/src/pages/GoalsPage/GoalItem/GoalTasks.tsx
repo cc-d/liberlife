@@ -78,7 +78,7 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
           <IconButton
             onClick={handleAddTask}
             aria-label="add task"
-            sx={{ color: 'primary.main' }}
+            sx={{ color: 'primary.text.main' }}
           >
             <AddIcon />
           </IconButton>

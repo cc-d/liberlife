@@ -16,6 +16,13 @@ import { AuthContext, AuthContextProps } from '../contexts/AuthContext';
 import { useThemeContext } from '../contexts/ThemeContext';
 import { useNavBarContext } from '../contexts/NavBarContext';
 
+import HomeIcon from '@mui/icons-material/Home';
+import ArchiveIcon from '@mui/icons-material/Archive';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import TaskSharp from '@mui/icons-material/TaskSharp';
+import { Link as RouterLink } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+
 import MenuIcon from '@mui/icons-material/Menu'; // Importing MenuIcon
 import LeftDrawer from './LeftDrawer';
 
@@ -29,6 +36,7 @@ const NavBarUserElem: React.FC<NavBarUserElemProps> = ({
   handleLogout,
 }) => {
   const nav = useNavigate();
+
   if (!auth || auth?.userLoading) {
     return (
       <Typography variant="h6" sx={{ mr: 2, color: 'inherit' }}>
@@ -177,14 +185,13 @@ const NavBar: React.FC = () => {
         </Box>
       </Toolbar>
       {/* Disabled to get width changes out while in dev */}
-      {/*
+
       <LeftDrawer
         dIsOpen={drawerOpen}
         dToggle={handleDrawerToggle}
         showArchived={showArchived}
         setShowArchived={setShowArchived}
       />
-      */}
     </AppBar>
   );
 };
