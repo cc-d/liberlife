@@ -15,7 +15,7 @@ export const darkTheme = createTheme({
 
     text: {
       primary: grey[50],
-      secondary: grey[400],
+      secondary: grey[200],
     },
     secondary: {
       main: secondary,

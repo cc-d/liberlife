@@ -12,6 +12,8 @@ import SaveIcon from '@mui/icons-material/Save';
 import { GoalOut } from '../../../api';
 import { useThemeContext } from '../../../contexts/ThemeContext';
 import green from '@mui/material/colors/green';
+import grey from '@mui/material/colors/grey';
+import { blueGrey } from '@mui/material/colors';
 
 interface GoalNotesProps {
   goal: GoalOut;
@@ -139,7 +141,14 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
   const theme = useThemeContext();
 
   return (
-    <Box sx={{ m: 0, maxWidth: '100%', p: 0.5 }}>
+    <Box
+      sx={{
+        m: 0,
+        maxWidth: '100%',
+        p: 0.5,
+        backgroundColor: theme.theme.palette.background.paper,
+      }}
+    >
       {isEditingNotes ? (
         <Box
           sx={{
@@ -181,7 +190,7 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
             }}
           >
             <Typography
-              color={goal?.notes ? 'textPrimary' : 'textSecondary'}
+              color={theme.theme.palette.text.primary}
               sx={{
                 flexGrow: 1,
                 width: '100%',
@@ -207,7 +216,7 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
           </Box>
           <Typography
             variant="caption"
-            color={theme.theme.palette.text.secondary}
+            color={theme.theme.palette.text.primary}
             noWrap
             sx={{
               textAlign: 'left',
