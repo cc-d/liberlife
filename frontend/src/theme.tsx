@@ -6,6 +6,8 @@ import grey from '@mui/material/colors/grey';
 export const primary = green[900];
 export const secondary = purple[900];
 
+const goalBackColor = darken(grey[900], 0.5);
+
 export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
@@ -15,14 +17,14 @@ export const darkTheme = createTheme({
 
     text: {
       primary: grey[50],
-      secondary: grey[200],
+      secondary: darken(grey[50], 0.2),
     },
     secondary: {
       main: secondary,
     },
     background: {
-      default: darken(grey[900], 1),
-      paper: darken(grey[900], 0.4),
+      default: '#000000',
+      paper: goalBackColor,
     },
   },
 });
@@ -37,8 +39,8 @@ export const lightTheme = createTheme({
       main: secondary,
     },
     text: {
-      primary: darken(grey[900], 0.8),
-      secondary: darken(grey[900], 0.4),
+      primary: '#050505',
+      secondary: lighten('#050505', 0.2),
     },
     background: {
       default: grey[50],
