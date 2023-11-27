@@ -33,13 +33,11 @@ const SnapshotGoalBoard: React.FC = () => {
   }
 
   return (
-    <Container maxWidth="xl" sx={{ m: 'auto', p: 0, backgroundColor: 'black' }}>
-      <GoalBoard
-        goals={snapshotGoals}
-        setGoals={setSnapshotGoals}
-        isSnapshot={true}
-      />
-    </Container>
+    <GoalBoard
+      goals={snapshotGoals}
+      setGoals={setSnapshotGoals}
+      isSnapshot={true}
+    />
   );
 };
 

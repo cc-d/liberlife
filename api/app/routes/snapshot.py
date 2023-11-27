@@ -71,3 +71,11 @@ async def get_snapshot(snap_id: str, db: AsyncSession = Depends(get_adb)):
     snap = await get_snap_from_uuid(snap_id, db=db)
 
     return snap
+
+
+@router.delete('/{snap_id}')
+async def delete_snapshot(snap_id: str, db: AsyncSession = Depends(get_adb)):
+    snap = await get_snap_from_uuid(snap_id, db=db)
+    await db.delete(snap)
+    await db.commit()
+    return {'detail': f'Snapshot {snap_id} deleted successfully'}

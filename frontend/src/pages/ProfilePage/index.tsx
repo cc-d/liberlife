@@ -7,6 +7,7 @@ import grey from '@mui/material/colors/grey';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useThemeContext } from '../../contexts/ThemeContext';
+import { Delete } from '@mui/icons-material';
 
 const ProfilePage: React.FC = () => {
   const auth = useAuth();
@@ -24,6 +25,19 @@ const ProfilePage: React.FC = () => {
       console.error('Error creating snapshot:', error);
       // Handle error appropriately
     }
+  };
+
+  const deleteSnapshot = async (uuid: string) => {
+    try {
+      const response = await apios.delete(`/snapshots/${uuid}`);
+      if (response?.status && response.status === 200) {
+        setSnapshots(snapshots.filter((s) => s.uuid !== uuid));
+      }
+    } catch (error) {
+      console.error('Error deleting snapshot:', error);
+      // Handle error appropriately
+    }
+    return false;
   };
 
   useEffect(() => {
@@ -94,7 +108,16 @@ const ProfilePage: React.FC = () => {
       </Box>
 
       {snapshots.map((snapshot) => (
-        <RouterLink to={`/snapshots/${snapshot.uuid}`}>
+        <RouterLink
+          to={`/snapshots/${snapshot.uuid}`}
+          key={snapshot.uuid}
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            color: 'inherit',
+          }}
+        >
           <Typography
             key={snapshot.uuid}
             variant="body1"
@@ -102,6 +125,17 @@ const ProfilePage: React.FC = () => {
           >
             {snapshot.uuid}
           </Typography>
+          <IconButton
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              deleteSnapshot(snapshot.uuid);
+            }}
+            sx={{ ml: 1 }}
+            aria-label="delete snapshot"
+          >
+            <Delete />
+          </IconButton>
         </RouterLink>
       ))}
     </Box>

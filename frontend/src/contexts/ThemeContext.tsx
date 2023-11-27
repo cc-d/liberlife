@@ -4,11 +4,11 @@ import React, {
   useState,
   useMemo,
   useEffect,
-} from "react";
-import { ThemeProvider as MuiThemeProvider, Theme } from "@mui/material/styles";
-import { darkTheme, lightTheme } from "../theme";
+} from 'react';
+import { ThemeProvider as MuiThemeProvider, Theme } from '@mui/material/styles';
+import { darkTheme, lightTheme } from '../app/theme';
 
-type DarkLight = "dark" | "light";
+type DarkLight = 'dark' | 'light';
 
 interface ThemeContextType {
   currentTheme: DarkLight;
@@ -21,7 +21,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const useThemeContext = () => {
   const context = useContext(ThemeContext);
   if (!context) {
-    throw new Error("useThemeContext must be used within a ThemeProvider");
+    throw new Error('useThemeContext must be used within a ThemeProvider');
   }
   return context;
 };
@@ -32,16 +32,16 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const locTheme = (localStorage.getItem("theme") || "dark") as DarkLight;
+  const locTheme = (localStorage.getItem('theme') || 'dark') as DarkLight;
   const [currentTheme, setCurrentTheme] = useState<DarkLight>(locTheme);
 
   const toggleTheme = () => {
-    const nextTheme = currentTheme === "dark" ? "light" : "dark";
-    localStorage.setItem("theme", nextTheme);
+    const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('theme', nextTheme);
     setCurrentTheme(nextTheme);
   };
 
-  const theme = currentTheme === "dark" ? darkTheme : lightTheme;
+  const theme = currentTheme === 'dark' ? darkTheme : lightTheme;
 
   return (
     <ThemeContext.Provider value={{ theme, currentTheme, toggleTheme }}>

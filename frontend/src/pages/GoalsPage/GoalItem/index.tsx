@@ -4,7 +4,7 @@ import { GoalOut, TaskStatus } from '../../../api';
 import GoalHeader from './GoalHeader';
 import GoalTasks from './GoalTasks';
 import GoalNotes from './GoalNotes';
-import { actionAddTaskToGoal, actionDeleteTask } from '../actions';
+import { actionAddTaskToGoal, actionDeleteTask } from '../../../utils/actions';
 import { useThemeContext } from '../../../contexts/ThemeContext';
 import apios from '../../../utils/apios';
 import { getTaskStatus } from '../../../utils/helpers';

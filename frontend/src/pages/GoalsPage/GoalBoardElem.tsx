@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Divider } from '@mui/material';
 import { GoalOut } from '../../api';
 import GoalItem from './GoalItem';
-import { actionUpdateGoal, actihandleGoalDelete } from './actions';
+import { actionUpdateGoal, actihandleGoalDelete } from '../../utils/actions';
 
 interface GoalBoardElemProps {
   goals: GoalOut[];

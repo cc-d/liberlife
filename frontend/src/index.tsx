@@ -1,8 +1,8 @@
-import './index.css';
+import './app/index.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-import App from './App';
+import App from './app/App';
 import reportWebVitals from './utils/reportWebVitals';
 
 document.title = 'LiberLife';

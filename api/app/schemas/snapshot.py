@@ -22,3 +22,7 @@ class SnapshotOut(CommonBase):
     uuid: str
     user_id: int
     goals: list[SnapshotGoalOut]
+
+
+class SnapshotDelete(BaseModel):
+    uuid: str

@@ -1,6 +1,6 @@
 import React from 'react';
-import apios from '../../utils/apios';
-import { GoalOut, GoalTaskOut, TaskStatus } from '../../api';
+import apios from './apios';
+import { GoalOut, GoalTaskOut, TaskStatus } from '../api';
 
 export const actionUpdateGoal = async (
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>,

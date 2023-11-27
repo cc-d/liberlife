@@ -87,11 +87,10 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'space-between',
+            minHeight: '60px',
             m: 0,
             flexGrow: 1,
             p: 0,
-            height: '100%',
           }}
         >
           <Typography
@@ -116,6 +115,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
               alignItems: 'center',
               m: 0,
               p: 0,
+              mb: 1,
             }}
           >
             <TextField

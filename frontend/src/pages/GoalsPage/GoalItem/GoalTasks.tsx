@@ -3,7 +3,7 @@ import { Box, TextField, IconButton, Divider } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { GoalTaskOut, GoalOut } from '../../../api';
 import GoalTaskItem from './GoalTaskItem'; // Update the import statement
-import theme from '../../../theme';
+import theme from '../../../app/theme';
 
 export interface GoalTasksProps {
   newTaskText: string;
