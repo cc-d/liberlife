@@ -12,13 +12,7 @@ from .user import UserOut
 
 
 class SnapshotTaskOut(GoalTaskOut):
-    status: TaskStatus
-
-    @validator('status', pre=True, always=True)
-    def convert_status(cls, v):
-        if isinstance(v, str):
-            return TaskStatus(v)
-        return v
+    status: str
 
 
 class SnapshotGoalOut(CommonBase):
