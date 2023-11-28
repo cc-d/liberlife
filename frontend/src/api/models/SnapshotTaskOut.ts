@@ -3,13 +3,11 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { TaskStatus } from './TaskStatus';
-
 export type SnapshotTaskOut = {
     created_on: string;
     updated_on: string;
     id: number;
-    status: TaskStatus;
+    status: string;
     goal_id: number;
     text: string;
 };

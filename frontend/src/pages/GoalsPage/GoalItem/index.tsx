@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Box, Divider } from '@mui/material';
-import { GoalOut, TaskStatus } from '../../../api';
+import { GoalOut, GoalTaskOut, TaskStatus } from '../../../api';
 import GoalHeader from './GoalHeader';
 import GoalTasks from './GoalTasks';
 import GoalNotes from './GoalNotes';
@@ -40,6 +40,25 @@ const getLongestStr = (goal: GoalOut): number => {
     }
   });
   return longestStr;
+};
+
+export const sortTasks = (a: GoalTaskOut, b: GoalTaskOut) => {
+  const statusOrder = ['in progress', 'not started', 'completed'];
+  const aStatus = statusOrder.indexOf(a.status);
+  const bStatus = statusOrder.indexOf(b.status);
+  if (aStatus < bStatus) {
+    return -1;
+  } else if (aStatus > bStatus) {
+    return 1;
+  } else {
+    if (a.text < b.text) {
+      return -1;
+    } else if (a.text > b.text) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
 };
 
 const GoalItem: React.FC<GoalItemProps> = ({
@@ -140,8 +159,10 @@ const GoalItem: React.FC<GoalItemProps> = ({
   };
 
   useMemo(() => {
-    setTasks(goal.tasks.sort((a, b) => a.id - b.id));
+    const sortedTasks = [...goal.tasks].sort(sortTasks);
+    setTasks(sortedTasks);
   }, [goal.tasks]);
+
   const handleTaskStatus = async (goalId: number, taskId: number) => {
     // Determine the next status for the task
     // Optimistically update the task status in the UI
