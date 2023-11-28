@@ -8,8 +8,11 @@ import {
   MenuItem,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
+import DeleteIcon from '@mui/icons-material/Delete';
 import CancelIcon from '@mui/icons-material/Cancel';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import red from '@mui/material/colors/red';
 import { GoalOut } from '../../../api';
 
 interface GoalHeaderProps {
@@ -44,6 +47,14 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
   handleArchive,
 }) => {
   const archText = goal.archived ? 'Unarchive' : 'Archive';
+  const menuItemSX = {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'left',
+    p: 1,
+  };
+
   return (
     <Box
       sx={{
@@ -52,7 +63,8 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
         alignItems: 'center',
         flexGrow: 1,
         width: '100%',
-        p: 0.5,
+        m: 0,
+        p: 0,
       }}
     >
       <Box
@@ -66,6 +78,9 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
       >
         {isEditing ? (
           <>
+            <IconButton onClick={handleCancel} aria-label="cancel edit">
+              <CancelIcon />
+            </IconButton>
             <TextField
               value={editedText}
               onChange={(e) => setEditedText(e.target.value)}
@@ -80,11 +95,9 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
                 maxWidth: '100%',
               }}
             />
+
             <IconButton onClick={handleSave} aria-label="save">
-              <EditIcon />
-            </IconButton>
-            <IconButton onClick={handleCancel} aria-label="cancel">
-              <CancelIcon />
+              <SaveIcon />
             </IconButton>
           </>
         ) : (
@@ -111,9 +124,18 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
               open={Boolean(anchorEl)}
               onClose={handleMenuClose}
             >
-              <MenuItem onClick={startEdit}>Edit</MenuItem>
-              <MenuItem onClick={handleDelete}>Delete</MenuItem>
-              <MenuItem onClick={handleArchive}>{archText}</MenuItem>
+              <MenuItem onClick={startEdit} disableGutters sx={menuItemSX}>
+                <EditIcon />
+                <Typography variant="body1">Edit</Typography>
+              </MenuItem>
+              <MenuItem onClick={handleArchive} disableGutters sx={menuItemSX}>
+                <SaveIcon fontSize="medium" />
+                <Typography variant="body1">{archText}</Typography>
+              </MenuItem>
+              <MenuItem onClick={handleDelete} disableGutters sx={menuItemSX}>
+                <DeleteIcon fontSize="medium" sx={{ color: red[500] }} />
+                <Typography variant="body1">Delete</Typography>
+              </MenuItem>
             </Menu>
           </>
         )}
