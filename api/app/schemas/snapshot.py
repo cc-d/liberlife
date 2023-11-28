@@ -1,11 +1,24 @@
-from pydantic import BaseModel
-from .goal import GoalIn, GoalOut, GoalTaskIn, GoalTaskOut, GoalUpdate
+from pydantic import BaseModel, validator
+from .goal import (
+    GoalIn,
+    GoalOut,
+    GoalTaskIn,
+    GoalTaskOut,
+    GoalUpdate,
+    TaskStatus,
+)
 from .common import CommonBase
 from .user import UserOut
 
 
 class SnapshotTaskOut(GoalTaskOut):
-    pass
+    status: TaskStatus
+
+    @validator('status', pre=True, always=True)
+    def convert_status(cls, v):
+        if isinstance(v, str):
+            return TaskStatus(v)
+        return v
 
 
 class SnapshotGoalOut(CommonBase):

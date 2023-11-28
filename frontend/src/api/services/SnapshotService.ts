@@ -55,4 +55,25 @@ export class SnapshotService {
         });
     }
 
+    /**
+     * Delete Snapshot
+     * @param snapId
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static deleteSnapshotSnapshotsSnapIdDelete(
+        snapId: string,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/snapshots/{snap_id}',
+            path: {
+                'snap_id': snapId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
 }
