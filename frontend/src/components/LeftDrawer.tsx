@@ -161,7 +161,7 @@ export const LeftDrawer: React.FC<LeftDrawerProps> = ({
               <ListItemText primary={goal.name} />
             </ListItem>
           ))}
-          <SectionTitle title="Tasks/Snapshots" />
+          <SectionTitle title="Snapshots" />
           {/* Add tasks and snapshots here */}
         </List>
       </Box>
