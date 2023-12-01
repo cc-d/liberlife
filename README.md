@@ -12,25 +12,6 @@ This seems like a fun, simple little project that may end up being useful. It's 
 
 ![App Preview](/preview-light.png)
 
-## Project Overview
-
-- **compose.yml:** Project's Docker composition file.
-- **.envs/:** Environment variable configurations.
-- **.vscode/:** Visual Studio Code specific settings.
-- **api/**
-  - **Dockerfile:** API's Docker configuration.
-  - **app/:** Core application functionality.
-    - **crud/:** Database CRUD operations.
-    - **db/:** Database models and session management.
-    - **routes/:** Endpoints and their logic.
-    - **utils/:** Helpers like middleware and security.
-  - **tests/:** Unit and integration tests.
-- **frontend/**
-  - **Dockerfile:** Frontend's Docker configuration.
-  - **public/:** Public assets and templates.
-  - **src/:** Main source code for frontend, including core utilities, components, contexts, and page components.
-- **nginx/:** Nginx server configurations and Docker setup.
-
 ## async
 
 Every route and non-cpu bound route/query/test/whatever is async. This was, a lot, harder than doing things 100% sync, and in many cases was utterly unnecessary, but it was good practice.
