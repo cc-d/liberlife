@@ -309,9 +309,11 @@ async def test_goalcrud_fromid(client, setup_goals):
 
 @pytest.mark.asyncio
 async def test_goalcrud_usergoals(client, setup_goals):
-    newgoals, headers, _ = setup_goals
+    newgoals, headers, tuser = setup_goals
 
     # Use anext to get the AsyncSession from the async generator
     async for db in get_test_adb():
-        goals = await GoalCrud.get_user_goals(newgoals[0].user_id, db=db)
+        goals = await GoalCrud.get_user_goals(
+            user_id=tuser['id'], db=db, archived=None
+        )
         assert len(goals) >= 1

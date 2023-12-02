@@ -34,9 +34,7 @@ async def get_goal_from_id(
 async def get_user_goals(
     user_id: int,
     db: AsyncSession = Depends(get_adb),
-    archived: bool = Query(
-        None, description="Whether to limit to archived true or false"
-    ),
+    archived: Optional[bool] = None,
 ) -> list[Goal]:
     stmt = select(Goal).where(Goal.user_id == user_id)
 

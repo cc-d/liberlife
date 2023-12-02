@@ -62,6 +62,9 @@ async def list_goals(
     cur_user=Depends(get_current_user),
     db: AsyncSession = Depends(get_adb),
 ) -> List[Goal]:
+
+    if archived is None:
+        return await get_user_goals(cur_user.id, db=db)
     return await get_user_goals(cur_user.id, db=db, archived=archived)
 
 
