@@ -6,6 +6,7 @@ import {
   TextField,
   Menu,
   MenuItem,
+  Divider,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
@@ -54,7 +55,10 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'left',
-    p: 1,
+    width: '100%',
+    height: '100%',
+    m: 0,
+    p: 2,
   };
 
   return (
@@ -76,6 +80,8 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
           alignItems: 'center',
           flexGrow: 1,
           width: '100%',
+          m: 0,
+          p: 0,
         }}
       >
         {isEditing ? (
@@ -120,19 +126,22 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
             <IconButton onClick={handleMenuClick} aria-label="menu">
               <MoreVertIcon />
             </IconButton>
+
             <Menu
               anchorEl={anchorEl}
               keepMounted
               open={Boolean(anchorEl)}
               onClose={handleMenuClose}
+              sx={{}}
+              variant="menu"
             >
               {!goal.archived && (
-                <MenuItem onClick={startEdit} disableGutters sx={menuItemSX}>
+                <MenuItem onClick={startEdit} sx={menuItemSX} disableGutters>
                   <EditIcon />
                   <Typography variant="body1">Edit</Typography>
                 </MenuItem>
               )}
-              <MenuItem onClick={handleArchive} disableGutters sx={menuItemSX}>
+              <MenuItem onClick={handleArchive} sx={menuItemSX} disableGutters>
                 {goal.archived ? (
                   <UnarchiveIcon fontSize="medium" />
                 ) : (
@@ -140,7 +149,7 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
                 )}
                 <Typography variant="body1">{archText}</Typography>
               </MenuItem>
-              <MenuItem onClick={handleDelete} disableGutters sx={menuItemSX}>
+              <MenuItem onClick={handleDelete} sx={menuItemSX} disableGutters>
                 <DeleteIcon fontSize="medium" sx={{ color: red[500] }} />
                 <Typography variant="body1">Delete</Typography>
               </MenuItem>
