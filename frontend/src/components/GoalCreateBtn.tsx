@@ -115,8 +115,8 @@ export const GoalCreateBtn: React.FC<{
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
         <MenuItem
           onClick={() => {
-            handleTextChange(handleTodayDate(), true);
-            handleAddGoal();
+            const todayDate = handleTodayDate();
+            handleTextChange(todayDate, true);
           }}
         >
           today's date

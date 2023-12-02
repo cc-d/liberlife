@@ -50,9 +50,10 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
     setSortOrder(nextSortOrder);
   };
 
-  const handleAddGoal = async () => {
-    if (newGoalText.trim()) {
-      const response = await apios.post('/goals', { text: newGoalText });
+  const handleAddGoal = async (useText?: string) => {
+    if (useText || newGoalText.trim()) {
+      const sendText = useText || newGoalText.trim();
+      const response = await apios.post('/goals', { text: sendText });
       if (response.data) {
         setGoals((prevGoals) => [...prevGoals, response.data]);
         setNewGoalText('');
@@ -60,10 +61,14 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
     }
   };
 
-  const handleTextChange = (val: string, submit: boolean = false) => {
-    setNewGoalText(val);
+  const handleTextChange = (val: string, submit?: boolean) => {
+    console.log('handleTextChange', val, submit);
+
     if (submit) {
-      handleAddGoal();
+      console.log('handleTextChange submit');
+      handleAddGoal(val);
+    } else {
+      setNewGoalText(val);
     }
   };
 
