@@ -19,7 +19,7 @@ function App() {
         <Router>
           <NavBarProvider>
             <NavBar />
-            <Container maxWidth={false} sx={{ p: 1.5 }}>
+            <Container maxWidth={false} sx={{ p: 1.5 }} disableGutters>
               <Routes>
                 <Route path="/" element={<GoalsPage archived={false} />} />
                 <Route

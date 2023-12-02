@@ -137,6 +137,7 @@ const NavBar: React.FC = () => {
           m: 0,
           width: '100%',
         }}
+        disableGutters
       >
         <Container
           maxWidth={false}
@@ -147,6 +148,8 @@ const NavBar: React.FC = () => {
             justifyContent: 'space-between',
             color: 'inherit',
             flexGrow: 1,
+            m: 0,
+            p: 0,
             px: 1.5,
           }}
         >
