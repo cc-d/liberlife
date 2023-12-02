@@ -45,9 +45,7 @@ export const GoalCreateBtn: React.FC<{
     })} ${today.getDate()}, ${today.getFullYear()}`;
 
     // Set the new goal text with the formatted date
-    setNewGoalText(formattedDate);
-
-    // Close the menu
+    handleTextChange(formattedDate, true);
     handleClose();
 
     return formattedDate;
@@ -136,7 +134,9 @@ export const GoalCreateBtn: React.FC<{
         <ArrowDownIcon />
       </IconButton>
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-        <MenuItem onClick={() => handleTodayDate()}>Today's Date</MenuItem>
+        <MenuItem onClick={() => handleTodayDate() && handleAddGoal()}>
+          Today's Date
+        </MenuItem>
         {templates.map((template: GoalTemplateDB) => (
           <MenuItem key={template.id} onClick={() => null}>
             {template.text}
