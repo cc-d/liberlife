@@ -1,24 +1,34 @@
 # liberlife
 
-**NOW LIVE:** [https://life.liberfy.ai](https://life.liberfy.ai)
+### **LIVE:** [https://life.liberfy.ai](https://life.liberfy.ai)
+
+#### (no password requirements)
 
 This seems like a fun, simple little project that may end up being useful. It's primarily intended as a personal life tracker tool for my own use.
 
+It's starting to look pretty good. If you use this, please attribute me in some way. If you use this to make money, attribute me some money.
+
 #### Dark Mode Preview:
 
-![App Preview](/preview-dark.png)
+![Dark Mode (default) preview](/dark0.png)
+![Dark Mode (default) preview](/dark1.png)
+![Dark Mode (default) preview](/dark2.png)
+![Dark Mode (default) preview](/dark3.png)
 
 #### Light Mode Preview:
 
-![App Preview](/preview-light.png)
+![Lite Mode preview](/lite0.png)
+![Lite Mode preview](/lite1.png)
+
+l00kz gUd
 
 ## async
 
-Every route and non-cpu bound route/query/test/whatever is async. This was, a lot, harder than doing things 100% sync, and in many cases was utterly unnecessary, but it was good practice.
+Every route and non-cpu bound route/query/test/whatever is async. async Because cool is.
 
 ## async tests
 
-Here are the results from the integration test suite with everything 100% async:
+lol exceptions padded test coverage
 
 ```
 ---------- coverage: platform darwin, python 3.11.5-final-0 ----------
@@ -26,31 +36,34 @@ Name                        Stmts   Miss  Cover   Missing
 ---------------------------------------------------------
 __init__.py                     0      0   100%
 app/__init__.py                 0      0   100%
-app/config.py                  17      0   100%
+app/config.py                  21      0   100%
 app/crud/__init__.py            0      0   100%
-app/crud/goal.py               29      5    83%   29, 36, 43-44, 53
-app/crud/user.py               29     14    52%   20-33, 40-46, 52-54
-app/db/__init__.py             14      4    71%   8-12
+app/crud/goal.py               36      3    92%   56-57, 66
+app/crud/snapshots.py          21     12    43%   27, 34-52
+app/crud/user.py               30     14    53%   24-32, 43-49, 55-57
+app/db/__init__.py             24     12    50%   13-17, 21-25, 29-33
 app/db/common.py                8      4    50%   7, 14-16
-app/db/models.py               32      0   100%
-app/db/session.py               9      0   100%
+app/db/models.py               81      7    91%   116, 131-136, 173
+app/db/session.py              13      0   100%
 app/main.py                    23      4    83%   21, 26, 32-35
-app/routes/__init__.py          3      0   100%
-app/routes/goal.py             82     31    62%   30, 45, 60, 67, 77, 83, 93-100, 112, 118, 127-135, 146-151, 164-173, 186, 194-198
-app/routes/user.py             37     10    73%   28-39, 50, 60, 66
+app/routes/__init__.py          5      0   100%
+app/routes/goal.py            117     26    78%   40, 45, 56, 68, 91, 103, 116, 128, 134-135, 145, 149, 163, 165, 170, 185, 189-192, 198-200, 212, 217-225
+app/routes/snapshot.py         40     13    68%   35-37, 46-49, 66, 73, 78-81
+app/routes/template.py         75     45    40%   25-33, 39-48, 57-61, 68-73, 83-88, 97-100, 110-115, 126-129, 142-148, 158-162
+app/routes/user.py             36      8    78%   28-36, 61
 app/schemas/__init__.py         1      0   100%
-app/schemas/common.py           7      0   100%
-app/schemas/goal.py            28      0   100%
+app/schemas/common.py           9      0   100%
+app/schemas/goal.py            53      0   100%
+app/schemas/snapshot.py        20      0   100%
 app/schemas/user.py            16      0   100%
 app/utils/__init__.py           0      0   100%
-app/utils/dependencies.py      17      3    82%   22-23, 29
+app/utils/dependencies.py      18      1    94%   28
+app/utils/httperrors.py       190      0   100%
 app/utils/middleware.py        16      0   100%
-app/utils/security.py          26      1    96%   26
+app/utils/security.py          34      7    79%   26, 49-55
 ---------------------------------------------------------
-TOTAL                         394     76    81%
+TOTAL                         887    156    82%
 
 
-======= 14 passed in 3.45s==============
+======================================= 88 passed in 4.62s
 ```
-
-now, it doesn't feel so pointless. 14 pretty short test funcs for 84% coverage is pretty good.

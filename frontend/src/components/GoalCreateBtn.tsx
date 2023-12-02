@@ -6,12 +6,18 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Icon,
+  Typography,
 } from '@mui/material';
 import ArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useThemeContext } from '../contexts/ThemeContext';
 import apios from '../utils/apios';
 import { debounce } from '../utils/helpers';
 import { GoalTemplateDB, TemplateTaskDB } from '../api';
+import { GoalIcon, SnapshotIcon, TemplateIcon } from './common';
+import TodayIcon from '@mui/icons-material/Today';
+
+import { AddchartRounded as AddChartIcon } from '@mui/icons-material';
 
 export const GoalCreateBtn: React.FC<{
   newGoalText: string;
@@ -83,6 +89,21 @@ export const GoalCreateBtn: React.FC<{
     }
   };
 
+  const boxSX = {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    p: 0.5,
+    m: 0,
+    justifyContent: 'space-between',
+    width: '100%',
+  };
+
+  const menuItemIconSX = {
+    mr: 0.5,
+    height: '36px',
+  };
+
   return (
     <Box
       sx={{
@@ -112,17 +133,36 @@ export const GoalCreateBtn: React.FC<{
           borderBottomLeftRadius: 1,
         }}
       />
-      <Button
-        variant="contained"
+      <IconButton
         sx={{
           ...textFieldSX,
           borderRadius: 0,
           borderTopLeftRadius: 1,
+          backgroundColor: theme.palette.primary.main,
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          '&:hover': {
+            backgroundColor: theme.palette.primary.main,
+          },
+          '&:active': {
+            backgroundColor: theme.palette.primary.main,
+          },
         }}
         onClick={handleAddGoal}
       >
-        New
-      </Button>
+        <Typography
+          variant="body1"
+          sx={{
+            flexGrow: 1,
+            color: theme.palette.text.primary,
+            textAlign: 'center',
+
+            mr: 0.5,
+          }}
+        >
+          Add
+        </Typography>
+      </IconButton>
       <IconButton
         sx={{
           ...textFieldSX,
@@ -137,16 +177,60 @@ export const GoalCreateBtn: React.FC<{
       >
         <ArrowDownIcon />
       </IconButton>
-      <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        sx={{
+          maxWidth: '200px',
+        }}
+      >
         <MenuItem onClick={() => handleTodayDate() && handleAddGoal()}>
-          Today's Date
+          <Box
+            sx={{
+              ...boxSX,
+            }}
+          >
+            <TodayIcon
+              sx={{
+                ...menuItemIconSX,
+              }}
+            />
+            <Typography
+              variant="body1"
+              sx={{
+                flexGrow: 1,
+                textAlign: 'right',
+              }}
+            >
+              Today's Date
+            </Typography>
+          </Box>
         </MenuItem>
         {templates.map((template: GoalTemplateDB) => (
           <MenuItem
             key={template.id}
             onClick={() => handleTemplateSelect(template.id.toString())}
           >
-            {template.text}
+            <Box
+              sx={{
+                ...boxSX,
+              }}
+            >
+              <TemplateIcon
+                sx={{
+                  ...menuItemIconSX,
+                }}
+              />
+              <Typography
+                variant="body1"
+                sx={{
+                  flexGrow: 1,
+                }}
+              >
+                {template.text}
+              </Typography>
+            </Box>
           </MenuItem>
         ))}
       </Menu>
