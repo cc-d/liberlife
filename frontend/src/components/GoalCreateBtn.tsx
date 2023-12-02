@@ -1,13 +1,12 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
-  Typography,
   TextField,
   Button,
-  Divider,
   IconButton,
+  Menu,
+  MenuItem,
 } from '@mui/material';
-import apios from '../utils/apios';
 import ArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useThemeContext } from '../contexts/ThemeContext';
 import { debounce } from '../utils/helpers';
@@ -17,13 +16,40 @@ export const GoalCreateBtn: React.FC<{
   setNewGoalText: React.Dispatch<React.SetStateAction<string>>;
   handleAddGoal: () => void;
   debouncedHandleTextChange: (val: string) => void;
+  handleTextChange: (val: string, submit?: boolean) => void;
 }> = ({
   newGoalText,
   setNewGoalText,
   handleAddGoal,
   debouncedHandleTextChange,
+  handleTextChange,
 }) => {
   const { theme } = useThemeContext();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleTodayDate = () => {
+    const today = new Date();
+    const formattedDate = `${today.toLocaleString('default', {
+      month: 'short',
+    })} ${today.getDate()}, ${today.getFullYear()}`;
+
+    // Set the new goal text with the formatted date
+    setNewGoalText(formattedDate);
+
+    // Close the menu
+    handleClose();
+
+    return formattedDate;
+  };
 
   const textFieldSX = {
     m: 0,
@@ -64,11 +90,8 @@ export const GoalCreateBtn: React.FC<{
       <Button
         variant="contained"
         sx={{
-          display: 'flex',
-
           ...textFieldSX,
           borderRadius: 0,
-
           borderTopLeftRadius: 1,
         }}
         onClick={handleAddGoal}
@@ -85,9 +108,20 @@ export const GoalCreateBtn: React.FC<{
           borderBottomRightRadius: 1,
           borderTopRightRadius: 1,
         }}
+        onClick={handleClick}
       >
         <ArrowDownIcon />
       </IconButton>
+      <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+        <MenuItem
+          onClick={() => {
+            handleTextChange(handleTodayDate(), true);
+            handleAddGoal();
+          }}
+        >
+          today's date
+        </MenuItem>
+      </Menu>
     </Box>
   );
 };

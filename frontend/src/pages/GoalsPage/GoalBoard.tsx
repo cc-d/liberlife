@@ -60,8 +60,11 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
     }
   };
 
-  const handleTextChange = (val: string) => {
+  const handleTextChange = (val: string, submit: boolean = false) => {
     setNewGoalText(val);
+    if (submit) {
+      handleAddGoal();
+    }
   };
 
   const debouncedHandleTextChange = useMemo(
@@ -107,6 +110,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
             setNewGoalText={setNewGoalText}
             handleAddGoal={handleAddGoal}
             debouncedHandleTextChange={debouncedHandleTextChange}
+            handleTextChange={handleTextChange}
           />
         ) : null}
       </Box>
