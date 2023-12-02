@@ -1,11 +1,16 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Box, Typography, TextField, Button } from '@mui/material';
+import { Box, Typography, TextField, Button, Divider } from '@mui/material';
 import { GoalOut } from '../../api';
 import apios from '../../utils/apios';
 import GoalBoardElem from './GoalBoardElem';
 import ShowHideTextButton from '../../components/ShowHideTooltip';
 import { debounce } from '../../utils/helpers';
-import SortButton, { SortOrder, sortGoals, sortOrders } from './SortButton';
+import SortButton, {
+  SortOrder,
+  sortGoals,
+  sortOrders,
+} from '../../components/SortButton';
+import GoalCreateBtn from '../../components/GoalCreateBtn';
 
 interface GoalBoardProps {
   goals: GoalOut[];
@@ -25,18 +30,17 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
     (localStorage.getItem('sortOrder') as SortOrder) || SortOrder.Default
   );
 
-  const archGoals = useMemo(
-    () => goals.filter((goal) => goal.archived === archived),
-    [goals]
-  );
-
   const toggleSortOrder = useMemo(() => {
     localStorage.setItem('sortOrder', sortOrder);
   }, [sortOrder]);
 
   // Memoize sorted goals
   const sortedGoals = useMemo(
-    () => sortGoals(archGoals, sortOrder),
+    () =>
+      sortGoals(
+        goals.filter((goal) => goal.archived === archived),
+        sortOrder
+      ),
     [sortOrder, goals]
   );
 
@@ -98,49 +102,15 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
         </Box>
 
         {!isSnapshot && !archived ? (
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              m: 0,
-              p: 0,
-              mb: 1,
-            }}
-          >
-            <TextField
-              variant="outlined"
-              placeholder="New goal..."
-              value={newGoalText}
-              onChange={(e) => debouncedHandleTextChange(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  handleAddGoal();
-                } else if (e.key === 'Escape') {
-                  setNewGoalText('');
-                }
-              }}
-              sx={{
-                m: 0,
-                p: 0,
-                ml: 0.5,
-              }}
-            />
-            <Button
-              variant="contained"
-              sx={{
-                height: '100%',
-                pt: 2,
-                pb: 2,
-              }}
-              onClick={handleAddGoal}
-            >
-              Create
-            </Button>
-          </Box>
+          <GoalCreateBtn
+            newGoalText={newGoalText}
+            setNewGoalText={setNewGoalText}
+            handleAddGoal={handleAddGoal}
+            debouncedHandleTextChange={debouncedHandleTextChange}
+          />
         ) : null}
       </Box>
-      {/* Actual GoalBoard */}
+      <Divider sx={{ mb: 1 }} />
       <GoalBoardElem
         goals={sortedGoals}
         setGoals={setGoals}

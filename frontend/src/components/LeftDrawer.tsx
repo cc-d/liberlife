@@ -7,19 +7,13 @@ import {
   IconButton,
   Box,
 } from '@mui/material';
-import HomeIcon from '@mui/icons-material/Home';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import TaskSharp from '@mui/icons-material/TaskSharp';
-import SaveIcon from '@mui/icons-material/Save';
 import { Link as RouterLink } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { useNavBarContext } from '../contexts/NavBarContext';
 import { useThemeContext } from '../contexts/ThemeContext';
 import { GoalIcon, TemplateIcon, SnapshotIcon } from './common';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
 import grey from '@mui/material/colors/grey';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
@@ -64,27 +58,27 @@ export const LeftDrawer: React.FC<LeftDrawerProps> = ({ dIsOpen, dToggle }) => {
   const auth = useAuth();
 
   if (!theme) return null;
+  const defSX = { m: 0, p: 0, display: 'flex' };
 
   return (
     <Drawer open={dIsOpen} onClose={dToggle}>
       <Box
         sx={{
+          ...defSX,
           width: 240,
-          display: 'flex',
+
           flexDirection: 'column',
-          m: 0,
-          p: 0,
+
           color: theme.theme.palette.text.primary,
         }}
         role="presentation"
       >
         <Box
           sx={{
-            display: 'flex',
+            ...defSX,
             flexDirection: 'row',
             alignItems: 'center',
-            m: 0,
-            p: 0,
+
             pl: defPad,
             pr: defPad,
             pt: 1,
@@ -96,9 +90,7 @@ export const LeftDrawer: React.FC<LeftDrawerProps> = ({ dIsOpen, dToggle }) => {
             variant="h5"
             noWrap
             sx={{
-              display: 'flex',
-              m: 0,
-              p: 0,
+              ...defSX,
               userSelect: 'none',
               flexDirection: 'row',
               alignItems: 'center',
@@ -153,23 +145,24 @@ export const LeftDrawer: React.FC<LeftDrawerProps> = ({ dIsOpen, dToggle }) => {
           theme={theme}
         />
         <LeftMenuLink
-          to="/profile"
-          icon={<AccountBoxIcon />}
-          primary="Profile"
-          theme={theme}
-        />
-        <LeftMenuLink
           to="/snapshots"
           icon={<SnapshotIcon />}
           primary="Snapshots"
           theme={theme}
         />
         <LeftMenuLink
-          to="/login"
-          icon={<LogoutIcon />}
-          primary="Logout"
+          to="/templates"
+          icon={<TemplateIcon />}
+          primary="Templates"
           theme={theme}
-        />{' '}
+        />
+        <LeftMenuLink
+          to="/profile"
+          icon={<AccountBoxIcon />}
+          primary="Profile"
+          theme={theme}
+        />
+
         <Divider />
       </Box>
     </Drawer>

@@ -1,10 +1,9 @@
 import { createTheme, darken, lighten } from '@mui/material/styles';
 import green from '@mui/material/colors/green';
-import purple from '@mui/material/colors/purple';
 import grey from '@mui/material/colors/grey';
 
 export const primary = green[900];
-export const secondary = purple[900];
+export const secondary = green[500];
 
 const goalBackColor = darken(grey[900], 0.5);
 

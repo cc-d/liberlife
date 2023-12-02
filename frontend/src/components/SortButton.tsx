@@ -4,8 +4,8 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import SortIcon from '@mui/icons-material/Sort'; // This is the default icon for 'Sort'
 import FilterListIcon from '@mui/icons-material/FilterList'; // New icon for 'Default'
-import { GoalOut } from '../../api';
-import theme from '../../app/theme';
+import { GoalOut } from '../api';
+import theme from '../app/theme';
 export interface SortIconMapping {
   icon: React.ElementType;
   label: string;
@@ -76,44 +76,30 @@ interface SortButtonProps {
 
 const SortButton: React.FC<SortButtonProps> = ({ sortOrder, onSort }) => {
   const { icon: SortIconComponent, label } = sortIconAndLabel(sortOrder);
-
+  const defSX = {
+    m: 0,
+    p: 0,
+    display: 'flex',
+    alignItems: 'center',
+  };
   return (
     <Box
       sx={{
-        display: 'flex',
-        m: 0,
-        p: 0,
+        ...defSX,
         flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
         width: '100%',
       }}
     >
-      {/* Static 'Sort' icon and text */}
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          m: 0,
-          p: 0,
-          flexDirection: 'row',
-          mr: 1,
-        }}
-      >
-        <SortIcon sx={{ fontSize: '1rem', m: 0 }} />
-        <Typography variant="subtitle2" sx={{ m: 0, p: 0, userSelect: 'none' }}>
-          sort
-        </Typography>
-      </Box>
+      <SortIcon sx={{ fontSize: '1rem', ...defSX, mr: 0.5 }} />
 
       {/* Clickable sort order and icon */}
       <Button onClick={onSort} sx={{ textTransform: 'none', m: 0, p: 0 }}>
         <Typography
           variant="subtitle2"
           sx={{
+            ...defSX,
             userSelect: 'none',
-            m: 0,
-            p: 0,
+
             color: theme.palette.primary.main,
           }}
         >

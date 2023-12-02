@@ -47,15 +47,42 @@ class User(CommonBase):
     board_snapshots = relationship(
         "BoardSnapshot", back_populates="user", cascade="all, delete-orphan"
     )
+    templates = relationship(
+        "GoalTemplate", back_populates="user", cascade="all, delete-orphan"
+    )
 
 
-class CommonGoal(CommonBase):
+class CommonTemplate(CommonBase):
     __abstract__ = True
+    text: Mapped[str] = mapped_column(Text, nullable=False)
+    notes: Mapped[str] = mapped_column(Text, nullable=True)
     user_id: Mapped[int] = mapped_column(
         Integer, ForeignKey('users.id'), nullable=False
     )
-    text: Mapped[str] = mapped_column(Text)
-    notes: Mapped[str] = mapped_column(Text, nullable=True)
+
+
+class GoalTemplate(CommonTemplate):
+    __tablename__ = 'goal_templates'
+    tasks = relationship(
+        "TemplateTask",
+        back_populates="goal",
+        cascade="all, delete-orphan",
+        lazy='joined',
+    )
+    user = relationship("User", back_populates="templates")
+
+
+class TemplateTask(CommonBase):
+    __tablename__ = 'template_tasks'
+    text: Mapped[str] = mapped_column(Text, nullable=False)
+    template_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey('goal_templates.id'), nullable=False
+    )
+    template = relationship("GoalTemplate", back_populates="tasks")
+
+
+class CommonGoal(CommonTemplate):
+    __abstract__ = True
     archived: Mapped[bool] = mapped_column(
         Boolean, default=False, nullable=False
     )

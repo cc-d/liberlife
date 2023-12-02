@@ -10,6 +10,17 @@ class TextBase(BaseModel):
     text: str
 
 
+class TemplateTaskBase(TextBase):
+    id: int
+    template_id: int
+
+
+class GoalTemplateBase(TextBase):
+    id: int
+    user_id: int
+    tasks: List[TemplateTaskBase]
+
+
 class GoalBase(TextBase):
     notes: Optional[str] = None
     archived: bool = False

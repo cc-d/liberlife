@@ -137,16 +137,17 @@ const NavBar: React.FC = () => {
           m: 0,
           width: '100%',
         }}
-        disableGutters
       >
         <Container
           maxWidth={false}
+          disableGutters
           sx={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             color: 'inherit',
             flexGrow: 1,
+            px: 1.5,
           }}
         >
           <Box

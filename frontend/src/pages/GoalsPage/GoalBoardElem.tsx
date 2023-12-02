@@ -9,6 +9,7 @@ interface GoalBoardElemProps {
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>;
   isSnapshot?: boolean;
 }
+
 export const GoalBoardElem: React.FC<GoalBoardElemProps> = ({
   goals,
   setGoals,
@@ -16,53 +17,38 @@ export const GoalBoardElem: React.FC<GoalBoardElemProps> = ({
 }) => {
   const handleGoalDelete = isSnapshot
     ? () => {}
-    : async (goalId: number) => {
-        return actihandleGoalDelete(goals, setGoals, goalId);
-      };
-
+    : (goalId: number) => actihandleGoalDelete(goals, setGoals, goalId);
   const handleGoalUpdate = isSnapshot
     ? () => {}
-    : async (
+    : (
         goalId: number,
         updatedText?: string,
         updatedNotes?: string | null,
         archived?: boolean
-      ) => {
-        return actionUpdateGoal(
-          setGoals,
-          goalId,
-          updatedText,
-          updatedNotes,
-          archived
-        );
-      };
+      ) =>
+        actionUpdateGoal(setGoals, goalId, updatedText, updatedNotes, archived);
 
   return (
-    <>
-      <Divider className="gboard-divider" />
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          justifyContent: 'left',
-          m: 0,
-          p: 0,
-          mt: 1,
-        }}
-      >
-        {goals.map((goal: GoalOut) => (
-          <GoalItem
-            key={goal.id}
-            goal={goal}
-            goals={goals}
-            setGoals={setGoals}
-            handleGoalUpdate={handleGoalUpdate}
-            handleGoalDelete={handleGoalDelete}
-          />
-        ))}
-      </Box>
-    </>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'left',
+        mt: 1,
+      }}
+    >
+      {goals.map((goal: GoalOut) => (
+        <GoalItem
+          key={goal.id}
+          goal={goal}
+          goals={goals}
+          setGoals={setGoals}
+          handleGoalUpdate={handleGoalUpdate}
+          handleGoalDelete={handleGoalDelete}
+        />
+      ))}
+    </Box>
   );
 };
 
