@@ -2,7 +2,7 @@ from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from enum import Enum
 from typing import List, Optional, Union
-from .common import DBCommon
+from .common import DBCommon, IDCommon
 from .user import UserOut, UserDB
 
 
@@ -10,7 +10,7 @@ class TextBase(BaseModel):
     text: str
 
 
-class TemplateTaskDB(TextBase, DBCommon):
+class TemplateTaskDB(TextBase, IDCommon):
     template_id: int
 
 
@@ -18,7 +18,7 @@ class TemplateTaskIn(TextBase):
     pass
 
 
-class GoalTemplateDB(TextBase, DBCommon):
+class GoalTemplateDB(TextBase, IDCommon):
     user_id: int
     tasks: List[TemplateTaskDB]
     notes: Optional[str] = None
@@ -26,6 +26,11 @@ class GoalTemplateDB(TextBase, DBCommon):
 
 class GoalTemplateIn(BaseModel):
     text: str
+    notes: Optional[str] = None
+
+
+class GoalTemplateUpdate(BaseModel):
+    text: Optional[str] = None
     notes: Optional[str] = None
 
 

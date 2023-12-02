@@ -10,9 +10,11 @@ from ..schemas.goal import (
     TemplateTaskDB,
     GoalTemplateIn,
     TemplateTaskIn,
+    GoalTemplateUpdate,
 )
 from ..utils.httperrors import HTTP404, HTTP409, HTTP401, HTTP400
 from ..utils.dependencies import get_current_user
+from ..db.common import async_addcomref
 
 router = APIRouter()
 
@@ -20,13 +22,12 @@ router = APIRouter()
 async def get_template_or_404(
     template_id: int, user: User, db: AsyncSession = Depends(get_adb)
 ) -> GoalTemplate:
-    template = (
-        db.query(GoalTemplate)
-        .filter(
-            GoalTemplate.id == template_id, GoalTemplate.user_id == user.id
-        )
-        .first()
+    template = await db.execute(
+        select(GoalTemplate)
+        .filter(GoalTemplate.id == template_id)
+        .options(selectinload(GoalTemplate.tasks))
     )
+    template = template.scalar_one_or_none()
     if template is None:
         raise HTTP404(detail="Template not found")
     return template
@@ -53,10 +54,10 @@ async def create_goal_template(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_adb),
 ):
-    new_template = GoalTemplate(**template_in.model_dump(), user_id=user.id)
-    db.add(new_template)
-    db.commit()
-    db.refresh(new_template)
+    new_template = GoalTemplate(
+        text=template_in.text, notes=template_in.notes, user_id=user.id
+    )
+    await async_addcomref(db, new_template)
     return new_template
 
 
@@ -75,7 +76,7 @@ async def list_goal_templates(
 @router.put("/templates/{template_id}", response_model=GoalTemplateDB)
 async def update_goal_template(
     template_id: int,
-    template_in: GoalTemplateIn,
+    template_in: GoalTemplateUpdate,
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_adb),
 ):

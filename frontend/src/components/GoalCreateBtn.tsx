@@ -74,9 +74,13 @@ export const GoalCreateBtn: React.FC<{
   }, []);
 
   const handleTemplateSelect = async (templateId: string) => {
-    // Logic to create a goal based on the selected template
-    // This may involve further API calls to post a goal using template details
-    // ...
+    for (const template of templates) {
+      if (template.id.toString() === templateId) {
+        // Set the new goal text with the template text
+        handleTextChange(template.text, true);
+        break;
+      }
+    }
   };
 
   return (
@@ -138,7 +142,10 @@ export const GoalCreateBtn: React.FC<{
           Today's Date
         </MenuItem>
         {templates.map((template: GoalTemplateDB) => (
-          <MenuItem key={template.id} onClick={() => null}>
+          <MenuItem
+            key={template.id}
+            onClick={() => handleTemplateSelect(template.id.toString())}
+          >
             {template.text}
           </MenuItem>
         ))}

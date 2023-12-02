@@ -3,9 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type TemplateTaskDB = {
-    id: number;
-    text: string;
-    template_id: number;
+export type GoalTemplateUpdate = {
+    text?: (string | null);
+    notes?: (string | null);
 };
 

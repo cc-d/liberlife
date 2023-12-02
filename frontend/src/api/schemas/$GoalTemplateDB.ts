@@ -4,16 +4,6 @@
 /* eslint-disable */
 export const $GoalTemplateDB = {
     properties: {
-        created_on: {
-            type: 'string',
-            isRequired: true,
-            format: 'date-time',
-        },
-        updated_on: {
-            type: 'string',
-            isRequired: true,
-            format: 'date-time',
-        },
         id: {
             type: 'number',
             isRequired: true,

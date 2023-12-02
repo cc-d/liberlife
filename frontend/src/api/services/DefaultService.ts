@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { GoalTemplateDB } from '../models/GoalTemplateDB';
 import type { GoalTemplateIn } from '../models/GoalTemplateIn';
+import type { GoalTemplateUpdate } from '../models/GoalTemplateUpdate';
 import type { TemplateTaskDB } from '../models/TemplateTaskDB';
 import type { TemplateTaskIn } from '../models/TemplateTaskIn';
 
@@ -54,7 +55,7 @@ export class DefaultService {
      */
     public static updateGoalTemplateTemplatesTemplateIdPut(
         templateId: number,
-        requestBody: GoalTemplateIn,
+        requestBody: GoalTemplateUpdate,
     ): CancelablePromise<GoalTemplateDB> {
         return __request(OpenAPI, {
             method: 'PUT',

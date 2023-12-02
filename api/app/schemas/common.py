@@ -7,5 +7,9 @@ class CommonBase(BaseModel):
     updated_on: datetime
 
 
-class DBCommon(CommonBase):
+class IDCommon(BaseModel):
     id: int
+
+
+class DBCommon(IDCommon, CommonBase):
+    pass

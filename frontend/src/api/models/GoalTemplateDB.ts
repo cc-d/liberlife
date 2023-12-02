@@ -6,8 +6,6 @@
 import type { TemplateTaskDB } from './TemplateTaskDB';
 
 export type GoalTemplateDB = {
-    created_on: string;
-    updated_on: string;
     id: number;
     text: string;
     user_id: number;
