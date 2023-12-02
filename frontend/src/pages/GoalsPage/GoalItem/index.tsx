@@ -166,18 +166,20 @@ const GoalItem: React.FC<GoalItemProps> = ({
         ? { ...task, status: getTaskStatus(task.status) as TaskStatus }
         : task
     );
-    setTasks(updatedTasks);
+    const ogGoals = goals;
+
+    setGoals((prevGoals) =>
+      prevGoals.map((g) =>
+        g.id === goalId ? { ...g, tasks: updatedTasks } : g
+      )
+    );
 
     try {
       await apios.put(`/goals/${goalId}/tasks/${taskId}`);
-      setGoals((prevGoals) =>
-        prevGoals.map((g) =>
-          g.id === goalId ? { ...g, tasks: updatedTasks } : g
-        )
-      );
     } catch (e) {
       console.error('Failed to update task status:', e);
-      setTasks(tasks);
+
+      setGoals(ogGoals);
     }
   };
 
