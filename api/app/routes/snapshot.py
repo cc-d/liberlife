@@ -31,7 +31,7 @@ async def create_snapshot(
     db: AsyncSession = Depends(get_adb),
 ):
     new_snap = BoardSnapshot(user_id=curuser.id)
-    new_goals = await get_user_goals(curuser.id, db=db)
+    new_goals = await get_user_goals(curuser.id, archived=False, db=db)
     new_snapgoals = []
     for ng in new_goals:
         newsg = SnapshotGoal(

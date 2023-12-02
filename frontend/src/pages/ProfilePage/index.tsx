@@ -7,64 +7,36 @@ import grey from '@mui/material/colors/grey';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useThemeContext } from '../../contexts/ThemeContext';
-import { Delete } from '@mui/icons-material';
+import UserIcon from '@mui/icons-material/AccountCircle';
 
 const ProfilePage: React.FC = () => {
   const auth = useAuth();
-  const [snapshots, setSnapshots] = useState<SnapshotOut[]>([]);
-  //eslint-disable-next-line
   const [loading, setLoading] = useState(true);
   const theme = useThemeContext();
-  const nav = useNavigate();
-
-  const newSnapshot = async () => {
-    try {
-      const response = await apios.post('/snapshots');
-      nav(`/snapshots/${response.data.uuid}`);
-    } catch (error) {
-      console.error('Error creating snapshot:', error);
-      // Handle error appropriately
-    }
-  };
-
-  const deleteSnapshot = async (uuid: string) => {
-    try {
-      const response = await apios.delete(`/snapshots/${uuid}`);
-      if (response?.status && response.status === 200) {
-        setSnapshots(snapshots.filter((s) => s.uuid !== uuid));
-      }
-    } catch (error) {
-      console.error('Error deleting snapshot:', error);
-      // Handle error appropriately
-    }
-    return false;
-  };
-
-  useEffect(() => {
-    const fetchSnapshots = async () => {
-      try {
-        const response = await apios.get('/snapshots');
-        setSnapshots(response.data);
-      } catch (error) {
-        console.error('Error fetching snapshots:', error);
-        // Handle error appropriately
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchSnapshots();
-  }, [auth?.user]);
 
   return (
     <Box className="ProfilePage">
-      <Typography variant="h3">Profile</Typography>
-
       {auth.userLoading ? (
         <Typography variant="body1">Loading...</Typography>
       ) : (
         <Box>
-          <Typography variant="h4">Logged in as: {auth.user}</Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              fontSize: '5rem',
+            }}
+          >
+            <UserIcon sx={{ fontSize: 'inherit' }} />
+            <Typography
+              sx={{
+                fontSize: 'inherit',
+              }}
+            >
+              {auth.user}
+            </Typography>
+          </Box>
           <IconButton
             color="inherit"
             aria-label="toggle theme"
@@ -88,56 +60,11 @@ const ProfilePage: React.FC = () => {
               borderRadius: 5,
             }}
           >
-            <Brightness4Icon />
+            <Brightness4Icon sx={{ mr: 1 }} />
             {theme.currentTheme === 'dark' ? 'light mode' : 'dark mode'}
           </IconButton>
         </Box>
       )}
-
-      <Divider sx={{ mt: 1, mb: 1 }} />
-
-      <Box display="flex" flexDirection="row" alignItems="center">
-        <Typography variant="h4">Snapshots</Typography>
-        <Button
-          variant="contained"
-          onClick={() => newSnapshot()}
-          sx={{ ml: 2 }}
-        >
-          Create snapshot
-        </Button>
-      </Box>
-
-      {snapshots.map((snapshot) => (
-        <RouterLink
-          to={`/snapshots/${snapshot.uuid}`}
-          key={snapshot.uuid}
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            color: 'inherit',
-          }}
-        >
-          <Typography
-            key={snapshot.uuid}
-            variant="body1"
-            sx={{ cursor: 'pointer' }}
-          >
-            {snapshot.uuid}
-          </Typography>
-          <IconButton
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              deleteSnapshot(snapshot.uuid);
-            }}
-            sx={{ ml: 1 }}
-            aria-label="delete snapshot"
-          >
-            <Delete />
-          </IconButton>
-        </RouterLink>
-      ))}
     </Box>
   );
 };

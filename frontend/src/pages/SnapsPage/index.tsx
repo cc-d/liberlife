@@ -34,7 +34,10 @@ const SnapsPage: React.FC = () => {
   const newSnapshot = async () => {
     try {
       const response = await apios.post('/snapshots');
-      nav(`/snapshots/${response.data.uuid}`);
+      if ([200, 201].includes(response.status)) {
+        setSnapshots([...snapshots, response.data]);
+        nav(`/snapshots/${response.data.uuid}`);
+      }
     } catch (error) {
       console.error('Error creating snapshot:', error);
       // Handle error appropriately
@@ -70,33 +73,28 @@ const SnapsPage: React.FC = () => {
         </Button>
       </Box>
       <Divider sx={{ mt: 1, mb: 1 }} />
-      {loading ? (
-        <Typography>Loading...</Typography>
-      ) : (
-        <>
-          {snapshots.map((snapshot) => (
-            <Box
-              component={RouterLink}
-              to={`/snapshots/${snapshot.uuid}`}
-              key={snapshot.uuid}
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                textDecoration: 'none',
-                color: 'inherit',
-              }}
-            >
-              <Typography variant="body1" sx={{ mr: 1, fontWeight: 'bold' }}>
-                {snapshot.uuid}
-              </Typography>
-              <IconButton onClick={() => deleteSnapshot(snapshot.uuid)}>
-                <Delete />
-              </IconButton>
-            </Box>
-          ))}
-        </>
-      )}
+
+      {snapshots.map((snapshot) => (
+        <Box
+          component={RouterLink}
+          to={`/snapshots/${snapshot.uuid}`}
+          key={snapshot.uuid}
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            textDecoration: 'none',
+            color: 'inherit',
+          }}
+        >
+          <Typography variant="body1" sx={{ mr: 1, fontWeight: 'bold' }}>
+            {snapshot.uuid}
+          </Typography>
+          <IconButton onClick={() => deleteSnapshot(snapshot.uuid)}>
+            <Delete />
+          </IconButton>
+        </Box>
+      ))}
     </Box>
   );
 };
