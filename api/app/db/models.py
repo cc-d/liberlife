@@ -65,7 +65,7 @@ class GoalTemplate(CommonTemplate):
     __tablename__ = 'goal_templates'
     tasks = relationship(
         "TemplateTask",
-        back_populates="goal",
+        back_populates="goal_template",
         cascade="all, delete-orphan",
         lazy='joined',
     )
