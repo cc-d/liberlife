@@ -22,9 +22,9 @@ const SnapsPage: React.FC = () => {
   const deleteSnapshot = async (uuid: string) => {
     try {
       const response = await apios.delete(`/snapshots/${uuid}`);
-      if (response?.status === 200) {
-        setSnapshots(snapshots.filter((s) => s.uuid !== uuid));
-      }
+      setSnapshots(snapshots.filter((snap) => snap.uuid !== uuid));
+
+      console.log(response);
     } catch (error) {
       console.error('Error deleting snapshot:', error);
       // Handle error appropriately
@@ -90,7 +90,12 @@ const SnapsPage: React.FC = () => {
           <Typography variant="body1" sx={{ mr: 1, fontWeight: 'bold' }}>
             {snapshot.uuid}
           </Typography>
-          <IconButton onClick={() => deleteSnapshot(snapshot.uuid)}>
+          <IconButton
+            onClick={(e: any) => {
+              e.preventDefault();
+              deleteSnapshot(snapshot.uuid);
+            }}
+          >
             <Delete />
           </IconButton>
         </Box>

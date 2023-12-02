@@ -27,6 +27,7 @@ function App() {
                   element={<GoalsPage archived={true} />}
                 />
                 <Route path="/snapshots" element={<SnapsPage />} />
+
                 <Route
                   path="/snapshots/:uuid"
                   element={<SnapshotGoalBoard />}
