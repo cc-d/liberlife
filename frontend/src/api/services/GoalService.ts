@@ -16,18 +16,6 @@ import { request as __request } from '../core/request';
 export class GoalService {
 
     /**
-     * List Goals
-     * @returns GoalOut Successful Response
-     * @throws ApiError
-     */
-    public static listGoalsGoalsGet(): CancelablePromise<Array<GoalOut>> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/goals',
-        });
-    }
-
-    /**
      * Create Goal
      * @param requestBody
      * @returns GoalOut Successful Response
@@ -41,6 +29,27 @@ export class GoalService {
             url: '/goals',
             body: requestBody,
             mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * List Goals
+     * @param archived
+     * @returns GoalOut Successful Response
+     * @throws ApiError
+     */
+    public static listGoalsGoalsGet(
+        archived?: (boolean | null),
+    ): CancelablePromise<Array<GoalOut>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/goals',
+            query: {
+                'archived': archived,
+            },
             errors: {
                 422: `Validation Error`,
             },

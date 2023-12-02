@@ -6,6 +6,7 @@ import React, {
   useEffect,
 } from 'react';
 import { ThemeProvider as MuiThemeProvider, Theme } from '@mui/material/styles';
+
 import { darkTheme, lightTheme } from '../app/theme';
 
 type DarkLight = 'dark' | 'light';

@@ -1,5 +1,5 @@
 from jwt import PyJWTError
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Body, Query
 from logfunc import logf
 from sqlalchemy.future import select
 from sqlalchemy.orm import joinedload, selectinload
@@ -32,13 +32,19 @@ async def get_goal_from_id(
 
 
 async def get_user_goals(
-    user_id: int, db: AsyncSession = Depends(get_adb)
+    user_id: int,
+    db: AsyncSession = Depends(get_adb),
+    archived: bool = Query(
+        None, description="Whether to limit to archived true or false"
+    ),
 ) -> list[Goal]:
-    goals = await db.execute(
-        select(Goal)
-        .where(Goal.user_id == user_id)
-        .options(selectinload(Goal.tasks))
-    )
+    stmt = select(Goal).where(Goal.user_id == user_id)
+
+    if archived is not None:
+        stmt = stmt.where(Goal.archived == archived)
+
+    goals = await db.execute(stmt.options(selectinload(Goal.tasks)))
+
     return goals.unique().scalars().all()
 
 

@@ -104,9 +104,6 @@ const NavBar: React.FC = () => {
   const theme = useThemeContext();
 
   const isLoginPage = window.location.pathname === '/login';
-  const isSnapPage = window.location.pathname.startsWith('/snapshot');
-
-  const { showArchived, setShowArchived } = useNavBarContext();
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen); // Toggles the state of the drawer
@@ -186,12 +183,7 @@ const NavBar: React.FC = () => {
       </Toolbar>
       {/* Disabled to get width changes out while in dev */}
 
-      <LeftDrawer
-        dIsOpen={drawerOpen}
-        dToggle={handleDrawerToggle}
-        showArchived={showArchived}
-        setShowArchived={setShowArchived}
-      />
+      <LeftDrawer dIsOpen={drawerOpen} dToggle={handleDrawerToggle} />
     </AppBar>
   );
 };

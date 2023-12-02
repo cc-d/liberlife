@@ -37,6 +37,7 @@ const SnapshotGoalBoard: React.FC = () => {
       goals={snapshotGoals}
       setGoals={setSnapshotGoals}
       isSnapshot={true}
+      archived={false}
     />
   );
 };

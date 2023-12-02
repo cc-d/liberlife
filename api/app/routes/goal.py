@@ -1,11 +1,12 @@
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, status, Body
+from fastapi import APIRouter, Depends, HTTPException, status, Body, Query
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import joinedload, selectinload
 from sqlalchemy.sql import func
+
 
 from ..crud.goal import (
     get_goal_from_id,
@@ -57,9 +58,11 @@ async def create_goal(
 
 @router.get('', response_model=List[GoalSchema.GoalOut])
 async def list_goals(
-    cur_user=Depends(get_current_user), db: AsyncSession = Depends(get_adb)
+    archived: Optional[bool] = Query(None),
+    cur_user=Depends(get_current_user),
+    db: AsyncSession = Depends(get_adb),
 ) -> List[Goal]:
-    return await get_user_goals(cur_user.id, db=db)
+    return await get_user_goals(cur_user.id, db=db, archived=archived)
 
 
 @router.get("/{goal_id}", response_model=GoalSchema.GoalOut)
@@ -192,11 +195,6 @@ async def update_task(
     await db.refresh(task)
 
     return task
-
-
-from fastapi import HTTPException, Depends, APIRouter
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.exc import NoResultFound  # Import SQLAlchemy exception
 
 
 @router.delete("/{goal_id}/tasks/{task_id}")

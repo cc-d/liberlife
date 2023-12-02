@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 import GoalBoard from './GoalBoard';
 
-const GoalsPage: React.FC = () => {
+const GoalsPage: React.FC<{ archived: boolean }> = ({ archived }) => {
   const [goals, setGoals] = useState<GoalOut[]>([]);
   const navigate = useNavigate();
   const auth = useContext(AuthContext);
@@ -32,7 +32,7 @@ const GoalsPage: React.FC = () => {
     fetchGoals();
   }, [auth, navigate]);
 
-  return <GoalBoard goals={goals} setGoals={setGoals} />;
+  return <GoalBoard goals={goals} setGoals={setGoals} archived={archived} />;
 };
 
 export default GoalsPage;

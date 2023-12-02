@@ -8,6 +8,8 @@ import {
   Divider,
   Link,
   Typography,
+  Icon,
+  IconButton,
   Box,
   Container,
 } from '@mui/material';
@@ -17,153 +19,105 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import TaskSharp from '@mui/icons-material/TaskSharp';
+import SaveIcon from '@mui/icons-material/Save';
 import { Link as RouterLink } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavBarContext } from '../contexts/NavBarContext';
 import { useThemeContext } from '../contexts/ThemeContext';
 
-const TextIcon: React.FC<any> = ({ text, icon, theme }) => (
+const LeftMenuLink: React.FC<any> = ({ to, icon, primary, onClick, theme }) => (
   <Box
-    component="span"
+    component={RouterLink}
+    to={to}
     sx={{
-      display: 'inline-flex',
+      display: 'flex',
       alignItems: 'center',
-      flexDirection: 'row',
-      flexGrow: 1,
-      justifyContent: 'left',
+      width: '100%',
+      textDecoration: 'none',
+      p: 1.5,
+      m: 0,
       color: theme.theme.palette.text.primary,
+      '&:hover': {
+        backgroundColor: theme.theme.palette.action.hover,
+      },
+      '&.active': {
+        backgroundColor: theme.theme.palette.action.selected,
+      },
     }}
   >
-    <ListItemIcon
-      sx={{
-        display: 'flex',
-        p: 0,
-        m: 0,
-        justifyContent: 'left',
-      }}
-    >
+    <IconButton edge="start" color="inherit" sx={{ mr: 1 }}>
       {icon}
-    </ListItemIcon>
-    <ListItemText
-      sx={{
-        display: 'flex',
-        p: 0,
-        m: 0,
-        textAlign: 'left',
-        justifyContent: 'left',
-      }}
-      primary={text}
-    />
+    </IconButton>
+    <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+      {primary}
+    </Typography>
   </Box>
-);
-const ListItemLinkElem: React.FC<any> = ({
-  to,
-  icon,
-  primary,
-  onClick,
-  theme,
-}) => (
-  <ListItem
-    onClick={onClick}
-    sx={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}
-  >
-    {to ? (
-      <Link component={RouterLink} to={to} color="inherit">
-        <TextIcon text={primary} icon={icon} theme={theme} />
-      </Link>
-    ) : (
-      <TextIcon text={primary} icon={icon} theme={theme} />
-    )}
-  </ListItem>
 );
 
 interface LeftDrawerProps {
   dIsOpen: boolean;
   dToggle: () => void; // Corrected function type
-  showArchived: boolean;
-  setShowArchived: (show: boolean) => void;
 }
-export const LeftDrawer: React.FC<LeftDrawerProps> = ({
-  dIsOpen,
-  dToggle,
-  showArchived,
-  setShowArchived,
-
-  // ... other props
-}) => {
+export const LeftDrawer: React.FC<LeftDrawerProps> = ({ dIsOpen, dToggle }) => {
   const theme = useThemeContext();
-  const { goals } = useNavBarContext(); // Assuming these lists are available
-  const SectionTitle: React.FC<any> = ({ title }) => {
-    return (
-      <Typography
-        variant="subtitle1"
-        sx={{ marginLeft: 2, marginTop: 2, fontWeight: 'bold' }}
-      >
-        {title}
-      </Typography>
-    );
-  };
+  const auth = useAuth();
 
-  const archivedGoals = goals.filter((goal: any) => goal.archived);
+  if (!theme) return null;
 
   return (
     <Drawer open={dIsOpen} onClose={dToggle}>
-      <Box sx={{ width: 250 }} role="presentation">
-        {/* Header */}
-        <Box sx={{ padding: 2, textAlign: 'center' }}>
-          <Typography
-            variant="h6"
-            sx={{ fontWeight: 'bold', fontFamily: 'Arial', textAlign: 'left' }}
-          >
-            life.liberfy.ai
-          </Typography>
-        </Box>
+      <Box
+        sx={{
+          width: 240,
+          display: 'flex',
+          flexDirection: 'column',
+          m: 0,
+          p: 0,
+          color: theme.theme.palette.text.primary,
+        }}
+        role="presentation"
+      >
+        <Typography
+          variant="h5"
+          noWrap
+          sx={{
+            display: 'flex',
+            m: 0,
+            p: 2,
+            userSelect: 'none',
+            flexDirection: 'row',
+            flexGrow: 1,
+            color: theme.theme.palette.text.primary,
+          }}
+        >
+          life.liberfy.ai
+        </Typography>
         <Divider />
-
-        <List>
-          {/* Static Links */}
-          <ListItemLinkElem
-            to="/"
-            icon={<HomeIcon />}
-            primary="Home"
-            theme={theme}
-          />
-          <ListItemLinkElem
-            to="/profile"
-            icon={<AccountBoxIcon />}
-            primary="Profile"
-            theme={theme}
-          />
-          <ListItemLinkElem
-            to="/login"
-            icon={<LogoutIcon />}
-            primary="Logout"
-            theme={theme}
-          />
-          <Divider />
-
-          {/* Dynamic Sections */}
-          <SectionTitle title="Goals" />
-          {goals.map((goal: any) => (
-            <ListItem
-              key={goal.id}
-              sx={{ '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.04)' } }}
-            >
-              <ListItemText primary={goal.name} />
-            </ListItem>
-          ))}
-          <SectionTitle title="Archived Goals" />
-          {archivedGoals.map((goal: any) => (
-            <ListItem
-              key={goal.id}
-              sx={{ '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.04)' } }}
-            >
-              <ListItemText primary={goal.name} />
-            </ListItem>
-          ))}
-          <SectionTitle title="Snapshots" />
-          {/* Add tasks and snapshots here */}
-        </List>
+        <LeftMenuLink
+          to="/"
+          icon={<HomeIcon />}
+          primary="Goals"
+          theme={theme}
+        />
+        <LeftMenuLink
+          to="/archived"
+          icon={<SaveIcon />}
+          primary="Archived"
+          theme={theme}
+        />
+        <LeftMenuLink
+          to="/profile"
+          icon={<AccountBoxIcon />}
+          primary="Profile"
+          theme={theme}
+        />
+        <LeftMenuLink
+          to="/login"
+          icon={<LogoutIcon />}
+          primary="Logout"
+          theme={theme}
+        />{' '}
+        <Divider />
       </Box>
     </Drawer>
   );

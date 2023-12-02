@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Typography, TextField, Button } from '@mui/material';
 import { GoalOut } from '../../api';
 import apios from '../../utils/apios';
@@ -10,16 +10,16 @@ import SortButton, { SortOrder, sortGoals, sortOrders } from './SortButton';
 interface GoalBoardProps {
   goals: GoalOut[];
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>;
+  archived: boolean;
   isSnapshot?: boolean;
 }
 
 const GoalBoard: React.FC<GoalBoardProps> = ({
   goals,
   setGoals,
+  archived,
   isSnapshot = false,
 }) => {
-  const bottomRef = useRef<HTMLDivElement | null>(null); // Add type definition for ref
-
   // Function to scroll to the bottom
   const scrollToBottom = () => {
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
@@ -165,15 +165,6 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
           setHideArchived={toggleArchivedVisibility}
         />
       </Box>
-      <div ref={bottomRef}>
-        {!hideArchived && (
-          <GoalBoardElem
-            goals={archivedGoals}
-            setGoals={setGoals}
-            isSnapshot={isSnapshot}
-          />
-        )}
-      </div>
     </Box>
   );
 };

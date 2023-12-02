@@ -13,7 +13,6 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <title>LiberLife</title>
     <App />
   </React.StrictMode>
 );

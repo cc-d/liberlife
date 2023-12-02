@@ -20,7 +20,11 @@ function App() {
             <NavBar />
             <Container maxWidth={false} disableGutters sx={{ p: 1 }}>
               <Routes>
-                <Route path="/" element={<GoalsPage />} />
+                <Route path="/" element={<GoalsPage archived={false} />} />
+                <Route
+                  path="/archived"
+                  element={<GoalsPage archived={true} />}
+                />
                 <Route
                   path="/snapshots/:uuid"
                   element={<SnapshotGoalBoard />}
