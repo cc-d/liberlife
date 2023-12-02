@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from enum import Enum
 from typing import List, Optional, Union
@@ -10,15 +10,23 @@ class TextBase(BaseModel):
     text: str
 
 
-class TemplateTaskBase(TextBase):
-    id: int
+class TemplateTaskDB(TextBase, DBCommon):
     template_id: int
 
 
-class GoalTemplateBase(TextBase):
-    id: int
+class TemplateTaskIn(TextBase):
+    pass
+
+
+class GoalTemplateDB(TextBase, DBCommon):
     user_id: int
-    tasks: List[TemplateTaskBase]
+    tasks: List[TemplateTaskDB]
+    notes: Optional[str] = None
+
+
+class GoalTemplateIn(BaseModel):
+    text: str
+    notes: Optional[str] = None
 
 
 class GoalBase(TextBase):

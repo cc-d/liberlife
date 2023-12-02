@@ -10,6 +10,7 @@ import ProfilePage from '../pages/ProfilePage';
 import NavBar from '../components/NavBar';
 import SnapshotGoalBoard from '../pages/GoalsPage/SnapPage';
 import SnapsPage from '../pages/SnapsPage';
+import TemplatesPage from '../pages/TemplatesPage';
 
 function App() {
   return (
@@ -27,11 +28,11 @@ function App() {
                   element={<GoalsPage archived={true} />}
                 />
                 <Route path="/snapshots" element={<SnapsPage />} />
-
                 <Route
                   path="/snapshots/:uuid"
                   element={<SnapshotGoalBoard />}
                 />
+                <Route path="/templates" element={<TemplatesPage />} />
                 <Route path="/login" element={<LogRegPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
               </Routes>

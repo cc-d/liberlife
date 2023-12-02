@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   TextField,
@@ -9,7 +9,9 @@ import {
 } from '@mui/material';
 import ArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useThemeContext } from '../contexts/ThemeContext';
+import apios from '../utils/apios';
 import { debounce } from '../utils/helpers';
+import { GoalTemplateDB, TemplateTaskDB } from '../api';
 
 export const GoalCreateBtn: React.FC<{
   newGoalText: string;
@@ -51,11 +53,32 @@ export const GoalCreateBtn: React.FC<{
     return formattedDate;
   };
 
+  const [templates, setTemplates] = useState<GoalTemplateDB[]>([]);
   const textFieldSX = {
     m: 0,
     p: 0,
     py: '17px',
     px: '14px',
+  };
+
+  useEffect(() => {
+    // Function to fetch templates
+    const fetchTemplates = async () => {
+      try {
+        const response = await apios.get('/templates');
+        setTemplates(response.data);
+      } catch (error) {
+        console.error('Error fetching templates', error);
+      }
+    };
+
+    fetchTemplates();
+  }, []);
+
+  const handleTemplateSelect = async (templateId: string) => {
+    // Logic to create a goal based on the selected template
+    // This may involve further API calls to post a goal using template details
+    // ...
   };
 
   return (
@@ -113,14 +136,12 @@ export const GoalCreateBtn: React.FC<{
         <ArrowDownIcon />
       </IconButton>
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-        <MenuItem
-          onClick={() => {
-            const todayDate = handleTodayDate();
-            handleTextChange(todayDate, true);
-          }}
-        >
-          today's date
-        </MenuItem>
+        <MenuItem onClick={() => handleTodayDate()}>Today's Date</MenuItem>
+        {templates.map((template: GoalTemplateDB) => (
+          <MenuItem key={template.id} onClick={() => null}>
+            {template.text}
+          </MenuItem>
+        ))}
       </Menu>
     </Box>
   );
