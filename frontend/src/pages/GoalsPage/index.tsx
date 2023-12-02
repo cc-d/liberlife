@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Container } from '@mui/material';
 import apios from '../../utils/apios';
 import { GoalOut } from '../../api';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +18,7 @@ const GoalsPage: React.FC<{ archived: boolean }> = ({ archived }) => {
 
     const fetchGoals = async () => {
       try {
-        const response = await apios.get('/goals');
+        const response = await apios.get('/goals?archived=' + archived);
         setGoals(response.data);
       } catch (error: any) {
         if (error.response && error.response.status === 401) {

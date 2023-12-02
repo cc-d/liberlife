@@ -132,9 +132,7 @@ const GoalItem: React.FC<GoalItemProps> = ({
     const ogTasks = tasks;
 
     try {
-      // Perform the API call to delete the task
       await actionDeleteTask(goals, setGoals, goal.id, taskId);
-      // Update the tasks state and the goals state
       setTasks((currentTasks) =>
         currentTasks.filter((task) => task.id !== taskId)
       );
@@ -150,7 +148,6 @@ const GoalItem: React.FC<GoalItemProps> = ({
         })
       );
     } catch (e) {
-      // Handle errors (e.g., display a notification or log the error)
       console.error('Failed to delete task:', e);
       setGoals(ogGoals);
 
@@ -164,8 +161,6 @@ const GoalItem: React.FC<GoalItemProps> = ({
   }, [goal.tasks]);
 
   const handleTaskStatus = async (goalId: number, taskId: number) => {
-    // Determine the next status for the task
-    // Optimistically update the task status in the UI
     const updatedTasks = tasks.map((task) =>
       task.id === taskId
         ? { ...task, status: getTaskStatus(task.status) as TaskStatus }
@@ -174,10 +169,7 @@ const GoalItem: React.FC<GoalItemProps> = ({
     setTasks(updatedTasks);
 
     try {
-      // Send the update request to the server
       await apios.put(`/goals/${goalId}/tasks/${taskId}`);
-
-      // Update the goals state with the new tasks array
       setGoals((prevGoals) =>
         prevGoals.map((g) =>
           g.id === goalId ? { ...g, tasks: updatedTasks } : g
@@ -185,8 +177,6 @@ const GoalItem: React.FC<GoalItemProps> = ({
       );
     } catch (e) {
       console.error('Failed to update task status:', e);
-
-      // Revert the tasks state to the original on failure
       setTasks(tasks);
     }
   };
@@ -203,7 +193,7 @@ const GoalItem: React.FC<GoalItemProps> = ({
         flexGrow: 1,
         backgroundColor: theme.theme.palette.background.paper,
         overflowWrap: 'anywhere',
-        opacity: goal.archived ? 0.5 : 1,
+        opacity: goal.archived ? 0.75 : 1,
         p: 0,
         m: 0,
         ml: 0.25,

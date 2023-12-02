@@ -12,6 +12,8 @@ import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CancelIcon from '@mui/icons-material/Cancel';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import UnarchiveIcon from '@mui/icons-material/Unarchive';
+import ArchiveIcon from '@mui/icons-material/Archive';
 import red from '@mui/material/colors/red';
 import { GoalOut } from '../../../api';
 
@@ -124,12 +126,18 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
               open={Boolean(anchorEl)}
               onClose={handleMenuClose}
             >
-              <MenuItem onClick={startEdit} disableGutters sx={menuItemSX}>
-                <EditIcon />
-                <Typography variant="body1">Edit</Typography>
-              </MenuItem>
+              {!goal.archived && (
+                <MenuItem onClick={startEdit} disableGutters sx={menuItemSX}>
+                  <EditIcon />
+                  <Typography variant="body1">Edit</Typography>
+                </MenuItem>
+              )}
               <MenuItem onClick={handleArchive} disableGutters sx={menuItemSX}>
-                <SaveIcon fontSize="medium" />
+                {goal.archived ? (
+                  <UnarchiveIcon fontSize="medium" />
+                ) : (
+                  <ArchiveIcon fontSize="medium" />
+                )}
                 <Typography variant="body1">{archText}</Typography>
               </MenuItem>
               <MenuItem onClick={handleDelete} disableGutters sx={menuItemSX}>

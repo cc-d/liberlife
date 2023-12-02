@@ -20,17 +20,14 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
   archived,
   isSnapshot = false,
 }) => {
-  // Function to scroll to the bottom
-  const scrollToBottom = () => {
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-  };
-
   const [newGoalText, setNewGoalText] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<SortOrder>(
     (localStorage.getItem('sortOrder') as SortOrder) || SortOrder.Default
   );
-  const [hideArchived, setHideArchived] = useState<boolean>(
-    localStorage.getItem('hideArchived') === 'true' || false
+
+  const archGoals = useMemo(
+    () => goals.filter((goal) => goal.archived === archived),
+    [goals]
   );
 
   const toggleSortOrder = useMemo(() => {
@@ -39,13 +36,9 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
 
   // Memoize sorted goals
   const sortedGoals = useMemo(
-    () => sortGoals(goals, sortOrder),
+    () => sortGoals(archGoals, sortOrder),
     [sortOrder, goals]
   );
-
-  // Filter current and archived goals
-  const currentGoals = sortedGoals.filter((goal) => !goal.archived);
-  const archivedGoals = sortedGoals.filter((goal) => goal.archived);
 
   const handleSortClick = () => {
     const nextSortOrder =
@@ -63,13 +56,6 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
     }
   };
 
-  const toggleArchivedVisibility = () => {
-    localStorage.setItem('hideArchived', (!hideArchived).toString());
-    setHideArchived(!hideArchived);
-    setTimeout(() => {
-      scrollToBottom(); // Delay the scroll to ensure the content is updated
-    }, 100);
-  };
   const handleTextChange = (val: string) => {
     setNewGoalText(val);
   };
@@ -102,12 +88,16 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
               userSelect: 'none',
             }}
           >
-            {isSnapshot ? 'GOAL BOARD SNAPSHOT' : 'Goal Board'}
+            {isSnapshot
+              ? 'Goals Snapshot'
+              : archived
+              ? 'Archived Goals'
+              : 'Goals'}
           </Typography>
           <SortButton sortOrder={sortOrder} onSort={handleSortClick} />
         </Box>
 
-        {!isSnapshot ? (
+        {!isSnapshot && !archived ? (
           <Box
             sx={{
               display: 'flex',
@@ -152,19 +142,10 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
       </Box>
       {/* Actual GoalBoard */}
       <GoalBoardElem
-        goals={currentGoals}
+        goals={sortedGoals}
         setGoals={setGoals}
         isSnapshot={isSnapshot}
       />
-
-      {/* Toggle Archived Goals Visibility */}
-      <Box p={0.5} m={0.5} mt={2}>
-        <ShowHideTextButton
-          text="Archived"
-          hideArchived={hideArchived}
-          setHideArchived={toggleArchivedVisibility}
-        />
-      </Box>
     </Box>
   );
 };

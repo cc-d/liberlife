@@ -8,7 +8,8 @@ import LogRegPage from '../pages/LogRegPage';
 import GoalsPage from '../pages/GoalsPage';
 import ProfilePage from '../pages/ProfilePage';
 import NavBar from '../components/NavBar';
-import SnapshotGoalBoard from '../pages/SnapPage';
+import SnapshotGoalBoard from '../pages/GoalsPage/SnapPage';
+import SnapsPage from '../pages/SnapsPage';
 
 function App() {
   return (
@@ -18,13 +19,14 @@ function App() {
         <Router>
           <NavBarProvider>
             <NavBar />
-            <Container maxWidth={false} disableGutters sx={{ p: 1 }}>
+            <Container maxWidth={false} disableGutters sx={{ p: 2 }}>
               <Routes>
                 <Route path="/" element={<GoalsPage archived={false} />} />
                 <Route
                   path="/archived"
                   element={<GoalsPage archived={true} />}
                 />
+                <Route path="/snapshots" element={<SnapsPage />} />
                 <Route
                   path="/snapshots/:uuid"
                   element={<SnapshotGoalBoard />}

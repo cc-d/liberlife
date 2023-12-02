@@ -1,17 +1,11 @@
 import React from 'react';
 import {
   Drawer,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
   Divider,
-  Link,
   Typography,
   Icon,
   IconButton,
   Box,
-  Container,
 } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -24,6 +18,13 @@ import { Link as RouterLink } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavBarContext } from '../contexts/NavBarContext';
 import { useThemeContext } from '../contexts/ThemeContext';
+import { GoalIcon, TemplateIcon, SnapshotIcon } from './common';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import grey from '@mui/material/colors/grey';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
+
+const defPad = 2;
 
 const LeftMenuLink: React.FC<any> = ({ to, icon, primary, onClick, theme }) => (
   <Box
@@ -34,7 +35,7 @@ const LeftMenuLink: React.FC<any> = ({ to, icon, primary, onClick, theme }) => (
       alignItems: 'center',
       width: '100%',
       textDecoration: 'none',
-      p: 1.5,
+      p: defPad,
       m: 0,
       color: theme.theme.palette.text.primary,
       '&:hover': {
@@ -77,31 +78,77 @@ export const LeftDrawer: React.FC<LeftDrawerProps> = ({ dIsOpen, dToggle }) => {
         }}
         role="presentation"
       >
-        <Typography
-          variant="h5"
-          noWrap
+        <Box
           sx={{
             display: 'flex',
-            m: 0,
-            p: 2,
-            userSelect: 'none',
             flexDirection: 'row',
-            flexGrow: 1,
-            color: theme.theme.palette.text.primary,
+            alignItems: 'center',
+            m: 0,
+            p: 0,
+            pl: defPad,
+            pr: defPad,
+            pt: 1,
+            pb: 1,
+            backgroundColor: 'inherit',
           }}
         >
-          life.liberfy.ai
-        </Typography>
+          <Typography
+            variant="h5"
+            noWrap
+            sx={{
+              display: 'flex',
+              m: 0,
+              p: 0,
+              userSelect: 'none',
+              flexDirection: 'row',
+              alignItems: 'center',
+              flexGrow: 1,
+              color: theme.theme.palette.text.primary,
+            }}
+          >
+            life.liberfy.ai
+          </Typography>
+          <IconButton
+            color="inherit"
+            aria-label="toggle theme"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={(e) => {
+              e.preventDefault();
+              theme.toggleTheme();
+            }}
+            sx={{
+              backgroundColor: 'inherit',
+              ':hover': {
+                backgroundColor:
+                  theme.currentTheme === 'dark' ? grey[800] : grey[300],
+              },
+              ':active': {
+                backgroundColor:
+                  theme.currentTheme === 'dark' ? grey[700] : grey[200],
+              },
+              alignSelf: 'right',
+              borderRadius: 5,
+              display: 'flex',
+            }}
+          >
+            {theme.currentTheme === 'dark' ? (
+              <LightModeIcon />
+            ) : (
+              <DarkModeIcon />
+            )}
+          </IconButton>
+        </Box>
         <Divider />
         <LeftMenuLink
           to="/"
-          icon={<HomeIcon />}
+          icon={<GoalIcon />}
           primary="Goals"
           theme={theme}
         />
         <LeftMenuLink
           to="/archived"
-          icon={<SaveIcon />}
+          icon={<ArchiveIcon />}
           primary="Archived"
           theme={theme}
         />
@@ -109,6 +156,12 @@ export const LeftDrawer: React.FC<LeftDrawerProps> = ({ dIsOpen, dToggle }) => {
           to="/profile"
           icon={<AccountBoxIcon />}
           primary="Profile"
+          theme={theme}
+        />
+        <LeftMenuLink
+          to="/snapshots"
+          icon={<SnapshotIcon />}
+          primary="Snapshots"
           theme={theme}
         />
         <LeftMenuLink

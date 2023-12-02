@@ -15,13 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext, AuthContextProps } from '../contexts/AuthContext';
 import { useThemeContext } from '../contexts/ThemeContext';
 import { useNavBarContext } from '../contexts/NavBarContext';
-
-import HomeIcon from '@mui/icons-material/Home';
-import ArchiveIcon from '@mui/icons-material/Archive';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import TaskSharp from '@mui/icons-material/TaskSharp';
-import { Link as RouterLink } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import ArchiveIcon from '@mui/icons-material/Archive'; // Archive icon
 
 import MenuIcon from '@mui/icons-material/Menu'; // Importing MenuIcon
 import LeftDrawer from './LeftDrawer';
@@ -119,7 +113,6 @@ const NavBar: React.FC = () => {
       return;
     } else if ((!auth || !auth.user) && !auth?.userLoading) {
       if (!window.location.pathname.startsWith('/snapshots')) {
-        alert('Redirecting to login page');
         navigate('/login');
       }
     }

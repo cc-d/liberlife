@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Typography, Container } from '@mui/material';
-import GoalBoard from '../../pages/GoalsPage/GoalBoard';
-import apios from '../../utils/apios';
-import { GoalOut } from '../../api';
+import GoalBoard from '../GoalBoard';
+import apios from '../../../utils/apios';
+import { GoalOut } from '../../../api';
 
 const SnapshotGoalBoard: React.FC = () => {
   const { uuid } = useParams<{ uuid: string }>();
