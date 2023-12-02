@@ -8,6 +8,7 @@ import {
   Box,
   Button,
   Drawer,
+  Container,
 } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'; // User icon
@@ -131,26 +132,36 @@ const NavBar: React.FC = () => {
           alignItems: 'center',
           justifyContent: 'space-between',
           color: 'inherit',
-          pl: 1,
-          pr: 1,
+          flexGrow: 1,
+          p: 0,
+          m: 0,
+          width: '100%',
         }}
         disableGutters
       >
-        <Box
+        <Container
+          maxWidth={false}
           sx={{
-            flexGrow: 1,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             color: 'inherit',
+            flexGrow: 1,
           }}
         >
-          <Box>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              flexGrow: 1,
+              justifyContent: 'flex-start',
+            }}
+          >
             <IconButton
               color="inherit"
               aria-label="toggle drawer"
               onClick={handleDrawerToggle}
-              sx={{ mr: 2, borderRadius: '8px', display: 'inline', left: 0 }}
+              sx={{ mr: 2, p: 0 }}
             >
               <MenuIcon />
             </IconButton>
@@ -172,9 +183,8 @@ const NavBar: React.FC = () => {
           {!isLoginPage && (
             <NavBarUserElem auth={auth} handleLogout={handleLogout} />
           )}
-        </Box>
+        </Container>
       </Toolbar>
-      {/* Disabled to get width changes out while in dev */}
 
       <LeftDrawer dIsOpen={drawerOpen} dToggle={handleDrawerToggle} />
     </AppBar>
