@@ -16,5 +16,6 @@ export type GoalOut = {
     tasks: Array<GoalTaskOut>;
     notes: (string | null);
     archived?: boolean;
+    tasks_locked?: boolean;
 };
 

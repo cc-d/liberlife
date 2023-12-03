@@ -24,9 +24,17 @@ export const GoalBoardElem: React.FC<GoalBoardElemProps> = ({
         goalId: number,
         updatedText?: string,
         updatedNotes?: string | null,
-        archived?: boolean
+        archived?: boolean,
+        tasksLocked?: boolean
       ) =>
-        actionUpdateGoal(setGoals, goalId, updatedText, updatedNotes, archived);
+        actionUpdateGoal(
+          setGoals,
+          goalId,
+          updatedText,
+          updatedNotes,
+          archived,
+          tasksLocked
+        );
 
   return (
     <Box

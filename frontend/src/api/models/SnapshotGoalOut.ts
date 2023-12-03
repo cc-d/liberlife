@@ -15,5 +15,6 @@ export type SnapshotGoalOut = {
     archived?: boolean;
     board_id: string;
     text: string;
+    tasks_locked?: boolean;
 };
 

@@ -7,7 +7,8 @@ export const actionUpdateGoal = async (
   goalId: number,
   updatedText?: string,
   updatedNotes?: string | null,
-  archived?: boolean
+  archived?: boolean,
+  tasksLocked?: boolean
 ) => {
   try {
     let endpoint = `/goals/${goalId}`;
@@ -20,6 +21,8 @@ export const actionUpdateGoal = async (
       payload.text = updatedText;
     } else if (archived !== undefined) {
       payload.archived = archived;
+    } else if (tasksLocked !== undefined) {
+      payload.tasks_locked = tasksLocked;
     }
 
     const response = await apios.put(endpoint, payload);
@@ -31,6 +34,7 @@ export const actionUpdateGoal = async (
           if (updatedText !== undefined) return { ...g, text: updatedText };
           if (archived !== undefined) return { ...g, archived: archived };
           if (updatedNotes !== undefined) return { ...g, notes: updatedNotes };
+          if (tasksLocked !== undefined) return { ...g, tasksLocked };
           return g;
         })
       );

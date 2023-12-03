@@ -49,5 +49,8 @@ export const $GoalOut = {
         archived: {
             type: 'boolean',
         },
+        tasks_locked: {
+            type: 'boolean',
+        },
     },
 } as const;

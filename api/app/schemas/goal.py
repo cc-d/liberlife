@@ -75,9 +75,11 @@ class GoalOut(GoalIn, DBCommon):
     tasks: List[GoalTaskOut]
     notes: Union[str, None]
     archived: bool = False
+    tasks_locked: bool = False
 
 
 class GoalUpdate(BaseModel):
     text: Optional[str] = None
     notes: Optional[str] = None
     archived: Optional[bool] = None
+    tasks_locked: Optional[bool] = None

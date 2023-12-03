@@ -4,6 +4,8 @@ import AddIcon from '@mui/icons-material/Add';
 import { GoalTaskOut, GoalOut } from '../../../api';
 import GoalTaskItem from './GoalTaskItem'; // Update the import statement
 import theme from '../../../app/theme';
+import LockIcon from '@mui/icons-material/Lock';
+import { useThemeContext } from '../../../contexts/ThemeContext';
 
 export interface GoalTasksProps {
   newTaskText: string;
@@ -13,7 +15,8 @@ export interface GoalTasksProps {
   handleTaskStatus: (goalId: number, taskId: number) => Promise<void>;
   taskGoal: GoalOut;
   giDeleteTask: Function;
-  giAddTask: () => Promise<void>; // Add this line
+  giAddTask: () => Promise<void>;
+  toggleTaskLock: () => Promise<void>;
 }
 
 export const GoalTasks: React.FC<GoalTasksProps> = ({
@@ -23,8 +26,14 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
   taskGoal,
   tasks, // Receive tasks as a prop
   handleTaskStatus,
-  giDeleteTask, // Add this line
+  giDeleteTask,
+  giAddTask,
+  toggleTaskLock,
 }) => {
+  const { theme } = useThemeContext();
+  const taskLockColor = taskGoal?.tasks_locked
+    ? theme.palette.primary.main
+    : theme.palette.text.primary;
   return (
     <Box
       sx={{
@@ -52,6 +61,7 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
           ml: 0.5,
           mr: 0.5,
           height: '100%',
+          justifyContent: 'flex-start',
         }}
       >
         <Box
@@ -59,9 +69,18 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
+
             mt: 1,
           }}
         >
+          <IconButton
+            aria-label="lock goal tasks"
+            sx={{ color: taskLockColor, display: 'flex', m: 0, p: 0, mr: 1 }}
+            onClick={toggleTaskLock}
+          >
+            <LockIcon />
+          </IconButton>
+
           <TextField
             variant="outlined"
             size="small"

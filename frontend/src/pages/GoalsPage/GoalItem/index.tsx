@@ -156,7 +156,9 @@ const GoalItem: React.FC<GoalItemProps> = ({
   };
 
   useMemo(() => {
-    const sortedTasks = [...goal.tasks].sort(sortTasks);
+    const sortedTasks = !goal?.tasks_locked
+      ? [...goal.tasks].sort(sortTasks)
+      : goal.tasks;
     setTasks(sortedTasks);
   }, [goal.tasks]);
 
@@ -184,6 +186,32 @@ const GoalItem: React.FC<GoalItemProps> = ({
   };
 
   const giWidth = longestStr < 13 ? `${1 + longestStr * 16}px` : `100%`;
+
+  const toggleTaskLock = async () => {
+    const ogGoals = goals;
+
+    setGoals((prevGoals) =>
+      prevGoals.map((g) => {
+        if (g.id === goal.id) {
+          return { ...g, tasks_locked: !g.tasks_locked };
+        }
+        return g;
+      })
+    );
+
+    try {
+      await handleGoalUpdate(
+        goal.id,
+        undefined,
+        undefined,
+        undefined,
+        !goal.tasks_locked
+      );
+    } catch (e) {
+      console.error('Failed to toggle task lock:', e);
+      setGoals(ogGoals);
+    }
+  };
 
   return (
     <Box
@@ -241,6 +269,7 @@ const GoalItem: React.FC<GoalItemProps> = ({
         taskGoal={goal}
         giDeleteTask={giDeleteTask}
         giAddTask={giAddTask}
+        toggleTaskLock={toggleTaskLock}
       />
       <Divider
         sx={{

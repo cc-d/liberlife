@@ -28,5 +28,13 @@ export const $GoalUpdate = {
                 type: 'null',
             }],
         },
+        tasks_locked: {
+            type: 'any-of',
+            contains: [{
+                type: 'boolean',
+            }, {
+                type: 'null',
+            }],
+        },
     },
 } as const;

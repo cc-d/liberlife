@@ -48,5 +48,8 @@ export const $SnapshotGoalOut = {
             type: 'string',
             isRequired: true,
         },
+        tasks_locked: {
+            type: 'boolean',
+        },
     },
 } as const;

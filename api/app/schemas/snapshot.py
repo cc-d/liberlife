@@ -23,6 +23,7 @@ class SnapshotGoalOut(CommonBase):
     archived: bool = False
     board_id: str
     text: str
+    tasks_locked: bool = False
 
 
 class SnapshotOut(CommonBase):

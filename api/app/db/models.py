@@ -97,6 +97,9 @@ class Goal(CommonGoal):
         cascade="all, delete-orphan",
         lazy='joined',
     )
+    tasks_locked: Mapped[bool] = mapped_column(
+        Boolean, default=False, nullable=False
+    )
 
 
 class SnapshotGoal(CommonGoal):
