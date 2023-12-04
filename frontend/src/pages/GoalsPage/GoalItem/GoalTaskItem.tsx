@@ -12,7 +12,6 @@ import green from '@mui/material/colors/green';
 import grey from '@mui/material/colors/grey';
 import { useThemeContext } from '../../../contexts/ThemeContext';
 
-import theme from '../../../app/theme';
 const statusIconMap = {
   [TaskStatus.NOT_STARTED]: (
     <CircleOutlined sx={{ color: grey[500], mr: 0.25 }} />

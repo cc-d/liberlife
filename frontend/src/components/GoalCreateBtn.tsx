@@ -2,36 +2,24 @@ import React, { useState, useEffect } from 'react';
 import {
   Box,
   TextField,
-  Button,
   IconButton,
   Menu,
   MenuItem,
-  Icon,
   Typography,
 } from '@mui/material';
 import ArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useThemeContext } from '../contexts/ThemeContext';
 import apios from '../utils/apios';
-import { debounce } from '../utils/helpers';
-import { GoalTemplateDB, TemplateTaskDB } from '../api';
-import { GoalIcon, SnapshotIcon, TemplateIcon } from './common';
+import { GoalTemplateDB } from '../api';
+import { TemplateIcon } from './common';
 import TodayIcon from '@mui/icons-material/Today';
-
-import { AddchartRounded as AddChartIcon } from '@mui/icons-material';
 
 export const GoalCreateBtn: React.FC<{
   newGoalText: string;
   setNewGoalText: React.Dispatch<React.SetStateAction<string>>;
   handleAddGoal: () => void;
-  debouncedHandleTextChange: (val: string) => void;
   handleTextChange: (val: string, submit?: boolean) => void;
-}> = ({
-  newGoalText,
-  setNewGoalText,
-  handleAddGoal,
-  debouncedHandleTextChange,
-  handleTextChange,
-}) => {
+}> = ({ newGoalText, setNewGoalText, handleAddGoal, handleTextChange }) => {
   const { theme } = useThemeContext();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -119,7 +107,7 @@ export const GoalCreateBtn: React.FC<{
         variant="outlined"
         placeholder="New goal..."
         value={newGoalText}
-        onChange={(e) => debouncedHandleTextChange(e.target.value)}
+        onChange={(e) => handleTextChange(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
             handleAddGoal();

@@ -3,7 +3,6 @@ import { Box, TextField, IconButton, Divider } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { GoalTaskOut, GoalOut } from '../../../api';
 import GoalTaskItem from './GoalTaskItem'; // Update the import statement
-import theme from '../../../app/theme';
 import LockIcon from '@mui/icons-material/Lock';
 import { useThemeContext } from '../../../contexts/ThemeContext';
 

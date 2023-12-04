@@ -1,16 +1,15 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Box, Typography, TextField, Button, Divider } from '@mui/material';
+import React, { useState, useMemo } from 'react';
+import { Box, Typography, Divider } from '@mui/material';
 import { GoalOut } from '../../api';
 import apios from '../../utils/apios';
 import GoalBoardElem from './GoalBoardElem';
-import ShowHideTextButton from '../../components/ShowHideTooltip';
-import { debounce } from '../../utils/helpers';
 import SortButton, {
   SortOrder,
   sortGoals,
   sortOrders,
 } from '../../components/SortButton';
 import GoalCreateBtn from '../../components/GoalCreateBtn';
+import { debounce } from '../../utils/helpers';
 
 interface GoalBoardProps {
   goals: GoalOut[];
@@ -30,6 +29,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
     (localStorage.getItem('sortOrder') as SortOrder) || SortOrder.Default
   );
 
+  // eslint-disable-next-line
   const toggleSortOrder = useMemo(() => {
     localStorage.setItem('sortOrder', sortOrder);
   }, [sortOrder]);
@@ -41,6 +41,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
         goals.filter((goal) => goal.archived === archived),
         sortOrder
       ),
+    // eslint-disable-next-line
     [sortOrder, goals]
   );
 
@@ -62,20 +63,12 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
   };
 
   const handleTextChange = (val: string, submit?: boolean) => {
-    console.log('handleTextChange', val, submit);
-
     if (submit) {
-      console.log('handleTextChange submit');
       handleAddGoal(val);
     } else {
       setNewGoalText(val);
     }
   };
-
-  const debouncedHandleTextChange = useMemo(
-    () => debounce(handleTextChange, 1),
-    []
-  );
 
   return (
     <Box>
@@ -114,8 +107,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
             newGoalText={newGoalText}
             setNewGoalText={setNewGoalText}
             handleAddGoal={handleAddGoal}
-            debouncedHandleTextChange={debouncedHandleTextChange}
-            handleTextChange={handleTextChange}
+            handleTextChange={debounce(handleTextChange, 0)}
           />
         ) : null}
       </Box>
