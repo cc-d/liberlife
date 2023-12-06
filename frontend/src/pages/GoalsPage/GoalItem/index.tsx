@@ -18,15 +18,20 @@ export interface GoalItemProps {
   isSnapshot?: boolean;
 }
 
-const getLatestDate = (goal: GoalOut): string | null => {
+const getGoalDates = (goal: GoalOut): string[] => {
   let latestDate = new Date(goal.updated_on);
+  let createdDate = new Date(goal.created_on);
+
   goal.tasks.forEach((task) => {
     const taskDate = new Date(task.updated_on);
     if (taskDate > latestDate) {
       latestDate = taskDate;
     }
   });
-  return latestDate.toLocaleString();
+  return [
+    latestDate.toLocaleString().split(',')[0],
+    createdDate.toLocaleString().split(',')[0],
+  ];
 };
 
 const getLongestStr = (goal: GoalOut): number => {
@@ -81,7 +86,8 @@ const GoalItem: React.FC<GoalItemProps> = ({
   const longestStr = useMemo(() => getLongestStr(goal), [goal]);
   const maxElementWidth = longestStr >= 13 ? '98vw' : '47.6vw';
   const theme = useThemeContext();
-  const latestUpdate = useMemo(() => getLatestDate(goal), [goal]);
+
+  const [latestUpdate, createdDate] = useMemo(() => getGoalDates(goal), [goal]);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);

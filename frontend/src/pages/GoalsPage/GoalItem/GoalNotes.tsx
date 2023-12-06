@@ -1,10 +1,24 @@
 import React, { useState } from 'react';
-import { Box, Typography, TextField, IconButton, Link } from '@mui/material';
+import {
+  Box,
+  Typography,
+  TextField,
+  IconButton,
+  Link,
+  Divider,
+} from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import { GoalOut } from '../../../api';
 import { useThemeContext } from '../../../contexts/ThemeContext';
 import green from '@mui/material/colors/green';
+import grey from '@mui/material/colors/grey';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import SaveAsIcon from '@mui/icons-material/SaveAs';
+import UpdateIcon from '@mui/icons-material/Update';
+import MoreTimeIcon from '@mui/icons-material/MoreTime';
+import AddAlarmIcon from '@mui/icons-material/AddAlarm';
+import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 
 interface GoalNotesProps {
   goal: GoalOut;
@@ -14,36 +28,10 @@ interface GoalNotesProps {
 
 interface NoNotesViewProps {
   latestUpdate: string | null;
+  createdOn: string;
   onEdit: () => void;
 }
-const NoNotesView: React.FC<NoNotesViewProps> = ({ latestUpdate, onEdit }) => {
-  const { theme } = useThemeContext();
 
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-      }}
-    >
-      <Box sx={{ flexGrow: 1 }}>
-        <Typography variant="body2" color="textSecondary" sx={{ p: 0, m: 0 }}>
-          add notes...
-        </Typography>
-        <Typography
-          variant="caption"
-          sx={{ color: theme.palette.text.secondary, p: 0, m: 0 }}
-        >
-          {latestUpdate}
-        </Typography>
-      </Box>
-      <IconButton onClick={onEdit} aria-label="edit notes">
-        <EditIcon />
-      </IconButton>
-    </Box>
-  );
-};
 const renderFormattedNotes = (goal: GoalOut) => {
   let i = 0;
   const elements: JSX.Element[] = [];
@@ -162,12 +150,16 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
     });
   }
 
+  const covertDate = (date: string): string => {
+    return new Date(date).toLocaleString().split(',')[0];
+  };
+
   return (
     <Box
       sx={{
         m: 0,
         maxWidth: '100%',
-        p: 0.5,
+        p: 0,
         backgroundColor: theme.theme.palette.background.paper,
       }}
     >
@@ -192,7 +184,9 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
 
             sx={{
               flexGrow: 1,
-              width: `${longestNoteLine}ch`,
+              width: `calc(${longestNoteLine} * 6px)`,
+              resize: 'both',
+              overflow: 'auto',
             }}
           />
           <IconButton
@@ -202,7 +196,7 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
             onClick={handleSaveNotes}
             aria-label="save notes"
           >
-            <SaveIcon />
+            <SaveAsIcon />
           </IconButton>
         </Box>
       ) : goal?.notes ? (
@@ -215,7 +209,6 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
         >
           <Box
             display="flex"
-            alignItems="stretch"
             flexDirection="row"
             sx={{
               flexGrow: 1,
@@ -229,7 +222,7 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
                 flexGrow: 1,
                 width: '100%',
                 whiteSpace: 'pre-wrap',
-                p: 0,
+                p: 0.5,
                 m: 0,
                 lineHeight: 1.25,
               }}
@@ -239,37 +232,74 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
             <IconButton
               onClick={() => setIsEditingNotes(true)}
               sx={{
-                alignSelf: 'stretch',
-                display: 'flex',
-                alignItems: 'center',
                 borderRadius: 0,
               }}
               aria-label="edit notes"
             >
-              <EditIcon />
+              <EditNoteIcon />
             </IconButton>
           </Box>
+        </Box>
+      ) : null}
+
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          flexGrow: 1,
+        }}
+      >
+        <Typography
+          variant="caption"
+          sx={{
+            color: theme.theme.palette.text.primary,
+
+            p: 0.5,
+            m: 0,
+            alignItems: 'center',
+            alignContent: 'center',
+            alignSelf: 'flex-end',
+            display: 'flex',
+          }}
+        >
+          <AddCircleRoundedIcon sx={{ fontSize: 'inherit' }} />
+          {covertDate(goal.created_on)}
+        </Typography>
+
+        {latestUpdate && (
           <Typography
             variant="caption"
-            color={theme.theme.palette.text.primary}
-            noWrap
             sx={{
-              textAlign: 'left',
-              flexGrow: 1,
+              color: theme.theme.palette.text.primary,
+              p: 0.5,
+              m: 0,
+
+              alignItems: 'center',
+              alignContent: 'bottom',
+              alignSelf: 'flex-end',
               display: 'flex',
               justifyContent: 'flex-end',
-              fontVariant: 'small-caps',
-              m: 0,
-              p: 0,
-              mr: 0.5,
+              flexGrow: 1,
             }}
           >
-            {latestUpdate}
+            <UpdateIcon sx={{ fontSize: 'inherit' }} />
+            {covertDate(latestUpdate)}
           </Typography>
-        </Box>
-      ) : (
-        <></>
-      )}
+        )}
+
+        {!goal?.notes && !isEditingNotes && (
+          <IconButton
+            onClick={() => setIsEditingNotes(true)}
+            sx={{
+              borderRadius: 0,
+            }}
+            aria-label="add notes"
+          >
+            <EditNoteIcon />
+          </IconButton>
+        )}
+      </Box>
     </Box>
   );
 };
