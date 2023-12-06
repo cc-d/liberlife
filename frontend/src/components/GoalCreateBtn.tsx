@@ -25,6 +25,7 @@ export const GoalCreateBtn: React.FC<{
   const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
     setAnchorEl(event.currentTarget);
   };
 
@@ -136,7 +137,10 @@ export const GoalCreateBtn: React.FC<{
             backgroundColor: theme.palette.primary.main,
           },
         }}
-        onClick={handleAddGoal}
+        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+          e.stopPropagation();
+          handleAddGoal();
+        }}
       >
         <Typography
           variant="body1"

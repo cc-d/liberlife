@@ -34,7 +34,8 @@ export const actionUpdateGoal = async (
           if (updatedText !== undefined) return { ...g, text: updatedText };
           if (archived !== undefined) return { ...g, archived: archived };
           if (updatedNotes !== undefined) return { ...g, notes: updatedNotes };
-          if (tasksLocked !== undefined) return { ...g, tasksLocked };
+          if (tasksLocked !== undefined)
+            return { ...g, tasks_locked: tasksLocked };
           return g;
         })
       );
