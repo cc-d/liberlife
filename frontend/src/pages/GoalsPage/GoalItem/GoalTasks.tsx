@@ -16,6 +16,7 @@ export interface GoalTasksProps {
   giDeleteTask: Function;
   giAddTask: () => Promise<void>;
   toggleTaskLock: () => Promise<void>;
+  longestStr: number;
 }
 
 export const GoalTasks: React.FC<GoalTasksProps> = ({
@@ -28,11 +29,13 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
   giDeleteTask,
   giAddTask,
   toggleTaskLock,
+  longestStr,
 }) => {
   const { theme } = useThemeContext();
   const taskLockColor = taskGoal?.tasks_locked
     ? theme.palette.primary.main
     : theme.palette.text.primary;
+
   return (
     <Box
       sx={{
@@ -42,23 +45,12 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
         height: '100%',
       }}
     >
-      <Divider
-        sx={{
-          backgroundColor: theme.palette.background.default,
-          m: 0,
-          p: 0,
-          ml: 0.5,
-          mr: 0.5,
-        }}
-      />
-
       <Box
         sx={{
           flexGrow: 1,
           display: 'flex',
           flexDirection: 'column',
-          ml: 0.5,
-          mr: 0.5,
+          mt: 1,
           height: '100%',
           justifyContent: 'flex-start',
         }}
@@ -68,13 +60,16 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
-
-            mt: 1,
+            m: 0,
           }}
         >
           <IconButton
             aria-label="lock goal tasks"
-            sx={{ color: taskLockColor, display: 'flex', m: 0, p: 0, mr: 1 }}
+            sx={{
+              color: taskLockColor,
+              p: 1,
+              pl: 0.5,
+            }}
             onClick={toggleTaskLock}
           >
             <LockIcon />
@@ -86,7 +81,9 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
             value={newTaskText}
             onChange={(e) => setNewTaskText(e.target.value)}
             placeholder="Add task..."
-            sx={{ flexGrow: 1, marginRight: 1 }}
+            sx={{
+              flexGrow: 1,
+            }}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 handleAddTask();
@@ -105,8 +102,7 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
           sx={{
             m: 0,
             p: 0,
-            mt: 1,
-            mb: 1,
+            py: 0.5,
           }}
         >
           {tasks &&

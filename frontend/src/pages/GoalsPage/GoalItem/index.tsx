@@ -31,8 +31,12 @@ const getLatestDate = (goal: GoalOut): string | null => {
 
 const getLongestStr = (goal: GoalOut): number => {
   let longestStr = goal.text.length;
-  if (goal.notes && goal.notes.length > longestStr) {
-    longestStr = goal.notes.length;
+
+  if (goal.notes) {
+    const noLinkNotes = goal.notes?.replace(/(\[.*?\])\(.*?\)/g, '$1');
+    if (noLinkNotes.length > longestStr) {
+      longestStr = noLinkNotes.length;
+    }
   }
   goal.tasks.forEach((task) => {
     if (task.text.length > longestStr) {
@@ -185,8 +189,6 @@ const GoalItem: React.FC<GoalItemProps> = ({
     }
   };
 
-  const giWidth = longestStr < 13 ? `${1 + longestStr * 16}px` : `100%`;
-
   const toggleTaskLock = async () => {
     const ogGoals = goals;
 
@@ -228,15 +230,21 @@ const GoalItem: React.FC<GoalItemProps> = ({
         m: 0,
         ml: 0.25,
         mr: 0.25,
-        minWidth: `150px`,
+
+        maxWidth: `calc(min(calc(${longestStr} * 16)px, 100%))`,
+        minWidth: '140px',
+        width: `calc(${longestStr} * 16px + 32px)`,
+
+        /*
         width: {
           xs: giWidth,
           sm: 'fit-content',
         },
-        maxWidth: {
+        maxWidth{
           xs: longestStr < 13 ? `calc(max(${longestStr}, 150px))` : '100%',
           sm: longestStr < 13 ? `calc(max(${longestStr}, 150px))` : '100%',
         },
+        */
         mb: 0.5,
       }}
     >
@@ -270,6 +278,7 @@ const GoalItem: React.FC<GoalItemProps> = ({
         giDeleteTask={giDeleteTask}
         giAddTask={giAddTask}
         toggleTaskLock={toggleTaskLock}
+        longestStr={longestStr}
       />
       <Divider
         sx={{

@@ -44,60 +44,78 @@ const NoNotesView: React.FC<NoNotesViewProps> = ({ latestUpdate, onEdit }) => {
     </Box>
   );
 };
-
 const renderFormattedNotes = (goal: GoalOut) => {
   let i = 0;
   const elements: JSX.Element[] = [];
   const notes = goal?.notes || '';
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
 
   while (i < notes.length) {
     const startLinkText = notes.indexOf('[', i);
-    const endLinkText = notes.indexOf(']', startLinkText + 1); // Ensure we're looking after the start
-    const startLinkURL = notes.indexOf('(', endLinkText + 1); // Ensure we're looking after the end of link text
-    const endLinkURL = notes.indexOf(')', startLinkURL + 1); // Ensure we're looking after the start of link URL
+    const endLinkText = notes.indexOf(']', startLinkText + 1);
+    const startLinkURL = notes.indexOf('(', endLinkText + 1);
+    const endLinkURL = notes.indexOf(')', startLinkURL + 1);
 
-    // If any of the tags aren't found, break the loop
     if (
-      startLinkText === -1 ||
-      endLinkText === -1 ||
-      startLinkURL === -1 ||
-      endLinkURL === -1
+      startLinkText !== -1 &&
+      endLinkText !== -1 &&
+      startLinkURL !== -1 &&
+      endLinkURL !== -1
     ) {
-      break;
-    }
+      if (startLinkText > i) {
+        elements.push(
+          <span key={i}>
+            {removeNewlines(notes.substring(i, startLinkText))}
+          </span>
+        );
+      }
 
-    // Push any text before the link
-    if (startLinkText > i) {
+      const linkText = notes.substring(startLinkText + 1, endLinkText);
+      const linkURL = notes.substring(startLinkURL + 1, endLinkURL);
+
       elements.push(
-        <span key={i}>{removeNewlines(notes.substring(i, startLinkText))}</span>
+        <Link
+          href={linkURL}
+          key={endLinkText}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {linkText}
+        </Link>
       );
+
+      i = endLinkURL + 1;
+    } else {
+      const remainingText = notes.substring(i);
+      const urlMatch = remainingText.match(urlRegex);
+
+      if (urlMatch) {
+        const urlIndex = remainingText.indexOf(urlMatch[0]);
+        if (urlIndex > 0) {
+          elements.push(
+            <span key={i}>
+              {removeNewlines(remainingText.substring(0, urlIndex))}
+            </span>
+          );
+        }
+
+        elements.push(
+          <Link
+            href={urlMatch[0]}
+            key={i + urlIndex}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {urlMatch[0]}
+          </Link>
+        );
+
+        i += urlIndex + urlMatch[0].length;
+      } else {
+        elements.push(<span key={i}>{removeNewlines(remainingText)}</span>);
+        break;
+      }
     }
-
-    // Extract the link text and URL
-    const linkText = notes.substring(startLinkText + 1, endLinkText);
-    const linkURL = notes.substring(startLinkURL + 1, endLinkURL);
-
-    // Push the link element
-    elements.push(
-      <Link
-        href={linkURL}
-        key={endLinkText}
-        target="_blank"
-        rel="noopener noreferrer"
-        sx={{
-          color: (theme) => green[theme.palette.mode === 'dark' ? 400 : 900],
-        }}
-      >
-        {linkText}
-      </Link>
-    );
-
-    i = endLinkURL + 1;
-  }
-
-  // Add any remaining text after the last link
-  if (i < notes.length) {
-    elements.push(<span key={i}>{removeNewlines(notes.substring(i))}</span>);
   }
 
   return elements;
@@ -131,6 +149,19 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
 
   const theme = useThemeContext();
 
+  let longestNoteLine = 0;
+  if (goal?.notes) {
+    const lines = goal.notes.split('\n');
+    lines.forEach((line) => {
+      // Match and remove URLs enclosed in square brackets, but keep the text after them
+      const modifiedLine = line.replace(/\[(.*?)\]\(.*?\)/g, '$0');
+
+      if (modifiedLine.length > longestNoteLine) {
+        longestNoteLine = modifiedLine.length;
+      }
+    });
+  }
+
   return (
     <Box
       sx={{
@@ -157,8 +188,20 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
             fullWidth
             margin="none"
             InputProps={{ disableUnderline: true }}
+            // allow resizing
+
+            sx={{
+              flexGrow: 1,
+              width: `${longestNoteLine}ch`,
+            }}
           />
-          <IconButton onClick={handleSaveNotes} aria-label="save notes">
+          <IconButton
+            sx={{
+              borderRadius: 0,
+            }}
+            onClick={handleSaveNotes}
+            aria-label="save notes"
+          >
             <SaveIcon />
           </IconButton>
         </Box>
@@ -176,7 +219,7 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
             flexDirection="row"
             sx={{
               flexGrow: 1,
-
+              maxWidth: '100%',
               width: '100%',
             }}
           >
@@ -225,10 +268,7 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
           </Typography>
         </Box>
       ) : (
-        <NoNotesView
-          latestUpdate={latestUpdate}
-          onEdit={() => setIsEditingNotes(true)}
-        />
+        <></>
       )}
     </Box>
   );

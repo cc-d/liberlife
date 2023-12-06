@@ -53,11 +53,23 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'left',
     width: '100%',
     height: '100%',
+    flexGrow: 1,
+
     m: 0,
-    p: 2,
+    p: 1,
+  };
+  const textFieldIconBtnSX = {
+    borderRadius: 0,
+    p: 0,
+    m: 0,
+    height: '40px',
+    width: '36px',
+  };
+  const menuIconSX = {
+    mr: 0.5,
+    height: '36px',
   };
 
   return (
@@ -70,92 +82,115 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
         width: '100%',
         m: 0,
         p: 0,
+        pb: 0.5,
       }}
     >
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          flexGrow: 1,
-          width: '100%',
-          m: 0,
-          p: 0,
-        }}
-      >
-        {isEditing ? (
-          <>
-            <IconButton onClick={handleCancel} aria-label="cancel edit">
-              <CancelIcon />
-            </IconButton>
-            <TextField
-              value={editedText}
-              onChange={(e) => setEditedText(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  handleSave();
-                }
-              }}
-              sx={{
-                display: 'flex',
-                flexGrow: 1,
-                maxWidth: '100%',
-              }}
-            />
+      {isEditing ? (
+        <>
+          <IconButton
+            onClick={handleCancel}
+            aria-label="cancel edit"
+            sx={{
+              ...textFieldIconBtnSX,
+              height: '56px',
+            }}
+          >
+            <CancelIcon />
+          </IconButton>
+          <TextField
+            value={editedText}
+            onChange={(e) => setEditedText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSave();
+              }
+            }}
+            sx={{
+              display: 'flex',
+              flexGrow: 1,
+            }}
+          />
 
-            <IconButton onClick={handleSave} aria-label="save">
-              <SaveIcon />
-            </IconButton>
-          </>
-        ) : (
-          <>
-            <Typography
-              variant="h5"
-              sx={{
-                display: 'flex',
-                flexGrow: 1,
-                width: '100%',
+          <IconButton
+            onClick={handleSave}
+            aria-label="save"
+            sx={{
+              ...textFieldIconBtnSX,
 
-                pl: 0.5,
-              }}
-            >
-              {goal.text}
-            </Typography>
+              height: '56px',
+            }}
+          >
+            <SaveIcon />
+          </IconButton>
+        </>
+      ) : (
+        <>
+          <Typography
+            variant="h5"
+            sx={{
+              flexGrow: 1,
+              width: '100%',
+              pl: 0.75,
+            }}
+          >
+            {goal.text}
+          </Typography>
 
-            <IconButton onClick={handleMenuClick} aria-label="menu">
-              <MoreVertIcon />
-            </IconButton>
+          <IconButton
+            onClick={handleMenuClick}
+            aria-label="menu"
+            sx={{
+              ...textFieldIconBtnSX,
+              borderRadius: 0,
+              borderTopRightRadius: 1,
+              borderBottomRightRadius: 1,
+            }}
+          >
+            <MoreVertIcon />
+          </IconButton>
 
-            <Menu
-              anchorEl={anchorEl}
-              keepMounted
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
-              sx={{}}
-              variant="menu"
-            >
-              {!goal.archived && (
-                <MenuItem onClick={startEdit} sx={menuItemSX} disableGutters>
-                  <EditIcon />
-                  <Typography variant="body1">Edit</Typography>
-                </MenuItem>
+          <Menu
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+            sx={{}}
+          >
+            {!goal.archived && (
+              <MenuItem onClick={startEdit} sx={menuItemSX} disableGutters>
+                <EditIcon
+                  sx={{
+                    ...menuIconSX,
+                  }}
+                />
+                <Typography variant="body1">Edit</Typography>
+              </MenuItem>
+            )}
+            <MenuItem onClick={handleArchive} sx={menuItemSX} disableGutters>
+              {goal.archived ? (
+                <UnarchiveIcon
+                  fontSize="medium"
+                  sx={{
+                    ...menuIconSX,
+                  }}
+                />
+              ) : (
+                <ArchiveIcon
+                  fontSize="medium"
+                  sx={{
+                    ...menuIconSX,
+                  }}
+                />
               )}
-              <MenuItem onClick={handleArchive} sx={menuItemSX} disableGutters>
-                {goal.archived ? (
-                  <UnarchiveIcon fontSize="medium" />
-                ) : (
-                  <ArchiveIcon fontSize="medium" />
-                )}
-                <Typography variant="body1">{archText}</Typography>
-              </MenuItem>
-              <MenuItem onClick={handleDelete} sx={menuItemSX} disableGutters>
-                <DeleteIcon fontSize="medium" sx={{ color: red[500] }} />
-                <Typography variant="body1">Delete</Typography>
-              </MenuItem>
-            </Menu>
-          </>
-        )}
-      </Box>
+              <Typography variant="body1">{archText}</Typography>
+            </MenuItem>
+            <MenuItem onClick={handleDelete} sx={menuItemSX} disableGutters>
+              <DeleteIcon sx={{ color: red[500], ...menuIconSX }} />
+              <Typography variant="body1">Delete</Typography>
+            </MenuItem>
+          </Menu>
+        </>
+      )}
     </Box>
   );
 };

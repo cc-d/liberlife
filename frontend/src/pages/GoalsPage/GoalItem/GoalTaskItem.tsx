@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, IconButton } from '@mui/material';
+import { Box, Typography, IconButton, Divider } from '@mui/material';
 import { GoalTaskOut, GoalOut, TaskStatus } from '../../../api';
 import {
   AssignmentOutlined as CircleOutlined,
@@ -32,7 +32,8 @@ const GoalTaskItem: React.FC<{
   handleTaskStatus: Function;
   handleDeleteTask: Function;
 }> = ({ taskGoal, task, handleTaskStatus, handleDeleteTask }) => {
-  const theme = useThemeContext();
+  const { theme } = useThemeContext();
+
   return (
     <Box
       display="flex"
@@ -40,52 +41,59 @@ const GoalTaskItem: React.FC<{
       sx={{
         cursor: 'pointer',
         flexGrow: 1,
-        pt: 0.25,
-        pb: 0.25,
+        p: 0,
+        py: 0.5,
         width: '100%',
         color: 'inherit',
         userSelect: 'none',
         '&:active': {
-          backgroundColor: theme.theme.palette.action.selected,
+          backgroundColor: theme.palette.action.selected,
         },
         '@media (pointer: fine)': {
           '&:hover': {
-            backgroundColor: theme.theme.palette.action.hover,
+            backgroundColor: theme.palette.action.hover,
           },
         },
       }}
       key={task.id}
       onClick={() => handleTaskStatus(taskGoal.id, task.id)}
     >
-      <TaskStatusIcon status={task.status} aria-label="task status" />
       <Box
         sx={{
           textDecoration:
             task.status === TaskStatus.COMPLETED ? 'line-through' : 'inherit',
           color:
             task.status === TaskStatus.COMPLETED
-              ? theme.theme.palette.text.secondary
+              ? theme.palette.text.secondary
               : task.status === TaskStatus.IN_PROGRESS
-              ? theme.theme.palette.text.primary
-              : theme.theme.palette.text.primary,
+              ? theme.palette.text.primary
+              : theme.palette.text.primary,
           flexGrow: 1,
 
           overflowWrap: 'anywhere',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          pl: 0.5,
         }}
       >
+        <TaskStatusIcon status={task.status} aria-label="task status" />
         <Typography
           sx={{
             flexGrow: 1,
             overflowWrap: 'anywhere',
           }}
-          variant="subtitle1"
+          variant="body1"
         >
           {task.text}
         </Typography>
       </Box>
       <IconButton
         sx={{
-          color: theme.theme.palette.text.primary,
+          color: theme.palette.text.primary,
+          p: 1,
+
+          m: 0,
         }}
         onClick={(event) => {
           event.stopPropagation();
