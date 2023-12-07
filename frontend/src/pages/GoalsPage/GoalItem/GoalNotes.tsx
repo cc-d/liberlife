@@ -161,9 +161,10 @@ const CreateUpdateElem: React.FC<{ goal: GoalOut; isType: string }> = ({
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
-          flexGrow: 1,
+          flexGrow: elemType === 'created' ? 1 : 0,
           alignSelf: 'bottom',
           justifyContent: 'bottom',
+          p: 0.25,
         }}
       >
         {dIcon}
