@@ -155,7 +155,7 @@ const CreateUpdateElem: React.FC<{ goal: GoalOut; isType: string }> = ({
       <SyncIcon sx={dIconSX} />
     );
   return (
-    <Tooltip title={`${elemType} on`} arrow>
+    <Tooltip title={`${elemType} on`} arrow placement="bottom-start">
       <Box
         sx={{
           display: 'flex',
