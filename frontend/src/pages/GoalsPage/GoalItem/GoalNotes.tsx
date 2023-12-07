@@ -6,6 +6,7 @@ import {
   IconButton,
   Link,
   Divider,
+  Tooltip,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
@@ -18,7 +19,11 @@ import SaveAsIcon from '@mui/icons-material/SaveAs';
 import UpdateIcon from '@mui/icons-material/Update';
 import MoreTimeIcon from '@mui/icons-material/MoreTime';
 import AddAlarmIcon from '@mui/icons-material/AddAlarm';
-import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
+import AddTaskIcon from '@mui/icons-material/AddTask';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import SyncIcon from '@mui/icons-material/Sync';
+import { AddCircle } from '@mui/icons-material';
 
 interface GoalNotesProps {
   goal: GoalOut;
@@ -121,6 +126,67 @@ const removeNewlines = (
   return newText;
 };
 
+const covertDate = (date: string): string => {
+  return new Date(date).toLocaleDateString('en-US', {
+    month: 'short', // 3-letter month
+    day: 'numeric', // 1-2 length day
+  });
+};
+
+const CreateUpdateElem: React.FC<{ goal: GoalOut; isType: string }> = ({
+  goal,
+  isType,
+}) => {
+  const dIconSX = {
+    fontSize: '0.8rem',
+    m: 0,
+    p: 0,
+    mr: 0.25,
+  };
+
+  const elemType = isType.toLocaleLowerCase().includes('create')
+    ? 'created'
+    : 'updated';
+
+  const dIcon =
+    elemType === 'created' ? (
+      <AddCircleOutlineIcon sx={dIconSX} />
+    ) : (
+      <SyncIcon sx={dIconSX} />
+    );
+  return (
+    <Tooltip title={`${elemType} on`} arrow>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          flexGrow: 1,
+          alignSelf: 'bottom',
+          justifyContent: 'bottom',
+        }}
+      >
+        {dIcon}
+        <Typography
+          variant="caption"
+          sx={{
+            display: 'flex',
+            m: 0,
+            p: 0,
+          }}
+          noWrap
+        >
+          {covertDate(
+            isType.toLocaleLowerCase().includes('create')
+              ? goal.created_on
+              : goal.updated_on
+          )}
+        </Typography>
+      </Box>
+    </Tooltip>
+  );
+};
+
 export const GoalNotes: React.FC<GoalNotesProps> = ({
   goal,
   onSaveNotes,
@@ -149,10 +215,6 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
       }
     });
   }
-
-  const covertDate = (date: string): string => {
-    return new Date(date).toLocaleString().split(',')[0];
-  };
 
   return (
     <Box
@@ -250,54 +312,21 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
           flexGrow: 1,
         }}
       >
-        <Typography
-          variant="caption"
-          sx={{
-            color: theme.theme.palette.text.primary,
-
-            p: 0.5,
-            m: 0,
-            alignItems: 'center',
-            alignContent: 'center',
-            alignSelf: 'flex-end',
-            display: 'flex',
-          }}
-        >
-          <AddCircleRoundedIcon sx={{ fontSize: 'inherit' }} />
-          {covertDate(goal.created_on)}
-        </Typography>
-
-        {latestUpdate && (
-          <Typography
-            variant="caption"
-            sx={{
-              color: theme.theme.palette.text.primary,
-              p: 0.5,
-              m: 0,
-
-              alignItems: 'center',
-              alignContent: 'bottom',
-              alignSelf: 'flex-end',
-              display: 'flex',
-              justifyContent: 'flex-end',
-              flexGrow: 1,
-            }}
-          >
-            <UpdateIcon sx={{ fontSize: 'inherit' }} />
-            {covertDate(latestUpdate)}
-          </Typography>
-        )}
+        <CreateUpdateElem goal={goal} isType="created" />
+        {latestUpdate && <CreateUpdateElem goal={goal} isType="updated" />}
 
         {!goal?.notes && !isEditingNotes && (
-          <IconButton
-            onClick={() => setIsEditingNotes(true)}
-            sx={{
-              borderRadius: 0,
-            }}
-            aria-label="add notes"
-          >
-            <EditNoteIcon />
-          </IconButton>
+          <Tooltip title="Add Note" arrow>
+            <IconButton
+              onClick={() => setIsEditingNotes(true)}
+              sx={{
+                borderRadius: 0,
+              }}
+              aria-label="add notes"
+            >
+              <EditNoteIcon />
+            </IconButton>
+          </Tooltip>
         )}
       </Box>
     </Box>
