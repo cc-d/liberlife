@@ -161,7 +161,7 @@ const CreateUpdateElem: React.FC<{ goal: GoalOut; isType: string }> = ({
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
-          flexGrow: elemType === 'created' ? 1 : 0,
+          flexGrow: 0,
           alignSelf: 'bottom',
           justifyContent: 'bottom',
           p: 0.25,
@@ -317,17 +317,30 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
         {latestUpdate && <CreateUpdateElem goal={goal} isType="updated" />}
 
         {!goal?.notes && !isEditingNotes && (
-          <Tooltip title="Add Note" arrow>
-            <IconButton
-              onClick={() => setIsEditingNotes(true)}
-              sx={{
-                borderRadius: 0,
-              }}
-              aria-label="add notes"
-            >
-              <EditNoteIcon />
-            </IconButton>
-          </Tooltip>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              flexGrow: 1,
+              justifyContent: 'flex-end',
+            }}
+          >
+            <Tooltip title="Add Note" arrow>
+              <IconButton
+                onClick={() => setIsEditingNotes(true)}
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+
+                  justifyContent: 'flex-end',
+                  borderRadius: 0,
+                }}
+                aria-label="add notes"
+              >
+                <EditNoteIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
         )}
       </Box>
     </Box>
