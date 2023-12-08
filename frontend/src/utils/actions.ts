@@ -71,37 +71,6 @@ export const actihandleGoalDelete = async (
   }
 };
 
-export const actionAddTaskToGoal = async (
-  goals: GoalOut[],
-  setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>,
-  goalId: number,
-  taskText: string,
-  tasks: GoalTaskOut[],
-  setTasks: React.Dispatch<React.SetStateAction<GoalTaskOut[]>>
-) => {
-  try {
-    const response = await apios.post<GoalTaskOut>(`/goals/${goalId}/tasks`, {
-      text: taskText,
-    });
-    if (response.data) {
-      setTasks(tasks.concat(response.data));
-      setGoals(
-        goals.map((goal) => {
-          if (goal.id === goalId) {
-            return {
-              ...goal,
-              tasks: goal.tasks ? goal.tasks.concat(response.data) : [],
-            };
-          }
-          return goal;
-        })
-      );
-    }
-  } catch (error) {
-    console.error('Error adding task:', error);
-  }
-};
-
 export const actionDeleteTask = async (
   goals: GoalOut[],
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>,

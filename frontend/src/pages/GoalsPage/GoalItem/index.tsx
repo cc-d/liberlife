@@ -4,7 +4,7 @@ import { GoalOut, GoalTaskOut, TaskStatus } from '../../../api';
 import GoalHeader from './GoalHeader';
 import GoalTasks from './GoalTasks';
 import GoalNotes from './GoalNotes';
-import { actionAddTaskToGoal, actionDeleteTask } from '../../../utils/actions';
+import { actionDeleteTask } from '../../../utils/actions';
 import { useThemeContext } from '../../../contexts/ThemeContext';
 import apios from '../../../utils/apios';
 import { getTaskStatus } from '../../../utils/helpers';
@@ -70,6 +70,17 @@ export const sortTasks = (a: GoalTaskOut, b: GoalTaskOut) => {
   }
 };
 
+const newDemoTask = (newTaskText: string, goal: GoalOut): GoalTaskOut => {
+  return {
+    id: Math.floor(Math.random() * 100000),
+    text: newTaskText,
+    status: TaskStatus.NOT_STARTED,
+    created_on: new Date().toISOString(),
+    updated_on: new Date().toISOString(),
+    goal_id: goal.id,
+  };
+};
+
 const GoalItem: React.FC<GoalItemProps> = ({
   goal,
   goals,
@@ -89,6 +100,8 @@ const GoalItem: React.FC<GoalItemProps> = ({
 
   const [latestUpdate, createdDate] = useMemo(() => getGoalDates(goal), [goal]);
 
+  const isDemo = window.location.pathname === '/demo';
+
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -104,7 +117,7 @@ const GoalItem: React.FC<GoalItemProps> = ({
   };
 
   const handleSave = async () => {
-    const result = await handleGoalUpdate(goal.id, editedText);
+    const result = !isDemo && (await handleGoalUpdate(goal.id, editedText));
     if (result) {
       setIsEditing(false);
     }
@@ -122,16 +135,37 @@ const GoalItem: React.FC<GoalItemProps> = ({
     await handleGoalUpdate(goal.id, undefined, undefined, !goal.archived);
     handleMenuClose();
   };
+
   const giAddTask = async () => {
     if (newTaskText.trim()) {
-      await actionAddTaskToGoal(
-        goals,
-        setGoals,
-        goal.id,
-        newTaskText,
-        tasks,
-        setTasks
+      let newTask: GoalTaskOut;
+
+      if (isDemo) {
+        newTask = newDemoTask(newTaskText, goal);
+      } else {
+        try {
+          newTask = await apios.post(`/goals/${goal.id}/tasks`, {
+            text: newTaskText,
+          });
+        } catch (e) {
+          console.error('Failed to add task:', e);
+          return;
+        }
+      }
+
+      setTasks(tasks.concat(newTask));
+      setGoals(
+        goals.map((g) => {
+          if (g.id === goal.id) {
+            return {
+              ...g,
+              tasks: g.tasks ? g.tasks.concat(newTask) : [],
+            };
+          }
+          return g;
+        })
       );
+
       setNewTaskText('');
     }
   };
@@ -142,7 +176,8 @@ const GoalItem: React.FC<GoalItemProps> = ({
     const ogTasks = tasks;
 
     try {
-      await actionDeleteTask(goals, setGoals, goal.id, taskId);
+      !isDemo && (await actionDeleteTask(goals, setGoals, goal.id, taskId));
+
       setTasks((currentTasks) =>
         currentTasks.filter((task) => task.id !== taskId)
       );
@@ -186,6 +221,8 @@ const GoalItem: React.FC<GoalItemProps> = ({
       )
     );
 
+    if (isDemo) return;
+
     try {
       await apios.put(`/goals/${goalId}/tasks/${taskId}`);
     } catch (e) {
@@ -207,6 +244,7 @@ const GoalItem: React.FC<GoalItemProps> = ({
       })
     );
 
+    if (isDemo) return;
     try {
       await handleGoalUpdate(
         goal.id,
