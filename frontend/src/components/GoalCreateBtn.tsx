@@ -89,7 +89,7 @@ export const GoalCreateBtn: React.FC<{
   };
 
   const menuItemIconSX = {
-    mr: 0.5,
+    mr: 1,
     height: '36px',
   };
 
@@ -169,18 +169,12 @@ export const GoalCreateBtn: React.FC<{
       >
         <ArrowDownIcon />
       </IconButton>
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        sx={{
-          maxWidth: '200px',
-        }}
-      >
+      <Menu anchorEl={anchorEl} open={open} onClose={handleClose} sx={{}}>
         <MenuItem onClick={() => handleTodayDate() && handleAddGoal()}>
           <Box
             sx={{
               ...boxSX,
+              maxWidth: '200px',
             }}
           >
             <TodayIcon
@@ -192,7 +186,8 @@ export const GoalCreateBtn: React.FC<{
               variant="body1"
               sx={{
                 flexGrow: 1,
-                textAlign: 'right',
+                m: 0,
+                p: 0,
               }}
             >
               Today's Date
@@ -218,6 +213,8 @@ export const GoalCreateBtn: React.FC<{
                 variant="body1"
                 sx={{
                   flexGrow: 1,
+                  m: 0,
+                  p: 0,
                 }}
               >
                 {template.text}
