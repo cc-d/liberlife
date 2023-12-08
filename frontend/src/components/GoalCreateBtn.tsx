@@ -146,7 +146,7 @@ export const GoalCreateBtn: React.FC<{
           variant="body1"
           sx={{
             flexGrow: 1,
-            color: theme.palette.text.primary,
+            color: theme.palette.primary.contrastText,
             textAlign: 'center',
 
             mr: 0.5,
