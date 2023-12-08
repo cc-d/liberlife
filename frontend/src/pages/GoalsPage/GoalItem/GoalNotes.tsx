@@ -8,33 +8,17 @@ import {
   Divider,
   Tooltip,
 } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import SaveIcon from '@mui/icons-material/Save';
 import { GoalOut } from '../../../api';
 import { useThemeContext } from '../../../contexts/ThemeContext';
-import green from '@mui/material/colors/green';
-import grey from '@mui/material/colors/grey';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
-import UpdateIcon from '@mui/icons-material/Update';
-import MoreTimeIcon from '@mui/icons-material/MoreTime';
-import AddAlarmIcon from '@mui/icons-material/AddAlarm';
-import AddTaskIcon from '@mui/icons-material/AddTask';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import RefreshIcon from '@mui/icons-material/Refresh';
 import SyncIcon from '@mui/icons-material/Sync';
-import { AddCircle } from '@mui/icons-material';
 
 interface GoalNotesProps {
   goal: GoalOut;
   onSaveNotes: (notes: string | null) => void;
   latestUpdate: string | null;
-}
-
-interface NoNotesViewProps {
-  latestUpdate: string | null;
-  createdOn: string;
-  onEdit: () => void;
 }
 
 const renderFormattedNotes = (goal: GoalOut) => {
@@ -155,7 +139,7 @@ const CreateUpdateElem: React.FC<{ goal: GoalOut; isType: string }> = ({
       <SyncIcon sx={dIconSX} />
     );
   return (
-    <Tooltip title={`${elemType} on`} arrow placement="bottom-start">
+    <Tooltip title={`${elemType} on`} arrow placement="top-start">
       <Box
         sx={{
           display: 'flex',
@@ -165,6 +149,7 @@ const CreateUpdateElem: React.FC<{ goal: GoalOut; isType: string }> = ({
           alignSelf: 'bottom',
           justifyContent: 'bottom',
           p: 0.25,
+          pl: elemType === 'created' ? 0.25 : 0.75,
         }}
       >
         {dIcon}
@@ -217,6 +202,12 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
     });
   }
 
+  const iBtnSX = {
+    borderRadius: 0,
+
+    overflow: 'visible',
+  };
+
   return (
     <Box
       sx={{
@@ -231,7 +222,6 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
           sx={{
             display: 'flex',
             flexDirection: 'row',
-            alignItems: 'stretch',
             flexGrow: 1,
           }}
         >
@@ -254,7 +244,7 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
           />
           <IconButton
             sx={{
-              borderRadius: 0,
+              ...iBtnSX,
             }}
             onClick={handleSaveNotes}
             aria-label="save notes"
@@ -286,8 +276,10 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
                 width: '100%',
                 whiteSpace: 'pre-wrap',
                 p: 0.5,
+
                 m: 0,
                 lineHeight: 1.25,
+                pb: 3.5,
               }}
             >
               {goal?.notes ? renderFormattedNotes(goal) : 'add notes...'}
@@ -295,7 +287,7 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
             <IconButton
               onClick={() => setIsEditingNotes(true)}
               sx={{
-                borderRadius: 0,
+                ...iBtnSX,
               }}
               aria-label="edit notes"
             >
@@ -303,46 +295,48 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
             </IconButton>
           </Box>
         </Box>
-      ) : null}
+      ) : (
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            flexGrow: 1,
+            justifyContent: 'flex-end',
+          }}
+        >
+          <Tooltip title="Add Note" arrow>
+            <IconButton
+              onClick={() => setIsEditingNotes(true)}
+              sx={{
+                ...iBtnSX,
+                justifyContent: 'flex-end',
+              }}
+              aria-label="add notes"
+            >
+              <EditNoteIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      )}
 
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          flexGrow: 1,
-        }}
-      >
-        <CreateUpdateElem goal={goal} isType="created" />
-        {latestUpdate && <CreateUpdateElem goal={goal} isType="updated" />}
+      {!isEditingNotes && (
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
 
-        {!goal?.notes && !isEditingNotes && (
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              flexGrow: 1,
-              justifyContent: 'flex-end',
-            }}
-          >
-            <Tooltip title="Add Note" arrow>
-              <IconButton
-                onClick={() => setIsEditingNotes(true)}
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'row',
+            position: 'absolute',
+            m: 0,
 
-                  justifyContent: 'flex-end',
-                  borderRadius: 0,
-                }}
-                aria-label="add notes"
-              >
-                <EditNoteIcon />
-              </IconButton>
-            </Tooltip>
-          </Box>
-        )}
-      </Box>
+            border: '0px solid orange',
+            p: 0,
+            mt: -3,
+          }}
+        >
+          <CreateUpdateElem goal={goal} isType="created" />
+          {latestUpdate && <CreateUpdateElem goal={goal} isType="updated" />}
+        </Box>
+      )}
     </Box>
   );
 };

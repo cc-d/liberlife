@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, TextField, IconButton, Divider } from '@mui/material';
+import { Box, TextField, IconButton, Divider, Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { GoalTaskOut, GoalOut } from '../../../api';
 import GoalTaskItem from './GoalTaskItem'; // Update the import statement
@@ -36,6 +36,10 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
     ? theme.palette.primary.main
     : theme.palette.text.primary;
 
+  const lockTipText = `${
+    taskGoal?.tasks_locked ? 'Unlock' : 'Lock'
+  } task sorting`;
+
   return (
     <Box
       sx={{
@@ -63,17 +67,19 @@ export const GoalTasks: React.FC<GoalTasksProps> = ({
             m: 0,
           }}
         >
-          <IconButton
-            aria-label="lock goal tasks"
-            sx={{
-              color: taskLockColor,
-              p: 1,
-              pl: 0.5,
-            }}
-            onClick={toggleTaskLock}
-          >
-            <LockIcon />
-          </IconButton>
+          <Tooltip title={lockTipText} arrow placement="top">
+            <IconButton
+              aria-label="lock goal tasks"
+              sx={{
+                color: taskLockColor,
+                p: 1,
+                pl: 0.5,
+              }}
+              onClick={toggleTaskLock}
+            >
+              <LockIcon />
+            </IconButton>
+          </Tooltip>
 
           <TextField
             variant="outlined"
