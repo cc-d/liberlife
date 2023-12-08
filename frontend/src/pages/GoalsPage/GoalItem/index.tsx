@@ -44,7 +44,7 @@ const getLongestStr = (goal: GoalOut): number => {
     }
   }
   goal.tasks.forEach((task) => {
-    if (task.text.length > longestStr) {
+    if (task?.text && task.text.length > longestStr) {
       longestStr = task.text.length;
     }
   });
@@ -143,23 +143,21 @@ const GoalItem: React.FC<GoalItemProps> = ({
       if (isDemo) {
         newTask = newDemoTask(newTaskText, goal);
       } else {
-        try {
-          newTask = await apios.post(`/goals/${goal.id}/tasks`, {
-            text: newTaskText,
-          });
-        } catch (e) {
-          console.error('Failed to add task:', e);
-          return;
-        }
+        const resp = await apios.post(`/goals/${goal.id}/tasks`, {
+          text: newTaskText,
+        });
+        newTask = resp.data;
       }
 
-      setTasks(tasks.concat(newTask));
+      console.log('newTask:', newTask);
+
+      setTasks([...tasks, newTask]);
       setGoals(
         goals.map((g) => {
           if (g.id === goal.id) {
             return {
               ...g,
-              tasks: g.tasks ? g.tasks.concat(newTask) : [],
+              tasks: [...g.tasks, newTask],
             };
           }
           return g;
