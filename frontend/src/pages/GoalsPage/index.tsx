@@ -12,13 +12,20 @@ export enum GBoardTypes {
   snapshot = 'snapshot',
 }
 
-const GoalsPage: React.FC<{ boardType: string }> = ({ boardType }) => {
-  const [goals, setGoals] = useState<GoalOut[]>([]);
+const GoalsPage: React.FC<{ boardType: string; boardGoals?: GoalOut[] }> = ({
+  boardType,
+  boardGoals = [],
+}) => {
+  const [goals, setGoals] = useState<GoalOut[]>(boardGoals);
   const navigate = useNavigate();
   const auth = useContext(AuthContext);
   const archived = boardType === GBoardTypes.archived;
 
   useEffect(() => {
+    if (boardType == GBoardTypes.demo) {
+      return;
+    }
+
     if (!localStorage.getItem('token') || (!auth?.userLoading && !auth?.user)) {
       navigate('/login');
       return;

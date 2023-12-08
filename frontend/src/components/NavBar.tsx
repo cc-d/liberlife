@@ -24,6 +24,12 @@ interface NavBarUserElemProps {
   handleLogout: () => void;
 }
 
+export enum PageTypes {
+  login = 'login',
+  demo = 'demo',
+  default = 'default',
+}
+
 const NavBarUserElem: React.FC<NavBarUserElemProps> = ({
   auth,
   handleLogout,
@@ -96,7 +102,12 @@ const NavBar: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState(false); // State for controlling drawer
   const theme = useThemeContext();
 
-  const isLoginPage = window.location.pathname === '/login';
+  const pageType: string =
+    window.location.pathname === '/login'
+      ? 'login'
+      : window.location.pathname === '/demo'
+      ? 'demo'
+      : 'default';
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen); // Toggles the state of the drawer
@@ -108,7 +119,7 @@ const NavBar: React.FC = () => {
   };
 
   useEffect(() => {
-    if (isLoginPage) {
+    if (pageType === 'login' || pageType === 'demo') {
       return;
     } else if ((!auth || !auth.user) && !auth?.userLoading) {
       if (!window.location.pathname.startsWith('/snapshots')) {
@@ -117,7 +128,7 @@ const NavBar: React.FC = () => {
     }
   }, [auth?.userLoading]);
 
-  if (window.location.pathname === '/login') {
+  if (pageType === PageTypes.login) {
     return null;
   }
 
@@ -182,7 +193,7 @@ const NavBar: React.FC = () => {
             </Typography>
           </Box>
 
-          {!isLoginPage && (
+          {pageType !== 'login' && (
             <NavBarUserElem auth={auth} handleLogout={handleLogout} />
           )}
         </Container>
