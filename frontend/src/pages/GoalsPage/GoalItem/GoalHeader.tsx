@@ -29,7 +29,6 @@ interface GoalHeaderProps {
   startEdit: () => void;
   handleDelete: () => void;
   anchorEl: null | HTMLElement;
-  maxElementWidth: string;
   handleArchive: () => void;
 }
 
@@ -45,7 +44,6 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
   startEdit,
   handleDelete,
   anchorEl,
-  maxElementWidth,
   handleArchive,
 }) => {
   const archText = goal.archived ? 'Unarchive' : 'Archive';

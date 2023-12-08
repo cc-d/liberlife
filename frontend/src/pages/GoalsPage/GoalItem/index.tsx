@@ -95,7 +95,6 @@ const GoalItem: React.FC<GoalItemProps> = ({
   const [tasks, setTasks] = useState<GoalOut['tasks']>(goal.tasks);
 
   const longestStr = useMemo(() => getLongestStr(goal), [goal]);
-  const maxElementWidth = longestStr >= 13 ? '98vw' : '47.6vw';
   const theme = useThemeContext();
 
   const [latestUpdate, createdDate] = useMemo(() => getGoalDates(goal), [goal]);
@@ -295,7 +294,6 @@ const GoalItem: React.FC<GoalItemProps> = ({
         startEdit={startEdit}
         handleDelete={() => handleGoalDelete(goal.id)}
         anchorEl={anchorEl}
-        maxElementWidth={maxElementWidth}
         handleArchive={handleArchive}
       />
       <Divider sx={{ backgroundColor: theme.theme.palette.divider }} />
