@@ -17,6 +17,7 @@ import { GoalIcon, TemplateIcon, SnapshotIcon } from './common';
 import grey from '@mui/material/colors/grey';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
+import PrviewIcon from '@mui/icons-material/Preview';
 
 const defPad = 2;
 
@@ -160,6 +161,12 @@ export const LeftDrawer: React.FC<LeftDrawerProps> = ({ dIsOpen, dToggle }) => {
           to="/profile"
           icon={<AccountBoxIcon />}
           primary="Profile"
+          theme={theme}
+        />
+        <LeftMenuLink
+          to="/demo"
+          icon={<PrviewIcon />}
+          primary="Demo"
           theme={theme}
         />
 

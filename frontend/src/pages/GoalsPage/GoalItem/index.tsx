@@ -244,12 +244,6 @@ const GoalItem: React.FC<GoalItemProps> = ({
           xs: `calc(${longestStr} * 16px + 32px)`,
           sm: 'fit-content',
         },
-        /*
-        maxWidth{
-          xs: longestStr < 13 ? `calc(max(${longestStr}, 150px))` : '100%',
-          sm: longestStr < 13 ? `calc(max(${longestStr}, 150px))` : '100%',
-        },
-        */
         mb: 0.5,
       }}
     >

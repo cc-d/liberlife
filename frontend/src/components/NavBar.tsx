@@ -15,8 +15,6 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle'; // User icon
 import { useNavigate } from 'react-router-dom';
 import { AuthContext, AuthContextProps } from '../contexts/AuthContext';
 import { useThemeContext } from '../contexts/ThemeContext';
-import { useNavBarContext } from '../contexts/NavBarContext';
-import ArchiveIcon from '@mui/icons-material/Archive'; // Archive icon
 
 import MenuIcon from '@mui/icons-material/Menu'; // Importing MenuIcon
 import LeftDrawer from './LeftDrawer';

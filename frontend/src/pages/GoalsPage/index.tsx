@@ -5,10 +5,18 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 import GoalBoard from './GoalBoard';
 
-const GoalsPage: React.FC<{ archived: boolean }> = ({ archived }) => {
+export enum GBoardTypes {
+  demo = 'demo',
+  default = 'default',
+  archived = 'archived',
+  snapshot = 'snapshot',
+}
+
+const GoalsPage: React.FC<{ boardType: string }> = ({ boardType }) => {
   const [goals, setGoals] = useState<GoalOut[]>([]);
   const navigate = useNavigate();
   const auth = useContext(AuthContext);
+  const archived = boardType === GBoardTypes.archived;
 
   useEffect(() => {
     if (!localStorage.getItem('token') || (!auth?.userLoading && !auth?.user)) {
@@ -31,7 +39,7 @@ const GoalsPage: React.FC<{ archived: boolean }> = ({ archived }) => {
     fetchGoals();
   }, [auth, navigate]);
 
-  return <GoalBoard goals={goals} setGoals={setGoals} archived={archived} />;
+  return <GoalBoard goals={goals} setGoals={setGoals} boardType={boardType} />;
 };
 
 export default GoalsPage;

@@ -11,7 +11,8 @@ import NavBar from '../components/NavBar';
 import SnapshotGoalBoard from '../pages/GoalsPage/SnapPage';
 import SnapsPage from '../pages/SnapsPage';
 import TemplatesPage from '../pages/TemplatesPage';
-
+import DemoPage from '../pages/DemoPage';
+import { GBoardTypes } from '../pages/GoalsPage';
 function App() {
   return (
     <ThemeProvider>
@@ -22,10 +23,14 @@ function App() {
             <NavBar />
             <Container maxWidth={false} sx={{ p: 1.5 }} disableGutters>
               <Routes>
-                <Route path="/" element={<GoalsPage archived={false} />} />
+                <Route path="/demo" element={<DemoPage />} />
+                <Route
+                  path="/"
+                  element={<GoalsPage boardType={GBoardTypes.default} />}
+                />
                 <Route
                   path="/archived"
-                  element={<GoalsPage archived={true} />}
+                  element={<GoalsPage boardType={GBoardTypes.archived} />}
                 />
                 <Route path="/snapshots" element={<SnapsPage />} />
                 <Route

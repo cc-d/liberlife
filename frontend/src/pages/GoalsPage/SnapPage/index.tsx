@@ -4,6 +4,7 @@ import { Typography, Container } from '@mui/material';
 import GoalBoard from '../GoalBoard';
 import apios from '../../../utils/apios';
 import { GoalOut } from '../../../api';
+import { GBoardTypes } from '..';
 
 const SnapshotGoalBoard: React.FC = () => {
   const { uuid } = useParams<{ uuid: string }>();
@@ -36,8 +37,7 @@ const SnapshotGoalBoard: React.FC = () => {
     <GoalBoard
       goals={snapshotGoals}
       setGoals={setSnapshotGoals}
-      isSnapshot={true}
-      archived={false}
+      boardType={GBoardTypes.snapshot}
     />
   );
 };

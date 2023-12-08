@@ -10,24 +10,25 @@ import SortButton, {
 } from '../../components/SortButton';
 import GoalCreateBtn from '../../components/GoalCreateBtn';
 import { debounce } from '../../utils/helpers';
+import { GBoardTypes } from '.';
 
 interface GoalBoardProps {
   goals: GoalOut[];
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>;
-  archived: boolean;
-  isSnapshot?: boolean;
+  boardType: string;
 }
 
 const GoalBoard: React.FC<GoalBoardProps> = ({
   goals,
   setGoals,
-  archived,
-  isSnapshot = false,
+  boardType,
 }) => {
   const [newGoalText, setNewGoalText] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<SortOrder>(
     (localStorage.getItem('sortOrder') as SortOrder) || SortOrder.Default
   );
+  const isArchived = boardType === GBoardTypes.archived;
+  const isSnapshot = boardType === GBoardTypes.snapshot;
 
   // eslint-disable-next-line
   const toggleSortOrder = useMemo(() => {
@@ -38,7 +39,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
   const sortedGoals = useMemo(
     () =>
       sortGoals(
-        goals.filter((goal) => goal.archived === archived),
+        goals.filter((goal) => goal.archived === isArchived),
         sortOrder
       ),
     // eslint-disable-next-line
@@ -94,15 +95,17 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
             }}
           >
             {isSnapshot
-              ? 'Goals Snapshot'
-              : archived
-              ? 'Archived Goals'
+              ? 'Snapshot'
+              : isArchived
+              ? 'Archived'
+              : boardType === GBoardTypes.demo
+              ? 'Demo'
               : 'Goals'}
           </Typography>
           <SortButton sortOrder={sortOrder} onSort={handleSortClick} />
         </Box>
 
-        {!isSnapshot && !archived ? (
+        {!isSnapshot && !isArchived ? (
           <GoalCreateBtn
             newGoalText={newGoalText}
             setNewGoalText={setNewGoalText}
