@@ -18,7 +18,7 @@ import grey from '@mui/material/colors/grey';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import PrviewIcon from '@mui/icons-material/Preview';
-
+import { alpha } from '@mui/material/styles';
 const defPad = 2;
 
 const LeftMenuLink: React.FC<any> = ({ to, icon, primary, onClick, theme }) => (
@@ -123,6 +123,10 @@ export const LeftDrawer: React.FC<LeftDrawerProps> = ({ dIsOpen, dToggle }) => {
               alignSelf: 'right',
               borderRadius: 5,
               display: 'flex',
+              border: `1px dashed ${alpha(
+                theme.theme.palette.text.primary,
+                0.1
+              )}`,
             }}
           >
             {theme.currentTheme === 'dark' ? (
