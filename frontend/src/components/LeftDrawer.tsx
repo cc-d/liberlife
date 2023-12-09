@@ -114,11 +114,11 @@ export const LeftDrawer: React.FC<LeftDrawerProps> = ({ dIsOpen, dToggle }) => {
               backgroundColor: 'inherit',
               ':hover': {
                 backgroundColor:
-                  theme.currentTheme === 'dark' ? grey[800] : grey[300],
+                  theme.currentTheme === 'dark' ? grey[800] : grey[200],
               },
               ':active': {
                 backgroundColor:
-                  theme.currentTheme === 'dark' ? grey[700] : grey[200],
+                  theme.currentTheme === 'dark' ? grey[800] : grey[200],
               },
               alignSelf: 'right',
               borderRadius: 5,
