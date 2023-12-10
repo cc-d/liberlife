@@ -45,7 +45,7 @@ Contains the backend API source code, including database models, routes, schemas
 
 #### mobile/
 
-Contains the mobile application codebase if one exists. This is where you would find the Android and iOS app implementations, typically in a framework like React Native.
+Contains the mobile application codebase if one exists. This is where you can find the Android app implementation 
 
 - `/app/`: The source code for the mobile app.
 - `/build/`: Compiled output for the mobile app.
