@@ -123,6 +123,6 @@ movetowww() {
     if [ -d "/var/www/html" ]; then
         sudo rm -r /var/www/html
     fi
-    sudo mv "$ROOTDIR/nginx/build /var/www/html"
+    sudo mv "$ROOTDIR/nginx/html /var/www/html"
     sudo systemctl restart nginx
 }
