@@ -111,6 +111,12 @@ runbuild() {
 
     echo "moving back .env from /tmp to $FRONTDIR"
     mv "/tmp/.env.bak" "$FRONTDIR/.env"
+
+    echo "removing previous html in nginx/html"
+    rm -r "$ROOTDIR/nginx/html"
+
+    echo "moving build to nginx/html"
+    mv "$FRONTDIR/build" "$ROOTDIR/nginx/html"
 }
 
 movetowww() {
