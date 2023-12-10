@@ -118,10 +118,8 @@ movetowww() {
     sudo rm -r /var/www/html
     sudo mv "$ROOTDIR/nginx/html" "/var/www/html"
     echo "substituting urls for $LIBLIFE_ENV"
-    WWWSAFEURL="https:\/\/$REACT_APP_HOST:$REACT_APP_PORT/api"
-    for f in $(find /var/www/html/static -type f -name "*.js"); do
-        echo "substituting $f"
-        sudo sed -i.bak "s/http:\/\/localhost:8999/$WWWSAFEURL/g" "$f"
-    done
+
+    find nginx/html/static/js/ -type f -print0 | xargs -0 sed -i '' 's#http://localhost:8999#https://life.liberfy.ai/api#g'
+
     sudo systemctl restart nginx
 }
