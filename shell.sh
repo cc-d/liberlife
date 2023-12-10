@@ -78,3 +78,45 @@ if [ -d "$HOME/.nvm" ]; then
 fi
 
 alias pytestargs='pytest tests -s -vv --show-capture=all -x --cov --cov-report=term-missing'
+
+
+runbuild() {
+    if ! nc -z localhost 8999; then
+        echo "uvicorn not running"
+        eval "uvistart" &
+        pid=$!
+        until nc -z localhost 8999; do
+            echo "waiting for uvicorn to start"
+            sleep 1
+
+            done
+        wait $pid
+    else
+        echo "uvicorn already running"
+    fi
+
+    echo "generating types"
+    gentypes
+
+    echo "mving $FRONTDIR/.env to /tmp"
+    mv "$FRONTDIR/.env" "/tmp/.env.bak"
+    ls -Aa /tmp/
+
+    echo "copying $ROOTDIR/.envs/prod.env to $FRONTDIR/.env"
+    cp "$ROOTDIR/.envs/prod.env" "$FRONTDIR/.env"
+
+
+    echo "building with prod.env in $FRONTDIR"
+    eval '(cd $FRONTDIR && npm run build)'
+
+    echo "moving back .env from /tmp to $FRONTDIR"
+    mv "/tmp/.env.bak" "$FRONTDIR/.env"
+}
+
+movetowww() {
+    if [ -d "/var/www/html" ]; then
+        sudo rm -r /var/www/html
+    fi
+    sudo mv "$FRONTDIR/build" /var/www/html
+    sudo systemctl restart nginx
+}
