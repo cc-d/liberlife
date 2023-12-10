@@ -4,27 +4,66 @@
 
 #### (no password requirements)
 
+See [https://life.liberfy.ai/demo](https://life.liberfy.ai/demo) for a non-persistent demo of the frontend.
+
 This seems like a fun, simple little project that may end up being useful. It's primarily intended as a personal life tracker tool for my own use.
 
 It's starting to look pretty good. If you use this, please attribute me in some way. If you use this to make money, attribute me some money.
+
+#### download android .apk
+
+There is an apk that can be downloaded from [https://life.liberfy.ai/liberlife.apk](https://life.liberfy.ai/liberlife.apk)
+
+### Project Structure
+
+#### frontend/
+
+This directory holds the React application including all source code, configurations, and dependencies.
+
+- `/build/`: Compiled production build of the React app.
+- `/public/`: Static assets like `favicon.ico` and `index.html` template.
+- `/src/`: Source code for the app including components, contexts, pages, and utilities.
+  - `/api/`: TypeScript files defining the API models, services, and schemas.
+  - `/app/`: Core application setup and theme configuration.
+  - `/components/`: Reusable React components used throughout the app.
+  - `/contexts/`: React context providers for application-wide state management.
+  - `/pages/`: Components representing entire pages in the app, organized by route.
+  - `/utils/`: Utility functions and helpers for various features in the app.
+
+#### api/
+
+Contains the backend API source code, including database models, routes, schemas, and utility functions.
+
+- `/alembic/`: Alembic migrations for database schema changes.
+- `/app/`: Core backend application files, including API route definitions.
+  - `/crud/`: CRUD utilities for database operations.
+  - `/db/`: Database session management and model definitions.
+  - `/routes/`: API endpoint definitions.
+  - `/schemas/`: Pydantic schemas for data validation and serialization.
+  - `/utils/`: Helper functions and utilities for the backend.
+- `/tests/`: Unit and integration tests for the API.
+
+#### mobile/
+
+Contains the mobile application codebase if one exists. This is where you would find the Android and iOS app implementations, typically in a framework like React Native.
+
+- `/app/`: The source code for the mobile app.
+- `/build/`: Compiled output for the mobile app.
+
+#### Lighthouse
+
+![!Lighthouse score](/static/lighthouse.png)
 
 #### Dark Mode Preview:
 
 ![!Dark Mode (default) preview](/static/dark0.png)
 ![!Dark Mode (default) preview](/static/dark1.png)
 ![!Dark Mode (default) preview](/static/dark2.png)
-![!Dark Mode (default) preview](/static/dark3.png)
 
 #### Light Mode Preview:
 
 ![!Lite Mode preview](/static/lite0.png)
 ![!Lite Mode preview](/static/lite1.png)
-
-l00kz gUd
-
-## async
-
-Every route and non-cpu bound route/query/test/whatever is async. async Because cool is.
 
 ## async tests
 
