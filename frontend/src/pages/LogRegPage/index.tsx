@@ -41,7 +41,7 @@ const LogRegPage: React.FC = () => {
       }
     } catch (error) {
       console.error('Error during login:', error);
-      alert(`Error during login: ${error}`);
+      handleErrors(error, ErrType.login);
     }
   };
 
@@ -58,14 +58,13 @@ const LogRegPage: React.FC = () => {
       }
     } catch (error) {
       console.error('Error during registration:', error);
-      alert(`Error during registration: ${error}`);
-      // Handle error, e.g. show a notification or message to the user
+      handleErrors(error, ErrType.register);
     }
   };
 
-  const handleErrors = (error: any) => {
+  const handleErrors = (error: any, errType: ErrType) => {
     console.error('Error during login/registration:', error);
-    const;
+    setErr(error, errType);
   };
 
   return (
