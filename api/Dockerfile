@@ -1,6 +1,8 @@
 FROM python:3.11-slim
+
+COPY . /api
 WORKDIR /api
-COPY ./reqs.txt reqs.txt
 RUN pip install --no-cache-dir -r reqs.txt
-COPY ./app /api/app
-CMD ["uvicorn", "app:main", "--host", "0.0.0.0", "--port", "9999"]
+RUN sed -i 's/localhost/db/g' alembic.ini
+
+EXPOSE 8999

@@ -1,6 +1,7 @@
 FROM node:20
+COPY . ./frontend
 WORKDIR /frontend
-COPY ./package*.json ./
 RUN npm install --loglevel verbose
-COPY . ./
-CMD ["npm", "start"]
+RUN npm run build
+
+EXPOSE 3999

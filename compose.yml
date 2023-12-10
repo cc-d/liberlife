@@ -1,35 +1,46 @@
-version: "3"
+version: '3'
 services:
   db:
     image: postgres:15
     ports:
-      - "5432:5432"
+      - '5432:5432'
     environment:
       - POSTGRES_USER=pguser
       - POSTGRES_PASSWORD=pgpass
       - POSTGRES_DB=liblifedb
+    volumes:
+      - liblifedb:/var/lib/postgresql/data
   api:
     build:
       context: ./api
     ports:
-      - "8999:8999"
+      - '8999:8999'
     depends_on:
       - db
     environment:
       - DB_HOST=db
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8999
+    command: sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8999"
   frontend:
     build:
       context: ./frontend
     ports:
-      - "3999:3999"
+      - '3999:3999'
     depends_on:
       - api
+    environment:
+      - PORT=3999
+      - API_URL=http://api:8999
+      - HOST=0.0.0.0
+    command: npm start
+
   nginx:
     build:
       context: ./nginx
     ports:
-      - "80:80"
+      - '80:80'
     depends_on:
       - api
       - frontend
+
+volumes:
+  liblifedb:
