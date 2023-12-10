@@ -1,9 +1,10 @@
 import React from 'react';
-import { Container, Typography, Box } from '@mui/material';
+import { Container, Typography, Box, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import apios from '../../utils/apios';
 import LogRegForm, { LogRegFormState } from './LogRegForm';
 import { useAuth } from '../../contexts/AuthContext';
+import { GoogleLogin } from 'react-google-login';
 
 const LogRegPage: React.FC = () => {
   const { login } = useAuth();
@@ -44,8 +45,28 @@ const LogRegPage: React.FC = () => {
     }
   };
 
+  const handleGoogleResponse = async (response: any) => {
+    try {
+      const googleData = { token: response.tokenId };
+      const backendResponse = await apios.post('/u/google_login', googleData);
+      if (backendResponse.data && backendResponse.data.access_token) {
+        localStorage.setItem('token', backendResponse.data.access_token);
+        login(response.profileObj.email, backendResponse.data.access_token);
+        navigate('/');
+      }
+    } catch (error) {
+      console.error('Error during Google login:', error);
+    }
+  };
+
   return (
     <Container component="main" maxWidth="xs">
+      <GoogleLogin
+        clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+        buttonText="Login with Google"
+        onSuccess={handleGoogleResponse}
+        onFailure={handleGoogleResponse}
+      />
       <Box
         sx={{
           marginTop: 8,
@@ -67,6 +88,12 @@ const LogRegPage: React.FC = () => {
         </Typography>
         <LogRegForm isRegister onSubmit={handleRegister} />
       </Box>
+      <Link href="/tos.html" target="_blank" rel="noopener">
+        Terms of Service
+      </Link>
+      <Link href="/privacy.html" target="_blank" rel="noopener">
+        Privacy Policy
+      </Link>
     </Container>
   );
 };
