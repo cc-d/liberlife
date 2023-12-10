@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import apios from '../../utils/apios';
 import LogRegForm, { LogRegFormState } from './LogRegForm';
 import { useAuth } from '../../contexts/AuthContext';
-import { GoogleLogin } from 'react-google-login';
 
 const LogRegPage: React.FC = () => {
   const { login } = useAuth();
@@ -61,12 +60,6 @@ const LogRegPage: React.FC = () => {
 
   return (
     <Container component="main" maxWidth="xs">
-      <GoogleLogin
-        clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-        buttonText="Login with Google"
-        onSuccess={handleGoogleResponse}
-        onFailure={handleGoogleResponse}
-      />
       <Box
         sx={{
           marginTop: 8,
