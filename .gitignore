@@ -59,3 +59,6 @@ build/
 *.iml
 *.hprof
 local.properties
+
+
+*.bak

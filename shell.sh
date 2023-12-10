@@ -116,10 +116,11 @@ runbuild() {
 
 movetowww() {
     sudo rm -r /var/www/html
+    find nginx/html/static -type f -print0 | xargs -0 sed -i.bak 's|http://localhost:8999|https://life.liberfy.ai/api|'
     sudo mv "$ROOTDIR/nginx/html" "/var/www/html"
     echo "substituting urls for $LIBLIFE_ENV"
 
-    find nginx/html/static/js/ -type f -print0 | xargs -0 sed -i '' 's#http://localhost:8999#https://life.liberfy.ai/api#g'
+
 
     sudo systemctl restart nginx
 }
