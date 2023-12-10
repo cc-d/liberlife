@@ -10,15 +10,15 @@ It's starting to look pretty good. If you use this, please attribute me in some 
 
 #### Dark Mode Preview:
 
-![Dark Mode (default) preview](/static/dark0.png)
-![Dark Mode (default) preview](/static/dark1.png)
-![Dark Mode (default) preview](/static/dark2.png)
-![Dark Mode (default) preview](/static/dark3.png)
+![!Dark Mode (default) preview](/static/dark0.png)
+![!Dark Mode (default) preview](/static/dark1.png)
+![!Dark Mode (default) preview](/static/dark2.png)
+![!Dark Mode (default) preview](/static/dark3.png)
 
 #### Light Mode Preview:
 
-![Lite Mode preview](/static/lite0.png)
-![Lite Mode preview](/static/lite1.png)
+![!Lite Mode preview](/static/lite0.png)
+![!Lite Mode preview](/static/lite1.png)
 
 l00kz gUd
 
