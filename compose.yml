@@ -38,14 +38,14 @@ services:
       - ./frontend:/frontend
       - /frontend/node_modules
 
-#  nginx:
-#    build:
-#      context: ./nginx
-#    ports:
-#      - '80:80'
-#    depends_on:
-#      - api
-#      - frontend
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - '80:80'
+    depends_on:
+      - api
+      - frontend
 
 volumes:
   liblifedb:
