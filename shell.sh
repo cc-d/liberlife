@@ -116,7 +116,7 @@ runbuild() {
     rm -r "$ROOTDIR/nginx/html"
 
     echo "moving build to nginx/html"
-    mv "$FRONTDIR/build" "$ROOTDIR/nginx/html"
+    sudo mv "$FRONTDIR/build" "$ROOTDIR/nginx/html"
 }
 
 movetowww() {

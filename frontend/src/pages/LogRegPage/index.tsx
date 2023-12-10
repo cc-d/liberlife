@@ -84,7 +84,12 @@ const LogRegPage: React.FC = () => {
       <Link href="/tos.html" target="_blank" rel="noopener">
         Terms of Service
       </Link>
-      <Link href="/privacy.html" target="_blank" rel="noopener">
+      <Link
+        href="/privpolicy.html"
+        target="_blank"
+        rel="noopener"
+        sx={{ ml: 1 }}
+      >
         Privacy Policy
       </Link>
     </Container>
