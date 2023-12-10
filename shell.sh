@@ -121,7 +121,7 @@ movetowww() {
     WWWSAFEURL="https:\/\/$REACT_APP_HOST:$REACT_APP_PORT/api"
     for f in $(find /var/www/html/static -type f -name "*.js"); do
         echo "substituting $f"
-        sudo sed -i "s/http:\/\/localhost:8999/https:\/\/$REACT_APP_HOST:$REACT_APP_PORT/g" $f
+        sudo sed -i.bak "s/http:\/\/localhost:8999/$WWWSAFEURL/g" "$f"
     done
     sudo systemctl restart nginx
 }
