@@ -119,6 +119,7 @@ movetowww() {
     sudo mv "$ROOTDIR/nginx/html" "/var/www/html"
     echo "substituting urls for $LIBLIFE_ENV"
     for f in $(find /var/www/html/static -type f -name "*.js"); do
+        echo "substituting $f"
         sudo sed -i "s/http:\/\/localhost:8999/https:\/\/$REACT_APP_HOST:$REACT_APP_PORT/g" $f
     done
     sudo systemctl restart nginx
