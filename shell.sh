@@ -100,11 +100,6 @@ runbuild() {
 
     echo "mving $FRONTDIR/.env to /tmp"
     mv "$FRONTDIR/.env" "/tmp/.env.bak"
-    ls -Aa /tmp/
-
-    echo "copying $ROOTDIR/.envs/prod.env to $FRONTDIR/.env"
-    cp "$ROOTDIR/.envs/prod.env" "$FRONTDIR/.env"
-
 
     echo "building with prod.env in $FRONTDIR"
     eval '(cd $FRONTDIR && npm run build)'
@@ -120,9 +115,9 @@ runbuild() {
 }
 
 movetowww() {
-    if [ -d "/var/www/html" ]; then
-        sudo rm -r /var/www/html
-    fi
-    sudo mv "$ROOTDIR/nginx/html /var/www/html"
+    sudo rm -r /var/www/html
+    sudo mv "$ROOTDIR/nginx/html" "/var/www/html"
+    echo "substituting urls for $LIBLIFE_ENV"
+    sudo sed -i "s/localhost:8999/$REACT_APP_HOST:$REACT_APP_PORT/g" /var/www/html/index.html
     sudo systemctl restart nginx
 }

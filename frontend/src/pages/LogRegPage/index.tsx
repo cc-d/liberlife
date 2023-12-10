@@ -1,13 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Container, Typography, Box, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import apios from '../../utils/apios';
 import LogRegForm, { LogRegFormState } from './LogRegForm';
 import { useAuth } from '../../contexts/AuthContext';
 
+const enum ErrType {
+  login = 'login',
+  register = 'register',
+}
+
 const LogRegPage: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [logErr, setLogErr] = useState<string>('');
+  const [regErr, setRegErr] = useState<string>('');
+
+  const setErr = (err: any, errType: ErrType): string => {
+    if (err.response && err.response.data && err.response.data.message) {
+      err = err.response.data.message;
+    } else if (err.message) {
+      err = err.message;
+    }
+
+    const errTxt = `${errType} error: ${err}`;
+    errType === ErrType.login ? setLogErr(errTxt) : setRegErr(errTxt);
+    return errTxt;
+  };
 
   const handleLogin = async (data: LogRegFormState) => {
     try {
@@ -44,18 +63,9 @@ const LogRegPage: React.FC = () => {
     }
   };
 
-  const handleGoogleResponse = async (response: any) => {
-    try {
-      const googleData = { token: response.tokenId };
-      const backendResponse = await apios.post('/u/google_login', googleData);
-      if (backendResponse.data && backendResponse.data.access_token) {
-        localStorage.setItem('token', backendResponse.data.access_token);
-        login(response.profileObj.email, backendResponse.data.access_token);
-        navigate('/');
-      }
-    } catch (error) {
-      console.error('Error during Google login:', error);
-    }
+  const handleErrors = (error: any) => {
+    console.error('Error during login/registration:', error);
+    const;
   };
 
   return (
@@ -71,6 +81,11 @@ const LogRegPage: React.FC = () => {
         <Typography component="h1" variant="h5">
           Login
         </Typography>
+        {logErr && (
+          <Typography component="p" variant="subtitle2" sx={{ color: 'red' }}>
+            {logErr}
+          </Typography>
+        )}
         <LogRegForm onSubmit={handleLogin} />
 
         <Typography component="h1" variant="h5" sx={{ mt: 3 }}>
@@ -79,6 +94,11 @@ const LogRegPage: React.FC = () => {
         <Typography component="p" variant="subtitle2" sx={{}}>
           *no password requirements
         </Typography>
+        {regErr && (
+          <Typography component="p" variant="subtitle2" sx={{ color: 'red' }}>
+            {regErr}
+          </Typography>
+        )}
         <LogRegForm isRegister onSubmit={handleRegister} />
       </Box>
       <Link href="/tos.html" target="_blank" rel="noopener">
