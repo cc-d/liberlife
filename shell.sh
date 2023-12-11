@@ -79,7 +79,6 @@ fi
 
 alias pytestargs='pytest tests -s -vv --show-capture=all -x --cov --cov-report=term-missing'
 
-
 runbuild() {
     if ! nc -z localhost 8999; then
         echo "uvicorn not running"
@@ -88,32 +87,17 @@ runbuild() {
         until nc -z localhost 8999; do
             echo "waiting for uvicorn to start"
             sleep 1
-
             done
         wait $pid
     else
         echo "uvicorn already running"
     fi
-
-    echo "generating types"
     gentypes
-
-    echo "mving $FRONTDIR/.env to /tmp"
     mv "$FRONTDIR/.env" "/tmp/.env.bak"
-
-    echo "building with prod.env in $FRONTDIR"
     eval '(cd $FRONTDIR && npm run build)'
-
-    echo "moving back .env from /tmp to $FRONTDIR"
     mv "/tmp/.env.bak" "$FRONTDIR/.env"
-
-    echo "removing previous html in nginx/html"
     rm -r "$ROOTDIR/nginx/html"
-
-    echo "moving build to nginx/html"
     sudo mv "$FRONTDIR/build" "$ROOTDIR/nginx/html"
-
-    echo "running fixhtmlinjs"
     fixhtmlinjs
 }
 
