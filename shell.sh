@@ -139,9 +139,10 @@ movetowww() {
     echo "resetting repo nginx/html to head"
     git reset "$ROOTDIR/nginx/html" && git checkout "$ROOTDIR/nginx/html"
 
-    for f in `find 'nginx/html' -type f`; do echo $f | sed 's/nginx\/html\///g'; done
-        echo "copying $f to nginx/html/$f"
-        sudo cp "$f" "nginx/html/$f"
+    for f in `find 'nginx/html' -type f`; do
+        _FF=$(echo $f | sed 's/nginx\/html\///g');
+        echo "copying $_FF to nginx/html/$_FF"
+        sudo cp "$_FF" "$ROOTDIR/nginx/html/$_FF"
     done
 
     sudo systemctl restart nginx
