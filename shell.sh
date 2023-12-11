@@ -112,15 +112,37 @@ runbuild() {
 
     echo "moving build to nginx/html"
     sudo mv "$FRONTDIR/build" "$ROOTDIR/nginx/html"
+
+    echo "running fixhtmlinjs"
+    fixhtmlinjs
 }
 
+fixhtmlinjs() {
+    for f in `find 'nginx/html/static/js' -type f`; do
+        if grep -q "http://localhost:8999" "$f"; then
+            echo "found http://localhost:8999 in $f replacing"
+            sed -i.bak 's|http://localhost:8999|https://life.liberfy.ai/api|' "$f"
+            rm "$f.bak"
+        else
+            echo "no http://localhost:8999 in $f"
+        fi
+    done
+}
+
+
 movetowww() {
-    sudo rm -r /var/www/html
-    find nginx/html/static -type f -print0 | xargs -0 sed -i.bak 's|http://localhost:8999|https://life.liberfy.ai/api|'
-    sudo mv "$ROOTDIR/nginx/html" "/var/www/html"
-    echo "substituting urls for $LIBLIFE_ENV"
+    [ -d "$ROOTDIR/nginx/html" ] && \
+        echo "nginx html exists at $ROOTDIR/nginx/html deleting" && \
+        sudo rm -r "$ROOTDIR/nginx/html" && \
+        mkdir "$ROOTDIR/nginx/html"
 
+    echo "resetting repo nginx/html to head"
+    git reset "$ROOTDIR/nginx/html" && git checkout "$ROOTDIR/nginx/html"
 
+    for f in `find 'nginx/html' -type f`; do echo $f | sed 's/nginx\/html\///g'; done
+        echo "copying $f to nginx/html/$f"
+        sudo cp "$f" "nginx/html/$f"
+    done
 
     sudo systemctl restart nginx
 }
