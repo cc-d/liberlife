@@ -123,7 +123,7 @@ movetowww() {
     echo "resetting repo nginx/html to head"
     git reset "nginx/html"; git checkout "nginx/html"
 
-    _FFOUT=''
+
     [ -d "/var/www/html" ] && sudo rm -r "/var/www/html/"
     sudo cp -r "$ROOTDIR/nginx/html" "/var/www/html"
 
