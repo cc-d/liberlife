@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, IconButton, Divider } from '@mui/material';
+import { Box, Typography, IconButton } from '@mui/material';
 import { GoalTaskOut, GoalOut, TaskStatus } from '../../../api';
 import {
   AssignmentOutlined as CircleOutlined,
