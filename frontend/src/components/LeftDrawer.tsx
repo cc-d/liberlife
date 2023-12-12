@@ -7,7 +7,6 @@ import {
   IconButton,
   Box,
 } from '@mui/material';
-import LogoutIcon from '@mui/icons-material/Logout';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import { Link as RouterLink } from 'react-router-dom';
