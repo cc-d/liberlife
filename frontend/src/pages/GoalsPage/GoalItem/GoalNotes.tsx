@@ -44,12 +44,6 @@ const CreateUpdateElem: React.FC<{ goal: GoalOut; isType: string }> = ({
     ? 'created'
     : 'updated';
 
-  const dIcon =
-    elemType === 'created' ? (
-      <AddCircleOutlineIcon sx={dIconSX} />
-    ) : (
-      <SyncIcon sx={dIconSX} />
-    );
   return (
     <Tooltip title={`${elemType} on`} arrow placement="top-start">
       <Box
@@ -64,7 +58,11 @@ const CreateUpdateElem: React.FC<{ goal: GoalOut; isType: string }> = ({
           pl: elemType === 'created' ? 0.25 : 0.75,
         }}
       >
-        {dIcon}
+        {elemType === 'created' ? (
+          <AddCircleOutlineIcon sx={dIconSX} />
+        ) : (
+          <SyncIcon sx={dIconSX} />
+        )}
         <Typography
           variant="caption"
           sx={{
@@ -200,10 +198,8 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
           sx={{
             display: 'flex',
             flexDirection: 'row',
-
             position: 'absolute',
             m: 0,
-
             border: '0px solid orange',
             p: 0,
             mt: -3,

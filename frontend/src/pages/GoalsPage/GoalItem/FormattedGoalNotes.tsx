@@ -34,7 +34,7 @@ const NoteLine: React.FC<{ line: string }> = ({ line }) => {
   };
 
   return (
-    <Typography variant="body2">
+    <Typography variant="body1">
       {parts.map((part, index) => renderPart(part, index))}
     </Typography>
   );
