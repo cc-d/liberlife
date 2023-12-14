@@ -14,7 +14,8 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import SyncIcon from '@mui/icons-material/Sync';
-import { renderFormattedNotes } from './helpers';
+import FormattedGoalNotes from './FormattedGoalNotes';
+
 interface GoalNotesProps {
   goal: GoalOut;
   onSaveNotes: (notes: string | null) => void;
@@ -163,7 +164,7 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
             <SaveAsIcon />
           </IconButton>
         </Box>
-      ) : goal?.notes ? (
+      ) : (
         <Box
           sx={{
             flexDirection: 'column',
@@ -180,21 +181,7 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
               width: '100%',
             }}
           >
-            <Typography
-              color={theme.theme.palette.text.primary}
-              sx={{
-                flexGrow: 1,
-                width: '100%',
-                whiteSpace: 'pre-wrap',
-                p: 0.5,
-
-                m: 0,
-                lineHeight: 1.25,
-                pb: 3.5,
-              }}
-            >
-              {goal?.notes ? renderFormattedNotes(goal) : 'add notes...'}
-            </Typography>
+            <FormattedGoalNotes goal={goal} />
             <IconButton
               onClick={() => setIsEditingNotes(true)}
               sx={{
@@ -205,28 +192,6 @@ export const GoalNotes: React.FC<GoalNotesProps> = ({
               <EditNoteIcon />
             </IconButton>
           </Box>
-        </Box>
-      ) : (
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            flexGrow: 1,
-            justifyContent: 'flex-end',
-          }}
-        >
-          <Tooltip title="Add Note" arrow>
-            <IconButton
-              onClick={() => setIsEditingNotes(true)}
-              sx={{
-                ...iBtnSX,
-                justifyContent: 'flex-end',
-              }}
-              aria-label="add notes"
-            >
-              <EditNoteIcon />
-            </IconButton>
-          </Tooltip>
         </Box>
       )}
 
