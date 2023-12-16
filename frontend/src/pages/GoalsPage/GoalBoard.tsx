@@ -3,12 +3,8 @@ import { Box, Typography, Divider } from '@mui/material';
 import { GoalOut } from '../../api';
 import apios from '../../utils/apios';
 import GoalBoardElem from './GoalBoardElem';
-import SortButton, {
-  SortOrder,
-  sortGoals,
-  sortOrders,
-} from '../../components/SortButton';
-import GoalCreateBtn from '../../components/GoalCreateBtn';
+import SortButton, { SortOrder, sortGoals, sortOrders } from './SortButton';
+import GoalCreateBtn from './GoalCreateBtn';
 import { debounce } from '../../utils/helpers';
 import { GBoardTypes } from '.';
 

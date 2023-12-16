@@ -57,7 +57,22 @@ async def create_goal_template(
     new_template = GoalTemplate(
         text=template_in.text, notes=template_in.notes, user_id=user.id
     )
-    await async_addcomref(db, new_template)
+    print(new_template, '@@@@@')
+    db.add(new_template)
+    await db.commit()
+    await db.refresh(new_template)
+
+    print(new_template, '@@@@@')
+    if template_in.tasks and new_template:
+        for task_in in template_in.tasks:
+            new_task = TemplateTask(
+                text=task_in.text, template_id=new_template.id
+            )
+            db.add(new_task)
+
+    await db.commit()
+    await db.refresh(new_template)
+
     return new_template
 
 
@@ -82,7 +97,33 @@ async def update_goal_template(
 ):
     template = await get_template_or_404(template_id, user, db)
     for var, value in vars(template_in).items():
-        setattr(template, var, value) if value else None
+        if var not in ("tasks", "notes", "text"):
+            continue
+        elif var == "tasks":
+            for task_in in value:
+                if not hasattr(task_in, "id"):
+                    task = TemplateTask(
+                        **task_in.dict(), template_id=template_id
+                    )
+                else:
+                    task = await get_task_or_404(task_in.id, template_id, db)
+                    for task_var, task_value in vars(task_in).items():
+                        (
+                            setattr(task, task_var, task_value)
+                            if task_value
+                            else None
+                        )
+                db.add(task)
+        else:
+            setattr(template, var, value) if value else None
+
+    for task in template.tasks:
+        if hasattr(task, "id"):
+            if task.id not in [
+                t.id for t in template_in.tasks if hasattr(t, "id")
+            ]:
+                await db.delete(task)
+
     await db.commit()
     await db.refresh(template)
     return template

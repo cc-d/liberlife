@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography, Tooltip } from '@mui/material';
-import { GoalOut } from '../api';
+import { GoalOut } from '../../../api';
 import SyncIcon from '@mui/icons-material/Sync';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 

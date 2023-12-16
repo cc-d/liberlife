@@ -10,34 +10,56 @@ const NoteLine: React.FC<{ line: string }> = ({ line }) => {
   // Split the line into parts
   const parts = line.split(regex).filter(Boolean);
 
+  const linkSX = {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    display: 'inline-block',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
+    alignSelf: 'center',
+  };
+
+  const typoSX = {
+    m: 0,
+    p: 0,
+    lineHeight: 1.25,
+    maxWidth: 'calc(min(100%, 800px))',
+    overflow: 'hidden',
+    display: 'inline-flex',
+    flexGrow: 1,
+    flexDirection: 'row',
+  };
+
   // Render each part
   const renderPart = (part: string, index: number) => {
     // Check if the part is a Markdown link
     if (part.startsWith('[')) {
       const [text, url] = part.slice(1, -1).split('](');
       return (
-        <Link key={index} href={url}>
-          {text}
-        </Link>
+        <Typography key={`typo-${index}`} sx={typoSX}>
+          <Link component={'a'} sx={linkSX} key={`link-${index}`} href={url}>
+            {text}
+          </Link>
+        </Typography>
       );
     }
     // Check if the part is a raw URL
     else if (part.startsWith('http')) {
       return (
-        <Link key={index} href={part}>
-          {part}
-        </Link>
+        <Typography key={`typo-${index}`} sx={typoSX}>
+          <Link component={'a'} sx={linkSX} key={`link-${index}`} href={part}>
+            {part}
+          </Link>
+        </Typography>
       );
     }
     // Otherwise, return as normal text
-    return part;
+    return <span key={`span-${index}`}>{part}</span>;
   };
 
-  return (
-    <Typography variant="body1">
-      {parts.map((part, index) => renderPart(part, index))}
-    </Typography>
-  );
+  return <Box>{parts.map((part, index) => renderPart(part, index))}</Box>;
 };
 
 const FormattedGoalNotes: React.FC<{ goal: GoalOut }> = ({ goal }) => {
@@ -50,7 +72,7 @@ const FormattedGoalNotes: React.FC<{ goal: GoalOut }> = ({ goal }) => {
       color={theme.palette.text.primary}
       sx={{
         flexGrow: 1,
-        width: '100%',
+        maxWidth: 'calc(min(100%, 100vw - 70px))',
         whiteSpace: 'pre-wrap',
         p: 0.5,
 

@@ -4,8 +4,8 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import SortIcon from '@mui/icons-material/Sort'; // This is the default icon for 'Sort'
 import FilterListIcon from '@mui/icons-material/FilterList'; // New icon for 'Default'
-import { GoalOut } from '../api';
-import theme from '../app/theme';
+import { GoalOut } from '../../api';
+import theme from '../../app/theme';
 export interface SortIconMapping {
   icon: React.ElementType;
   label: string;

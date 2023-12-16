@@ -27,11 +27,13 @@ class GoalTemplateDB(TextBase, IDCommon):
 class GoalTemplateIn(BaseModel):
     text: str
     notes: Optional[str] = None
+    tasks: Optional[List[TemplateTaskIn]] = None
 
 
 class GoalTemplateUpdate(BaseModel):
     text: Optional[str] = None
     notes: Optional[str] = None
+    tasks: Optional[List[TemplateTaskIn | TemplateTaskDB]] = None
 
 
 class GoalBase(TextBase):

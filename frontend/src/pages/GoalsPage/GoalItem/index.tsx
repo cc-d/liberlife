@@ -272,7 +272,7 @@ const GoalItem: React.FC<GoalItemProps> = ({
         ml: 0.25,
         mr: 0.25,
 
-        maxWidth: `calc(min(calc(${longestStr} * 16)px, 100%))`,
+        maxWidth: '100%',
         minWidth: '140px',
 
         width: {
@@ -280,6 +280,7 @@ const GoalItem: React.FC<GoalItemProps> = ({
           sm: 'fit-content',
         },
         mb: 0.5,
+        overflow: 'hidden',
       }}
     >
       <GoalHeader

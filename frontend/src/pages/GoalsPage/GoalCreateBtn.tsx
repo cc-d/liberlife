@@ -8,10 +8,10 @@ import {
   Typography,
 } from '@mui/material';
 import ArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { useThemeContext } from '../contexts/ThemeContext';
-import apios from '../utils/apios';
-import { GoalTemplateDB } from '../api';
-import { TemplateIcon } from './common';
+import { useThemeContext } from '../../contexts/ThemeContext';
+import apios from '../../utils/apios';
+import { GoalTemplateDB } from '../../api';
+import { TemplateIcon } from '../../components/common';
 import TodayIcon from '@mui/icons-material/Today';
 
 export const GoalCreateBtn: React.FC<{
