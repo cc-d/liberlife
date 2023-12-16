@@ -1,6 +1,6 @@
 import { GoalOut, TaskStatus } from '../../api';
 
-export const FakeGoals: GoalOut[] = [
+export const FakeGoals: any = [
   {
     created_on: '2023-12-16T09:13:59.315389Z',
     updated_on: '2023-12-16T09:14:28.866512Z',
