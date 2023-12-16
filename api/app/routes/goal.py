@@ -71,7 +71,8 @@ async def create_goal(
 
         newtxt = ngtemp.text
         if ngtemp.use_todays_date:
-            newtxt = f'{dt.now().strftime("%Y-%m-%d")} {newtxt}'
+            # dec 23, 2023
+            newtxt = f'{dt.now().strftime("%b %d, %Y")} {newtxt}'
         ngtasks = []
         if ngtemp.tasks:
             ngtasks = [
