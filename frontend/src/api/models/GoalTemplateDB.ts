@@ -11,5 +11,6 @@ export type GoalTemplateDB = {
     user_id: number;
     tasks: Array<TemplateTaskDB>;
     notes?: (string | null);
+    use_todays_date: boolean;
 };
 

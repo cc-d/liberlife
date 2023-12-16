@@ -9,5 +9,6 @@ export type GoalTemplateIn = {
     text: string;
     notes?: (string | null);
     tasks?: (Array<TemplateTaskIn> | null);
+    use_todays_date?: (boolean | null);
 };
 

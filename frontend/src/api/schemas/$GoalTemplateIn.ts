@@ -27,5 +27,13 @@ export const $GoalTemplateIn = {
                 type: 'null',
             }],
         },
+        use_todays_date: {
+            type: 'any-of',
+            contains: [{
+                type: 'boolean',
+            }, {
+                type: 'null',
+            }],
+        },
     },
 } as const;

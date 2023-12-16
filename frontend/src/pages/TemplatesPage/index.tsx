@@ -11,6 +11,7 @@ import {
   DialogActions,
   TextField,
   Divider,
+  Checkbox,
   IconButton,
 } from '@mui/material';
 import apios from '../../utils/apios';
@@ -57,16 +58,19 @@ const TemplatePage = () => {
     setCurrentTemplate(null);
   };
 
-  const handleSaveTemplate = async () => {
+  const handleSaveTemplate = async (useTodaysDate?: boolean) => {
+    console.log('currentTemplate', currentTemplate);
     if (currentTemplate && currentTemplate.id) {
       await apios.put(`/templates/${currentTemplate.id}`, {
         text: currentTemplate.text,
-        tasks: currentTemplate.tasks, // Include tasks when updating
+        tasks: currentTemplate.tasks,
+        use_todays_date: useTodaysDate !== undefined ? useTodaysDate : false,
       });
     } else if (currentTemplate) {
       await apios.post('/templates', {
         text: currentTemplate.text,
-        tasks: currentTemplate.tasks, // Include tasks when creating
+        tasks: currentTemplate.tasks,
+        use_todays_date: useTodaysDate !== undefined ? useTodaysDate : false,
       });
     }
     handleCloseDialog();
@@ -159,6 +163,35 @@ const TemplatePage = () => {
             sx={{
               display: 'flex',
               flexDirection: 'row',
+              alignItems: 'center',
+              p: 0,
+              m: 0,
+              justifyContent: 'flex-start',
+              width: '100%',
+            }}
+          >
+            {currentTemplate && (
+              <Checkbox
+                checked={
+                  currentTemplate && currentTemplate.use_todays_date
+                    ? true
+                    : false
+                }
+                onChange={(e) =>
+                  setCurrentTemplate({
+                    ...currentTemplate,
+                    use_todays_date: e.target.checked,
+                  })
+                }
+              />
+            )}
+
+            <Typography>Use today's date?</Typography>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
               alignItems: 'flex-start',
               m: 0,
               p: 0,
@@ -174,6 +207,7 @@ const TemplatePage = () => {
               value={newTask}
               onChange={handleTaskChange}
             />
+
             <Button
               variant="contained"
               sx={{
@@ -188,6 +222,7 @@ const TemplatePage = () => {
               Add Task
             </Button>
           </Box>
+
           {currentTemplate?.tasks?.map((task, index) => (
             <Box
               key={index}
@@ -212,8 +247,15 @@ const TemplatePage = () => {
           ))}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button onClick={handleSaveTemplate}>Save</Button>
+          <Button variant="contained" onClick={handleCloseDialog}>
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => handleSaveTemplate(currentTemplate?.use_todays_date)}
+          >
+            Save
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>

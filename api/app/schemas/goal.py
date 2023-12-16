@@ -22,18 +22,21 @@ class GoalTemplateDB(TextBase, IDCommon):
     user_id: int
     tasks: List[TemplateTaskDB]
     notes: Optional[str] = None
+    use_todays_date: bool
 
 
 class GoalTemplateIn(BaseModel):
     text: str
     notes: Optional[str] = None
     tasks: Optional[List[TemplateTaskIn]] = None
+    use_todays_date: Optional[bool] = None
 
 
 class GoalTemplateUpdate(BaseModel):
     text: Optional[str] = None
     notes: Optional[str] = None
     tasks: Optional[List[TemplateTaskIn | TemplateTaskDB]] = None
+    use_todays_date: Optional[bool] = None
 
 
 class GoalBase(TextBase):

@@ -31,5 +31,9 @@ export const $GoalTemplateDB = {
                 type: 'null',
             }],
         },
+        use_todays_date: {
+            type: 'boolean',
+            isRequired: true,
+        },
     },
 } as const;

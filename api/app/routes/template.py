@@ -54,15 +54,22 @@ async def create_goal_template(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_adb),
 ):
-    new_template = GoalTemplate(
-        text=template_in.text, notes=template_in.notes, user_id=user.id
+    use_todays_date = (
+        template_in.use_todays_date
+        if hasattr(template_in, "use_todays_date")
+        else False
     )
-    print(new_template, '@@@@@')
+
+    new_template = GoalTemplate(
+        text=template_in.text,
+        notes=template_in.notes,
+        user_id=user.id,
+        use_todays_date=use_todays_date,
+    )
     db.add(new_template)
     await db.commit()
     await db.refresh(new_template)
 
-    print(new_template, '@@@@@')
     if template_in.tasks and new_template:
         for task_in in template_in.tasks:
             new_task = TemplateTask(
