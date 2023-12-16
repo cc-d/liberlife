@@ -10,6 +10,7 @@ git fetch
 if [ "$(git rev-list HEAD...origin/main --count)" -ne 0 ]; then
     # Pull the latest changes
     git pull
+    cp -r /home/cary/liberlife/nginx/html/* /var/www/html/
 else
     echo "No changes to pull."
 fi
