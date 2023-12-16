@@ -103,33 +103,28 @@ async def update_goal_template(
     db: AsyncSession = Depends(get_adb),
 ):
     template = await get_template_or_404(template_id, user, db)
-    for var, value in vars(template_in).items():
-        if var not in ("tasks", "notes", "text"):
-            continue
-        elif var == "tasks":
-            for task_in in value:
-                if not hasattr(task_in, "id"):
-                    task = TemplateTask(
-                        **task_in.dict(), template_id=template_id
-                    )
-                else:
-                    task = await get_task_or_404(task_in.id, template_id, db)
-                    for task_var, task_value in vars(task_in).items():
-                        (
-                            setattr(task, task_var, task_value)
-                            if task_value
-                            else None
+    for _attr in ['tasks', 'use_todays_date', 'notes', 'text']:
+        if (
+            hasattr(template_in, _attr)
+            and getattr(template_in, _attr) is not None
+        ):
+            if _attr == 'tasks':
+                for task_in in getattr(template_in, _attr):
+                    if hasattr(task_in, 'id'):
+                        task = await get_task_or_404(
+                            task_in.id, template_id, db
                         )
-                db.add(task)
-        else:
-            setattr(template, var, value) if value else None
+                        task.text = task_in.text
+                    else:
+                        new_task = TemplateTask(
+                            text=task_in.text, template_id=template_id
+                        )
+                        db.add(new_task)
+            else:
+                setattr(template, _attr, getattr(template_in, _attr))
+            print(_attr, getattr(template_in, _attr), 'getattr')
 
-    for task in template.tasks:
-        if hasattr(task, "id"):
-            if task.id not in [
-                t.id for t in template_in.tasks if hasattr(t, "id")
-            ]:
-                await db.delete(task)
+    await async_addcomref(db, template)
 
     await db.commit()
     await db.refresh(template)

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Box,
   Button,
@@ -27,10 +27,18 @@ const TemplatePage = () => {
     null
   );
   const [newTask, setNewTask] = useState('');
+  const [useTodaysDate, setUseTodaysDate] = useState(false);
+  const { theme } = useThemeContext();
 
   useEffect(() => {
     fetchTemplates();
   }, []);
+
+  useMemo(() => {
+    if (currentTemplate) {
+      setUseTodaysDate(currentTemplate.use_todays_date);
+    }
+  }, [templates]);
 
   const fetchTemplates = async () => {
     try {
@@ -58,23 +66,33 @@ const TemplatePage = () => {
     setCurrentTemplate(null);
   };
 
-  const handleSaveTemplate = async (useTodaysDate?: boolean) => {
+  const handleSaveTemplate = async () => {
     console.log('currentTemplate', currentTemplate);
     if (currentTemplate && currentTemplate.id) {
-      await apios.put(`/templates/${currentTemplate.id}`, {
+      const newTemp = await apios.put(`/templates/${currentTemplate.id}`, {
         text: currentTemplate.text,
         tasks: currentTemplate.tasks,
-        use_todays_date: useTodaysDate !== undefined ? useTodaysDate : false,
+        use_todays_date: useTodaysDate,
       });
-    } else if (currentTemplate) {
-      await apios.post('/templates', {
+      setCurrentTemplate(null);
+      setTemplates(
+        templates.map((template) =>
+          template.id === newTemp.data.id ? newTemp.data : template
+        )
+      );
+    } else {
+      if (!currentTemplate) {
+        return;
+      }
+      const newTemp = await apios.post('/templates', {
         text: currentTemplate.text,
         tasks: currentTemplate.tasks,
-        use_todays_date: useTodaysDate !== undefined ? useTodaysDate : false,
+        use_todays_date: useTodaysDate,
       });
+      setCurrentTemplate(null);
+      setTemplates([...templates, newTemp.data]);
     }
     handleCloseDialog();
-    fetchTemplates();
   };
   const handleDeleteTemplate = async (templateId: string) => {
     await apios.delete(`/templates/${templateId}`);
@@ -124,140 +142,186 @@ const TemplatePage = () => {
 
       {templates.map((iterTemp) => (
         <Box
-          key={iterTemp.id}
-          display="flex"
-          flexDirection="row"
-          alignItems="center"
+          sx={{
+            //backgroundColor: theme.palette.background.paper,
+            p: 1,
+            m: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+            width: 'fit-content',
+            border: '1px solid',
+
+            flexWrap: 'wrap',
+            borderRadius: '5px',
+            flexGrow: 1,
+            flexShrink: 1,
+            alignSelf: 'flex-start',
+          }}
         >
-          <TemplateIcon sx={{ mr: 1 }} />
-          <Typography>{iterTemp.text}</Typography>
-          <Button onClick={() => handleOpenDialog(iterTemp)}>Edit</Button>
-          <Button
-            onClick={() =>
-              iterTemp &&
-              iterTemp.id &&
-              handleDeleteTemplate(iterTemp.id.toString())
-            }
-          >
-            Delete
-          </Button>
-        </Box>
-      ))}
-
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>
-          {currentTemplate?.id ? 'Edit Template' : 'New Template'}
-        </DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="templateText"
-            label="Template Text"
-            fullWidth
-            variant="outlined"
-            value={currentTemplate?.text || ''}
-            onChange={handleTemplateChange}
-          />
+          <Typography variant="subtitle2" sx={{ mt: 1 }}>
+            Template
+          </Typography>
           <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              p: 0,
-              m: 0,
-              justifyContent: 'flex-start',
-              width: '100%',
-            }}
+            key={iterTemp.id}
+            display="flex"
+            flexDirection="row"
+            alignItems="center"
           >
-            {currentTemplate && (
-              <Checkbox
-                checked={
-                  currentTemplate && currentTemplate.use_todays_date
-                    ? true
-                    : false
-                }
-                onChange={(e) =>
-                  setCurrentTemplate({
-                    ...currentTemplate,
-                    use_todays_date: e.target.checked,
-                  })
-                }
-              />
-            )}
+            <TemplateIcon sx={{ mr: 1 }} />
 
-            <Typography>Use today's date?</Typography>
-          </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'flex-start',
-              m: 0,
-              p: 0,
-              mb: 1,
-            }}
-          >
-            <TextField
-              margin="dense"
-              id="templateTask"
-              label="Add Task"
-              fullWidth
-              variant="outlined"
-              value={newTask}
-              onChange={handleTaskChange}
-            />
-
+            <Typography>{iterTemp.text}</Typography>
+            <Button onClick={() => handleOpenDialog(iterTemp)}>Edit</Button>
             <Button
-              variant="contained"
-              sx={{
-                p: 0,
-                m: 0,
-                minWidth: '100px',
-                height: '60px',
-                alignSelf: 'flex-end',
-              }}
-              onClick={handleAddTask}
+              onClick={() =>
+                iterTemp &&
+                iterTemp.id &&
+                handleDeleteTemplate(iterTemp.id.toString())
+              }
             >
-              Add Task
+              Delete
             </Button>
           </Box>
 
-          {currentTemplate?.tasks?.map((task, index) => (
-            <Box
-              key={index}
-              display="flex"
-              flexDirection="row"
-              alignItems="center"
-            >
-              <Typography
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              m: 0,
+              p: 0,
+            }}
+          >
+            {iterTemp.tasks && iterTemp.tasks.length > 0 ? (
+              <Box
                 sx={{
                   display: 'flex',
                   flexDirection: 'row',
-                  flexGrow: 1,
+                  alignItems: 'flex-start',
+                  flexWrap: 'wrap',
+                  alignSelf: 'right',
+
+                  m: 0,
+                  p: 0,
                 }}
               >
-                <Task sx={{ mr: 1 }} />
-                {task.text}
-              </Typography>
-              <IconButton onClick={() => handleDeleteTask(index)}>
-                <Delete />
-              </IconButton>
-            </Box>
-          ))}
-        </DialogContent>
-        <DialogActions>
-          <Button variant="contained" onClick={handleCloseDialog}>
-            Cancel
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => handleSaveTemplate(currentTemplate?.use_todays_date)}
-          >
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'flex-start',
+                    flexWrap: 'wrap',
+                    alignSelf: 'flex-start',
+
+                    m: 0,
+                    p: 0,
+                  }}
+                >
+                  {iterTemp.tasks.map((task, index) => (
+                    <ListItem key={index}>
+                      <Task />
+                      <Typography>{task.text}</Typography>
+                    </ListItem>
+                  ))}
+                </Box>
+              </Box>
+            ) : null}
+
+            {/* Add template dialog */}
+            <Dialog open={openDialog} onClose={handleCloseDialog}>
+              <DialogTitle>
+                {currentTemplate?.id ? 'Edit Template' : 'New Template'}
+              </DialogTitle>
+              <DialogContent>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  id="templateText"
+                  label="Template Text"
+                  fullWidth
+                  variant="outlined"
+                  value={currentTemplate?.text || ''}
+                  onChange={handleTemplateChange}
+                />
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    p: 0,
+                    m: 0,
+                    justifyContent: 'flex-start',
+                    width: '100%',
+                  }}
+                >
+                  {currentTemplate ? (
+                    <>
+                      <Checkbox
+                        checked={useTodaysDate}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          setCurrentTemplate({
+                            ...currentTemplate,
+                            use_todays_date: !useTodaysDate,
+                          });
+                          setUseTodaysDate(!useTodaysDate);
+                        }}
+                      />
+
+                      <Typography>Use today's date?</Typography>
+                    </>
+                  ) : null}
+                </Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'flex-start',
+                    m: 0,
+                    p: 0,
+                  }}
+                >
+                  <TextField
+                    margin="dense"
+                    id="templateTask"
+                    label="Add Task"
+                    fullWidth
+                    variant="outlined"
+                    value={newTask}
+                    onChange={handleTaskChange}
+                  />
+
+                  <Button
+                    variant="contained"
+                    sx={{
+                      p: 0,
+                      m: 0,
+                      minWidth: '100px',
+                      height: '60px',
+                      alignSelf: 'flex-end',
+                    }}
+                    onClick={handleAddTask}
+                  >
+                    Add Task
+                  </Button>
+                </Box>
+              </DialogContent>
+              <DialogActions>
+                <Button variant="contained" onClick={handleCloseDialog}>
+                  Cancel
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => handleSaveTemplate()}
+                >
+                  Save
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </Box>
+        </Box>
+      ))}
     </Box>
   );
 };
