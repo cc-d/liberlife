@@ -102,7 +102,7 @@ runbuild() {
 }
 
 fixhtmlinjs() {
-    if [ "$REACT_APP_API_BASEURL" = "http://life.liberfy.ai/api" ]; then
+    if [ "$REACT_APP_API_BASEURL" = "https://life.liberfy.ai/api" ]; then
         echo "using prod url"
         _FIXURLS="http://life.liberfy.ai/api"
         _REPURLS="http://localhost:8999"
