@@ -16,5 +16,16 @@ export const $GoalTemplateIn = {
                 type: 'null',
             }],
         },
+        tasks: {
+            type: 'any-of',
+            contains: [{
+                type: 'array',
+                contains: {
+                    type: 'TemplateTaskIn',
+                },
+            }, {
+                type: 'null',
+            }],
+        },
     },
 } as const;

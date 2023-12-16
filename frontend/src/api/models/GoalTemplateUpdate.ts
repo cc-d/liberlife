@@ -6,5 +6,6 @@
 export type GoalTemplateUpdate = {
     text?: (string | null);
     notes?: (string | null);
+    tasks?: null;
 };
 
