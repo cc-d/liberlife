@@ -22,6 +22,14 @@ export const $GoalOut = {
             type: 'string',
             isRequired: true,
         },
+        template_id: {
+            type: 'any-of',
+            contains: [{
+                type: 'number',
+            }, {
+                type: 'null',
+            }],
+        },
         user_id: {
             type: 'number',
             isRequired: true,

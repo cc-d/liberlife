@@ -58,9 +58,28 @@ async def get_goal_task_from_id(
 
 
 async def new_goal(
-    text: str, user_id: int, db: AsyncSession = Depends(get_adb)
+    text: str,
+    user_id: int,
+    tasks: list[GoalTask] = [],
+    notes: str = None,
+    db: AsyncSession = Depends(get_adb),
 ) -> Goal:
     goal = Goal(text=text, user_id=user_id)
     await async_addcomref(db, goal)
+    newtasks = []
+    if tasks:
+        for task in tasks:
+            if notes is not None:
+                nt = GoalTask(text=task.text, goal_id=goal.id, notes=notes)
+            else:
+                nt = GoalTask(text=task.text, goal_id=goal.id)
+
+            db.add(nt)
+            newtasks.append(nt)
+        goal.tasks = newtasks
+
+    db.add(goal)
+    await db.commit()
+    await db.refresh(goal)
 
     return goal

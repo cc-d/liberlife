@@ -48,10 +48,13 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
     setSortOrder(nextSortOrder);
   };
 
-  const handleAddGoal = async (useText?: string) => {
+  const handleAddGoal = async (useText?: string, templateId?: string) => {
     if (useText || newGoalText.trim()) {
       const sendText = useText || newGoalText.trim();
-      const response = await apios.post('/goals', { text: sendText });
+      const payload = templateId
+        ? { text: sendText, template_id: templateId }
+        : { text: sendText };
+      const response = await apios.post('/goals', payload);
       if (response.data) {
         setGoals((prevGoals) => [...prevGoals, response.data]);
         setNewGoalText('');

@@ -11,6 +11,7 @@ export type GoalOut = {
     updated_on: string;
     id: number;
     text: string;
+    template_id?: (number | null);
     user_id: number;
     user: UserOut;
     tasks: Array<GoalTaskOut>;

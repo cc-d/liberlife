@@ -1,3 +1,4 @@
+from datetime import datetime as dt
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status, Body, Query
@@ -16,7 +17,7 @@ from ..crud.goal import (
 )
 from ..db import get_adb
 from ..db.common import async_addcomref
-from ..db.models import Goal, GoalTask, User
+from ..db.models import Goal, GoalTask, User, GoalTemplate
 from ..schemas import goal as GoalSchema, user as UserSchema
 from ..utils.dependencies import get_current_user
 from ..utils.httperrors import HTTP401, HTTP404, HTTP400, HTTP409
@@ -52,7 +53,41 @@ async def create_goal(
     cur_user: GoalSchema.UserOut = Depends(get_current_user),
     db: AsyncSession = Depends(get_adb),
 ):
-    ng = await new_goal(newgoal.text, user_id=cur_user.id, db=db)
+    if newgoal.template_id is not None:
+        stmt = select(GoalTemplate).where(
+            GoalTemplate.id == newgoal.template_id
+        )
+        ngtemp = await db.execute(stmt)
+        ngtemp = ngtemp.scalars().first()
+        if ngtemp is None:
+            raise HTTP400(
+                'Template for id: {} not found'.format(newgoal.template_id)
+            )
+        elif ngtemp.user_id != cur_user.id:
+            raise HTTP401(
+                '%s not authorized %s for tempid %s'
+                % (cur_user.id, ngtemp.user_id, newgoal.template_id)
+            )
+
+        newtxt = ngtemp.text
+        if ngtemp.use_todays_date:
+            newtxt = f'{dt.now().strftime("%Y-%m-%d")} {newtxt}'
+        ngtasks = []
+        if ngtemp.tasks:
+            ngtasks = [
+                GoalSchema.GoalTaskIn(text=t.text) for t in ngtemp.tasks
+            ]
+
+        ng = await new_goal(
+            newtxt,
+            user_id=cur_user.id,
+            tasks=ngtasks,
+            notes=ngtemp.notes,
+            db=db,
+        )
+
+    else:
+        ng = await new_goal(newgoal.text, user_id=cur_user.id, db=db)
     return ng
 
 

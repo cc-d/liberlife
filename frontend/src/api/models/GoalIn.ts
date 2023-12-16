@@ -5,5 +5,6 @@
 
 export type GoalIn = {
     text: string;
+    template_id?: (number | null);
 };
 

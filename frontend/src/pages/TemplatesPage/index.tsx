@@ -38,7 +38,7 @@ const TemplatePage = () => {
     if (currentTemplate) {
       setUseTodaysDate(currentTemplate.use_todays_date);
     }
-  }, [templates]);
+  }, [templates, openDialog]);
 
   const fetchTemplates = async () => {
     try {
@@ -133,7 +133,11 @@ const TemplatePage = () => {
     >
       <Typography variant="h4">Goal Templates</Typography>
       <Button
-        onClick={() => handleOpenDialog(null)}
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          handleOpenDialog(null);
+        }}
         variant="outlined"
         sx={{ my: 1 }}
       >
@@ -226,102 +230,147 @@ const TemplatePage = () => {
                 </Box>
               </Box>
             ) : null}
+          </Box>
+        </Box>
+      ))}
 
-            {/* Add template dialog */}
-            <Dialog open={openDialog} onClose={handleCloseDialog}>
-              <DialogTitle>
-                {currentTemplate?.id ? 'Edit Template' : 'New Template'}
-              </DialogTitle>
-              <DialogContent>
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  id="templateText"
-                  label="Template Text"
-                  fullWidth
-                  variant="outlined"
-                  value={currentTemplate?.text || ''}
-                  onChange={handleTemplateChange}
-                />
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    p: 0,
-                    m: 0,
-                    justifyContent: 'flex-start',
-                    width: '100%',
+      {/* Add template dialog */}
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>
+          {currentTemplate?.id ? 'Edit Template' : 'New Template'}
+        </DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="templateText"
+            label="Template Text"
+            fullWidth
+            variant="outlined"
+            value={currentTemplate?.text || ''}
+            onChange={handleTemplateChange}
+          />
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              p: 0,
+              m: 0,
+              justifyContent: 'flex-start',
+              width: '100%',
+            }}
+          >
+            {currentTemplate ? (
+              <>
+                <Checkbox
+                  checked={useTodaysDate}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    setCurrentTemplate({
+                      ...currentTemplate,
+                      use_todays_date: !useTodaysDate,
+                    });
+                    setUseTodaysDate(!useTodaysDate);
                   }}
-                >
-                  {currentTemplate ? (
-                    <>
-                      <Checkbox
-                        checked={useTodaysDate}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          e.preventDefault();
-                          setCurrentTemplate({
-                            ...currentTemplate,
-                            use_todays_date: !useTodaysDate,
-                          });
-                          setUseTodaysDate(!useTodaysDate);
-                        }}
-                      />
+                />
 
-                      <Typography>Use today's date?</Typography>
-                    </>
-                  ) : null}
-                </Box>
+                <Typography>Use today's date?</Typography>
+              </>
+            ) : null}
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'flex-start',
+              m: 0,
+              p: 0,
+            }}
+          >
+            <TextField
+              margin="dense"
+              id="templateTask"
+              label="Add Task"
+              fullWidth
+              variant="outlined"
+              value={newTask}
+              onChange={handleTaskChange}
+            />
+
+            <Button
+              variant="contained"
+              sx={{
+                p: 0,
+                m: 0,
+                minWidth: '100px',
+                height: '60px',
+                alignSelf: 'flex-end',
+              }}
+              onClick={handleAddTask}
+            >
+              Add Task
+            </Button>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'flex-start',
+              m: 0,
+              p: 0,
+            }}
+          >
+            <Typography variant="h6">Tasks</Typography>
+
+            {currentTemplate &&
+              currentTemplate.tasks &&
+              currentTemplate.tasks.length > 0 && (
                 <Box
                   sx={{
                     display: 'flex',
                     flexDirection: 'row',
                     alignItems: 'flex-start',
+                    flexWrap: 'wrap',
+                    alignSelf: 'right',
                     m: 0,
                     p: 0,
                   }}
                 >
-                  <TextField
-                    margin="dense"
-                    id="templateTask"
-                    label="Add Task"
-                    fullWidth
-                    variant="outlined"
-                    value={newTask}
-                    onChange={handleTaskChange}
-                  />
+                  {currentTemplate.tasks.map((task, index) => (
+                    <Box
+                      key={`${task.text}-${index}`}
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'flex-start',
+                        flexWrap: 'wrap',
+                        alignSelf: 'flex-start',
+                        m: 0,
+                        p: 0,
+                      }}
+                    >
+                      <Delete onClick={() => handleDeleteTask(index)} />
+                      <Typography>{task.text}</Typography>
+                      <Divider />
 
-                  <Button
-                    variant="contained"
-                    sx={{
-                      p: 0,
-                      m: 0,
-                      minWidth: '100px',
-                      height: '60px',
-                      alignSelf: 'flex-end',
-                    }}
-                    onClick={handleAddTask}
-                  >
-                    Add Task
-                  </Button>
+                      {/* <Divider sx={{ width: '100%' }} /> */}
+                    </Box>
+                  ))}
                 </Box>
-              </DialogContent>
-              <DialogActions>
-                <Button variant="contained" onClick={handleCloseDialog}>
-                  Cancel
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={() => handleSaveTemplate()}
-                >
-                  Save
-                </Button>
-              </DialogActions>
-            </Dialog>
+              )}
           </Box>
-        </Box>
-      ))}
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" onClick={handleCloseDialog}>
+            Cancel
+          </Button>
+          <Button variant="contained" onClick={() => handleSaveTemplate()}>
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

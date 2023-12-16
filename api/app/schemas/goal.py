@@ -45,7 +45,7 @@ class GoalBase(TextBase):
 
 
 class GoalIn(TextBase):
-    pass
+    template_id: Optional[int] = None
 
 
 class TaskStatus(str, Enum):

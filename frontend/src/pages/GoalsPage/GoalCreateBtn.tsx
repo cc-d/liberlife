@@ -17,7 +17,7 @@ import TodayIcon from '@mui/icons-material/Today';
 export const GoalCreateBtn: React.FC<{
   newGoalText: string;
   setNewGoalText: React.Dispatch<React.SetStateAction<string>>;
-  handleAddGoal: () => void;
+  handleAddGoal: (text?: string, templateId?: string) => void;
   handleTextChange: (val: string, submit?: boolean) => void;
 }> = ({ newGoalText, setNewGoalText, handleAddGoal, handleTextChange }) => {
   const { theme } = useThemeContext();
@@ -69,13 +69,13 @@ export const GoalCreateBtn: React.FC<{
   }, []);
 
   const handleTemplateSelect = async (templateId: string) => {
-    for (const template of templates) {
+    templates.forEach((template: GoalTemplateDB) => {
       if (template.id.toString() === templateId) {
         // Set the new goal text with the template text
-        handleTextChange(template.text, true);
-        break;
+        let newGoalText = template.text;
+        handleAddGoal(newGoalText, templateId);
       }
-    }
+    });
   };
 
   const boxSX = {
