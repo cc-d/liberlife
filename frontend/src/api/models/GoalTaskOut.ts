@@ -6,11 +6,10 @@
 import type { TaskStatus } from './TaskStatus';
 
 export type GoalTaskOut = {
-    created_on: string;
-    updated_on: string;
-    id: number;
-    status: TaskStatus;
-    goal_id: number;
-    text: string;
+  created_on: string;
+  updated_on: string;
+  id: number;
+  status: TaskStatus | string;
+  goal_id: number;
+  text: string;
 };
-
