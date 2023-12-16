@@ -104,12 +104,12 @@ runbuild() {
 fixhtmlinjs() {
     if [ "$REACT_APP_API_BASEURL" = "https://life.liberfy.ai/api" ]; then
         echo "using prod url"
-        _FIXURLS="http://life.liberfy.ai/api"
+        _FIXURLS="https://life.liberfy.ai/api"
         _REPURLS="http://localhost:8999"
     else
         echo "using local url"
         _FIXURLS="http://localhost:8999"
-        _REPURLS="http://life.liberfy.ai/api"
+        _REPURLS="https://life.liberfy.ai/api"
     fi
 
     for f in `find 'nginx/html/static/js' -type f`; do
