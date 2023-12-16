@@ -70,6 +70,9 @@ class GoalTemplate(CommonTemplate):
         lazy='joined',
     )
     user = relationship("User", back_populates="templates")
+    use_todays_date: Mapped[bool] = mapped_column(
+        Boolean, default=False, nullable=False
+    )
 
 
 class TemplateTask(CommonBase):
