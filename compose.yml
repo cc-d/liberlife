@@ -37,15 +37,17 @@ services:
     volumes:
       - ./frontend:/frontend
       - /frontend/node_modules
-
+      - ./nginx/html:/var/www/html
   nginx:
     build:
       context: ./nginx
     ports:
       - '80:80'
+      - '81:81'
     depends_on:
       - api
       - frontend
-
+    volumes:
+      - ./nginx/html:/var/www/html
 volumes:
   liblifedb:

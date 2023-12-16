@@ -102,13 +102,23 @@ runbuild() {
 }
 
 fixhtmlinjs() {
+    if [ "$REACT_APP_API_BASEURL" = "http://life.liberfy.ai/api" ]; then
+        echo "using prod url"
+        _FIXURLS="http://life.liberfy.ai/api"
+        _REPURLS="http://localhost:8999"
+    else
+        echo "using local url"
+        _FIXURLS="http://localhost:8999"
+        _REPURLS="http://life.liberfy.ai/api"
+    fi
+
     for f in `find 'nginx/html/static/js' -type f`; do
-        if grep -q "http://localhost:8999" "$f"; then
-            echo "found http://localhost:8999 in $f replacing"
-            sed -i.bak 's|http://localhost:8999|https://life.liberfy.ai/api|' "$f"
+        if grep -q "$_REPURLS" "$f"; then
+            echo "found $_REPURLS in $f replacing"
+            sed -i.bak "s|$_REPURLS|$_FIXURLS|" "$f"
             rm "$f.bak"
         else
-            echo "no http://localhost:8999 in $f"
+            echo "no $_REPURLS. in $f"
         fi
     done
 }
