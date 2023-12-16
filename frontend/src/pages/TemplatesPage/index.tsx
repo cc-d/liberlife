@@ -154,6 +154,7 @@ const TemplatePage = () => {
             flexDirection: 'column',
             alignItems: 'flex-start',
             width: 'fit-content',
+            maxWidth: 'fit-content',
             border: '1px solid',
 
             flexWrap: 'wrap',
@@ -163,18 +164,17 @@ const TemplatePage = () => {
             alignSelf: 'flex-start',
           }}
         >
-          <Typography variant="subtitle2" sx={{ mt: 1 }}>
-            Template
-          </Typography>
           <Box
-            key={iterTemp.id}
-            display="flex"
-            flexDirection="row"
-            alignItems="center"
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              m: 0,
+              p: 0,
+              width: '100%',
+            }}
           >
-            <TemplateIcon sx={{ mr: 1 }} />
-
-            <Typography>{iterTemp.text}</Typography>
             <Button onClick={() => handleOpenDialog(iterTemp)}>Edit</Button>
             <Button
               onClick={() =>
@@ -185,6 +185,11 @@ const TemplatePage = () => {
             >
               Delete
             </Button>
+          </Box>
+          <Box key={iterTemp.id} display="flex" flexDirection="row">
+            <TemplateIcon sx={{ mr: 1 }} />
+
+            <Typography>{iterTemp.text}</Typography>
           </Box>
 
           <Box
@@ -212,20 +217,53 @@ const TemplatePage = () => {
                 <Box
                   sx={{
                     display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'flex-start',
-                    flexWrap: 'wrap',
-                    alignSelf: 'flex-start',
+                    flexDirection: 'column',
 
                     m: 0,
                     p: 0,
                   }}
                 >
                   {iterTemp.tasks.map((task, index) => (
-                    <ListItem key={index}>
-                      <Task />
-                      <Typography>{task.text}</Typography>
-                    </ListItem>
+                    <Box
+                      key={index}
+                      sx={{
+                        Display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'flex-start',
+                        width: '100%',
+                        flexWrap: 'wrap',
+                        p: 1,
+
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          ml: 1,
+                        }}
+                      >
+                        {' '}
+                        <Task
+                          sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'flex-start',
+
+                            width: '100%',
+
+                            m: 0,
+                            p: 0,
+                          }}
+                        />
+                        {task.text}
+                      </Typography>
+                    </Box>
                   ))}
                 </Box>
               </Box>
