@@ -40,6 +40,10 @@ const TemplatePage = () => {
     }
   }, [templates, openDialog]);
 
+  useMemo(() => {
+    // set open dialog correctly
+  }, [currentTemplate?.tasks]);
+
   const fetchTemplates = async () => {
     try {
       const response = await apios.get('/templates');
@@ -247,14 +251,14 @@ const TemplatePage = () => {
                           ml: 1,
                         }}
                       >
-                        {' '}
                         <Task
                           sx={{
                             display: 'flex',
                             flexDirection: 'row',
                             alignItems: 'center',
                             justifyContent: 'flex-start',
-
+                            flexWrap: 'wrap',
+                            flexGrow: 1,
                             width: '100%',
 
                             m: 0,
@@ -354,13 +358,27 @@ const TemplatePage = () => {
           <Box
             sx={{
               display: 'flex',
-              flexDirection: 'row',
+              flexDirection: 'column',
               alignItems: 'flex-start',
               m: 0,
               p: 0,
             }}
           >
-            <Typography variant="h6">Tasks</Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                m: 0,
+                p: 0,
+                py: 1,
+                color: theme.palette.text.primary,
+              }}
+            >
+              Tasks
+            </Typography>
 
             {currentTemplate &&
               currentTemplate.tasks &&
@@ -369,31 +387,43 @@ const TemplatePage = () => {
                   sx={{
                     display: 'flex',
                     flexDirection: 'row',
-                    alignItems: 'flex-start',
-                    flexWrap: 'wrap',
-                    alignSelf: 'right',
-                    m: 0,
-                    p: 0,
+                    maxWidth: 'calc(min(100vw, 500px) - 32px)',
+
+                    overflow: 'auto',
+                    m: 1,
+                    p: 1,
                   }}
                 >
                   {currentTemplate.tasks.map((task, index) => (
                     <Box
                       key={`${task.text}-${index}`}
                       sx={{
-                        display: 'flex',
+                        display: 'inline-flex',
                         flexDirection: 'row',
-                        alignItems: 'flex-start',
                         flexWrap: 'wrap',
-                        alignSelf: 'flex-start',
-                        m: 0,
-                        p: 0,
+                        alignItems: 'center',
+                        flexGrow: 1,
+                        maxWidth: '100%',
+                        p: 1,
+                        minWidth: '100px',
+                        justifyContent: 'flex-start',
                       }}
                     >
-                      <Delete onClick={() => handleDeleteTask(index)} />
-                      <Typography>{task.text}</Typography>
-                      <Divider />
-
-                      {/* <Divider sx={{ width: '100%' }} /> */}
+                      <IconButton
+                        sx={{
+                          display: 'inline-flex',
+                          float: 'left',
+                          p: 0,
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          handleDeleteTask(index);
+                        }}
+                      >
+                        <Delete />
+                      </IconButton>
+                      <Typography sx={{}}>{task.text}</Typography>
                     </Box>
                   ))}
                 </Box>
