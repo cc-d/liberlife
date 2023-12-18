@@ -148,133 +148,134 @@ const TemplatePage = () => {
         Create New Template
       </Button>
 
-      {templates.map((iterTemp) => (
-        <Box
-          sx={{
-            //backgroundColor: theme.palette.background.paper,
-            p: 1,
-            m: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-start',
-            width: 'fit-content',
-            maxWidth: 'fit-content',
-            border: '1px solid',
-
-            flexWrap: 'wrap',
-            borderRadius: '5px',
-            flexGrow: 1,
-            flexShrink: 1,
-            alignSelf: 'flex-start',
-          }}
-        >
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'flex-start',
+        }}
+      >
+        {templates.map((iterTemp) => (
           <Box
             sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'flex-start',
-              m: 0,
-              p: 0,
-              width: '100%',
-            }}
-          >
-            <Button onClick={() => handleOpenDialog(iterTemp)}>Edit</Button>
-            <Button
-              onClick={() =>
-                iterTemp &&
-                iterTemp.id &&
-                handleDeleteTemplate(iterTemp.id.toString())
-              }
-            >
-              Delete
-            </Button>
-          </Box>
-          <Box key={iterTemp.id} display="flex" flexDirection="row">
-            <TemplateIcon sx={{ mr: 1 }} />
-
-            <Typography>{iterTemp.text}</Typography>
-          </Box>
-
-          <Box
-            sx={{
+              //backgroundColor: theme.palette.background.paper,
+              p: 1,
+              m: 1,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'flex-start',
-              m: 0,
-              p: 0,
+              width: 'fit-content',
+              maxWidth: 'fit-content',
+              border: '1px solid',
+
+              flexWrap: 'wrap',
+              borderRadius: '5px',
+              flexGrow: 1,
+              flexShrink: 1,
+              alignSelf: 'flex-start',
             }}
           >
-            {iterTemp.tasks && iterTemp.tasks.length > 0 ? (
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'flex-start',
-                  flexWrap: 'wrap',
-                  alignSelf: 'right',
-
-                  m: 0,
-                  p: 0,
-                }}
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                m: 0,
+                p: 0,
+                width: '100%',
+              }}
+            >
+              <Button onClick={() => handleOpenDialog(iterTemp)}>Edit</Button>
+              <Button
+                onClick={() =>
+                  iterTemp &&
+                  iterTemp.id &&
+                  handleDeleteTemplate(iterTemp.id.toString())
+                }
               >
+                Delete
+              </Button>
+            </Box>
+            <Box key={iterTemp.id} display="flex" flexDirection="row">
+              <TemplateIcon sx={{ mr: 1 }} />
+
+              <Typography>{iterTemp.text}</Typography>
+            </Box>
+
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                m: 0,
+                p: 0,
+              }}
+            >
+              {iterTemp.tasks && iterTemp.tasks.length > 0 ? (
                 <Box
                   sx={{
                     display: 'flex',
-                    flexDirection: 'column',
-
+                    flexDirection: 'row',
+                    alignItems: 'flex-start',
+                    flexWrap: 'wrap',
+                    alignSelf: 'right',
+                    width: '100%',
                     m: 0,
                     p: 0,
                   }}
                 >
-                  {iterTemp.tasks.map((task, index) => (
-                    <Box
-                      key={index}
-                      sx={{
-                        Display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'flex-start',
-                        width: '100%',
-                        flexWrap: 'wrap',
-                        p: 1,
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
 
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      <Typography
+                      m: 0,
+                      p: 0,
+                    }}
+                  >
+                    {iterTemp.tasks.map((task, index) => (
+                      <Box
+                        key={index}
                         sx={{
-                          display: 'flex',
+                          Display: 'flex',
                           flexDirection: 'row',
                           alignItems: 'center',
-                          ml: 1,
+                          width: '100%',
+                          flexWrap: 'wrap',
+                          p: 1,
+                          justifyContent: 'left',
+                          textAlign: 'left',
+                          //border: '1px solid pink',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
                         }}
                       >
-                        <Task
+                        <Typography
                           sx={{
-                            display: 'flex',
+                            display: 'inline-flex',
                             flexDirection: 'row',
                             alignItems: 'center',
-                            justifyContent: 'flex-start',
-                            flexWrap: 'wrap',
                             flexGrow: 1,
-                            width: '100%',
-
-                            m: 0,
-                            p: 0,
+                            flexWrap: 'nowrap',
                           }}
-                        />
-                        {task.text}
-                      </Typography>
-                    </Box>
-                  ))}
+                        >
+                          <Task
+                            sx={{
+                              mr: 1,
+                            }}
+                          />
+                          {task.text}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
                 </Box>
-              </Box>
-            ) : null}
+              ) : null}
+            </Box>
           </Box>
-        </Box>
-      ))}
+        ))}
+      </Box>
 
       {/* Add template dialog */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
