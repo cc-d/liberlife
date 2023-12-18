@@ -52,18 +52,18 @@ Contains the mobile application codebase if one exists. This is where you can fi
 
 #### Lighthouse
 
-![!Lighthouse score](/static/lighthouse.png)
+![!Lighthouse score](static/lighthouse.png)
 
 #### Dark Mode Preview:
 
-![!Dark Mode (default) preview](/static/dark0.png)
-![!Dark Mode (default) preview](/static/dark1.png)
-![!Dark Mode (default) preview](/static/dark2.png)
+![!Dark Mode (default) preview](static/dark1.png)
+![!Dark Mode (default) preview](static/dark2.png)
+![!Dark Mode (default) preview](static/dark0.png)
 
 #### Light Mode Preview:
 
-![!Lite Mode preview](/static/lite0.png)
-![!Lite Mode preview](/static/lite1.png)
+![!Lite Mode preview](static/lite0.png)
+![!Lite Mode preview](static/lite1.png)
 
 ## async tests
 
