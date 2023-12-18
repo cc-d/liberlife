@@ -52,7 +52,7 @@ Contains the mobile application codebase if one exists. This is where you can fi
 
 #### Lighthouse
 
-![!Lighthouse score](/static/lighthouse.png)
+![!Lighthouse score](static/lighthouse.png)
 
 #### Dark Mode Preview:
 
