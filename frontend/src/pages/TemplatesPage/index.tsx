@@ -124,6 +124,7 @@ const TemplatePage = () => {
       setCurrentTemplate({ ...currentTemplate, tasks: newTasks });
     }
   };
+
   return (
     <Box
       sx={{
@@ -142,7 +143,7 @@ const TemplatePage = () => {
           e.preventDefault();
           handleOpenDialog(null);
         }}
-        variant="outlined"
+        variant="contained"
         sx={{ my: 1 }}
       >
         Create New Template
@@ -166,7 +167,7 @@ const TemplatePage = () => {
               alignItems: 'flex-start',
               width: 'fit-content',
               maxWidth: 'fit-content',
-              border: '1px solid',
+              border: `1px solid ${theme.palette.divider}`,
 
               flexWrap: 'wrap',
               borderRadius: '5px',
@@ -186,17 +187,34 @@ const TemplatePage = () => {
                 width: '100%',
               }}
             >
-              <Button onClick={() => handleOpenDialog(iterTemp)}>Edit</Button>
               <Button
+                variant="contained"
+                onClick={() => handleOpenDialog(iterTemp)}
+                color="primary"
+                sx={{ mr: 1 }}
+              >
+                Edit
+              </Button>
+              <Button
+                variant="contained"
                 onClick={() =>
                   iterTemp &&
                   iterTemp.id &&
                   handleDeleteTemplate(iterTemp.id.toString())
                 }
+                color="error"
               >
                 Delete
               </Button>
             </Box>
+            <Divider
+              sx={{
+                height: '2px',
+                width: '100%',
+                backgroundColor: theme.palette.divider,
+                my: 1,
+              }}
+            />
             <Box key={iterTemp.id} display="flex" flexDirection="row">
               <TemplateIcon sx={{ mr: 1 }} />
 
