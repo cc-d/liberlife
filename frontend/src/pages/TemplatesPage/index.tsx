@@ -134,6 +134,7 @@ const TemplatePage = () => {
         m: 0,
         p: 0,
         mb: 1,
+        maxWidth: '100vw',
       }}
     >
       <Typography variant="h4">Goal Templates</Typography>
@@ -154,6 +155,8 @@ const TemplatePage = () => {
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'flex-start',
+          maxWidth: '100vw',
+          flexWrap: 'wrap',
         }}
       >
         {templates.map((iterTemp) => (
@@ -174,8 +177,22 @@ const TemplatePage = () => {
               flexGrow: 1,
               flexShrink: 1,
               alignSelf: 'flex-start',
+              backgroundColor: theme.palette.background.paper,
             }}
           >
+            <Box
+              key={iterTemp.id}
+              display="flex"
+              flexDirection="row"
+              sx={{
+                fontSize: '1.5rem',
+              }}
+            >
+              <Typography variant="h5">
+                <TemplateIcon sx={{ mr: 1 }} />
+                {iterTemp.text}
+              </Typography>
+            </Box>
             <Box
               sx={{
                 display: 'flex',
@@ -209,17 +226,12 @@ const TemplatePage = () => {
             </Box>
             <Divider
               sx={{
-                height: '2px',
+                height: '4px',
                 width: '100%',
                 backgroundColor: theme.palette.divider,
                 my: 1,
               }}
             />
-            <Box key={iterTemp.id} display="flex" flexDirection="row">
-              <TemplateIcon sx={{ mr: 1 }} />
-
-              <Typography>{iterTemp.text}</Typography>
-            </Box>
 
             <Box
               sx={{

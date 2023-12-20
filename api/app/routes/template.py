@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload, joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
+import logging
 from ..db import get_adb
 from ..db.models import GoalTemplate, TemplateTask, User
 from ..schemas.goal import (
@@ -66,9 +67,7 @@ async def create_goal_template(
         user_id=user.id,
         use_todays_date=use_todays_date,
     )
-    db.add(new_template)
-    await db.commit()
-    await db.refresh(new_template)
+    await async_addcomref(db, new_template)
 
     if template_in.tasks and new_template:
         for task_in in template_in.tasks:
@@ -95,6 +94,25 @@ async def list_goal_templates(
     return gtemps.scalars().all()
 
 
+async def resolve_tasks(
+    tasks: List[TemplateTaskIn], template_id: int, db: AsyncSession
+):
+    new_tasks = []
+    for task_in in tasks:
+        if not hasattr(task_in, "id"):
+            logging.debug("Creating new task from taskin %s", task_in)
+            new_task = TemplateTask(text=task_in.text, template_id=template_id)
+            db.add(new_task)
+            new_tasks.append(new_task)
+
+    if len(new_tasks) > 0:
+        # refresh all in new tasks
+        await db.commit()
+        for task in new_tasks:
+            await db.refresh(task)
+    return new_tasks
+
+
 @router.put("/templates/{template_id}", response_model=GoalTemplateDB)
 async def update_goal_template(
     template_id: int,
@@ -103,32 +121,34 @@ async def update_goal_template(
     db: AsyncSession = Depends(get_adb),
 ):
     template = await get_template_or_404(template_id, user, db)
-    for _attr in ['tasks', 'use_todays_date', 'notes', 'text']:
-        if (
-            hasattr(template_in, _attr)
-            and getattr(template_in, _attr) is not None
+    updated = False  # Initialize the update flag
+
+    # Update template attributes
+    for _attr in ("text", "notes", "use_todays_date"):
+        if hasattr(template_in, _attr) and getattr(template, _attr) != getattr(
+            template_in, _attr
         ):
-            if _attr == 'tasks':
-                for task_in in getattr(template_in, _attr):
-                    if hasattr(task_in, 'id'):
-                        task = await get_task_or_404(
-                            task_in.id, template_id, db
-                        )
-                        task.text = task_in.text
-                    else:
-                        new_task = TemplateTask(
-                            text=task_in.text, template_id=template_id
-                        )
-                        db.add(new_task)
-            else:
-                setattr(template, _attr, getattr(template_in, _attr))
-            print(_attr, getattr(template_in, _attr), 'getattr')
+            setattr(template, _attr, getattr(template_in, _attr))
+            updated = True
 
-    await async_addcomref(db, template)
+    # Add new tasks
+    for _ttask in template_in.tasks:
+        if not hasattr(_ttask, "id"):
+            logging.debug(
+                "no id creating new task: %s %s", _ttask, template_id
+            )
+            new_task = TemplateTask(text=_ttask.text, template_id=template_id)
+            db.add(new_task)
+            updated = True
 
-    await db.commit()
-    await db.refresh(template)
-    return template
+    # Commit changes if any updates were made
+    if updated:
+        await db.commit()
+        await db.refresh(template)
+        return template  # Assuming this is the desired response
+    else:
+        # Handle scenario where no updates occurred
+        return {"message": "No updates were made to the template."}
 
 
 @router.delete("/templates/{template_id}")
