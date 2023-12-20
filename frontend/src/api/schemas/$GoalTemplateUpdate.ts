@@ -23,6 +23,11 @@ export const $GoalTemplateUpdate = {
         tasks: {
             type: 'any-of',
             contains: [{
+                type: 'array',
+                contains: {
+                    type: 'TemplateTaskUpdate',
+                },
+            }, {
                 type: 'null',
             }],
         },

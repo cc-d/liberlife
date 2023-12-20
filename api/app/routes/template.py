@@ -4,14 +4,16 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload, joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 import logging
+from logfunc import logf
 from ..db import get_adb
 from ..db.models import GoalTemplate, TemplateTask, User
 from ..schemas.goal import (
     GoalTemplateDB,
     TemplateTaskDB,
     GoalTemplateIn,
-    TemplateTaskIn,
+    TemplateTaskUpdate,
     GoalTemplateUpdate,
+    TemplateTaskIn,
 )
 from ..utils.httperrors import HTTP404, HTTP409, HTTP401, HTTP400
 from ..utils.dependencies import get_current_user
@@ -94,25 +96,7 @@ async def list_goal_templates(
     return gtemps.scalars().all()
 
 
-async def resolve_tasks(
-    tasks: List[TemplateTaskIn], template_id: int, db: AsyncSession
-):
-    new_tasks = []
-    for task_in in tasks:
-        if not hasattr(task_in, "id"):
-            logging.debug("Creating new task from taskin %s", task_in)
-            new_task = TemplateTask(text=task_in.text, template_id=template_id)
-            db.add(new_task)
-            new_tasks.append(new_task)
-
-    if len(new_tasks) > 0:
-        # refresh all in new tasks
-        await db.commit()
-        for task in new_tasks:
-            await db.refresh(task)
-    return new_tasks
-
-
+@logf()
 @router.put("/templates/{template_id}", response_model=GoalTemplateDB)
 async def update_goal_template(
     template_id: int,
@@ -131,9 +115,23 @@ async def update_goal_template(
             setattr(template, _attr, getattr(template_in, _attr))
             updated = True
 
-    # Add new tasks
+    del_task_ids = []
+    task_in_ids = [t.id for t in template_in.tasks]
+    for _task in template.tasks:
+        if _task.id not in task_in_ids:
+            del_task_ids.append(_task.id)
+            updated = True
+
+    if del_task_ids:
+        logging.debug("deleting tasks: %s", del_task_ids)
+        await db.execute(
+            TemplateTask.__table__.delete().where(
+                TemplateTask.id.in_(del_task_ids)
+            )
+        )
+
     for _ttask in template_in.tasks:
-        if not hasattr(_ttask, "id"):
+        if not hasattr(_ttask, "id") or _ttask.id is None:
             logging.debug(
                 "no id creating new task: %s %s", _ttask, template_id
             )
@@ -145,10 +143,8 @@ async def update_goal_template(
     if updated:
         await db.commit()
         await db.refresh(template)
-        return template  # Assuming this is the desired response
-    else:
-        # Handle scenario where no updates occurred
-        return {"message": "No updates were made to the template."}
+
+    return template  # Assuming this is the desired response
 
 
 @router.delete("/templates/{template_id}")

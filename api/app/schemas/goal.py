@@ -18,6 +18,11 @@ class TemplateTaskIn(TextBase):
     pass
 
 
+class TemplateTaskUpdate(TextBase):
+    id: Optional[int] = None
+    template_id: Optional[int] = None
+
+
 class GoalTemplateDB(TextBase, IDCommon):
     user_id: int
     tasks: List[TemplateTaskDB]
@@ -35,7 +40,7 @@ class GoalTemplateIn(BaseModel):
 class GoalTemplateUpdate(BaseModel):
     text: Optional[str] = None
     notes: Optional[str] = None
-    tasks: Optional[List[TemplateTaskIn | TemplateTaskDB]] = None
+    tasks: Optional[List[TemplateTaskUpdate]] = None
     use_todays_date: Optional[bool] = None
 
 
