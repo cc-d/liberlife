@@ -152,54 +152,46 @@ const TemplateDialog: React.FC<{
             Tasks
           </Typography>
 
-          {currentTemplate &&
-            currentTemplate.tasks &&
-            currentTemplate.tasks.length > 0 && (
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  maxWidth: 'calc(min(100vw, 500px) - 32px)',
+          {currentTemplate && currentTemplate.tasks && (
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                alignItems: 'flex-start',
+                maxWidth: 'min(98vw, 500px)',
+                overflow: 'hidden',
+              }}
+            >
+              {currentTemplate.tasks.map((task, index) => (
+                <Box
+                  key={`${task.text}-${index}`}
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    p: 1,
 
-                  overflow: 'auto',
-                  m: 1,
-                  p: 1,
-                }}
-              >
-                {currentTemplate.tasks.map((task, index) => (
-                  <Box
-                    key={`${task.text}-${index}`}
+                    pl: 0,
+                  }}
+                >
+                  <IconButton
                     sx={{
-                      display: 'inline-flex',
-                      flexDirection: 'row',
-                      flexWrap: 'wrap',
-                      alignItems: 'center',
-                      flexGrow: 1,
-                      maxWidth: '100%',
-                      p: 1,
-                      minWidth: '100px',
-                      justifyContent: 'flex-start',
+                      p: 0,
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      handleDeleteTask(index);
                     }}
                   >
-                    <IconButton
-                      sx={{
-                        display: 'inline-flex',
-                        float: 'left',
-                        p: 0,
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        handleDeleteTask(index);
-                      }}
-                    >
-                      <Delete />
-                    </IconButton>
-                    <Typography sx={{}}>{task.text}</Typography>
-                  </Box>
-                ))}
-              </Box>
-            )}
+                    <Delete />
+                  </IconButton>
+                  <Typography sx={{}}>{task.text}</Typography>
+                </Box>
+              ))}
+            </Box>
+          )}
         </Box>
       </DialogContent>
       <DialogActions>
