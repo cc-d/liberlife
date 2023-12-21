@@ -1,6 +1,6 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.future import select
+from sqlalchemy import select, delete, update, insert, and_, or_
 from sqlalchemy.orm import selectinload, joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 import logging
@@ -115,20 +115,14 @@ async def update_goal_template(
             setattr(template, _attr, getattr(template_in, _attr))
             updated = True
 
-    del_task_ids = []
     task_in_ids = [t.id for t in template_in.tasks]
-    for _task in template.tasks:
-        if _task.id not in task_in_ids:
-            del_task_ids.append(_task.id)
-            updated = True
+    del_task_ids = [t.id for t in template.tasks if t.id not in task_in_ids]
 
     if del_task_ids:
         logging.debug("deleting tasks: %s", del_task_ids)
-        await db.execute(
-            TemplateTask.__table__.delete().where(
-                TemplateTask.id.in_(del_task_ids)
-            )
-        )
+        stmt = delete(TemplateTask).filter(TemplateTask.id.in_(del_task_ids))
+        await db.execute(stmt)
+        updated = True
 
     for _ttask in template_in.tasks:
         if not hasattr(_ttask, "id") or _ttask.id is None:
