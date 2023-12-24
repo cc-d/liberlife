@@ -1,24 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import {
-  Box,
-  Button,
-  List,
-  ListItem,
-  Typography,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Divider,
-  Checkbox,
-  IconButton,
-} from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import apios from '../../utils/apios';
 import { GoalTemplateDB, TemplateTaskDB } from '../../api';
 import { useThemeContext } from '../../contexts/ThemeContext';
-import { TemplateIcon } from '../../components/common';
-import { Delete, Task } from '@mui/icons-material';
 import TemplateItem from './TemplateItem';
 import TemplateDialog from './TempDialog';
 
