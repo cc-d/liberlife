@@ -102,15 +102,10 @@ fixhtmlinjs() {
         _REPURLS="https://life.liberfy.ai/api"
     fi
 
-    for f in `find 'nginx/html/static/js' -type f`; do
-        if grep -q "$_REPURLS" "$f"; then
-            echo "found $_REPURLS in $f replacing"
-            sed -i.bak "s|$_REPURLS|$_FIXURLS|" "$f"
-            rm "$f.bak"
-        else
-            echo "no $_REPURLS. in $f"
-        fi
-    done
+    echo "fixing urls in js files: $_FIXURLS -> $_REPURLS"
+    sed -i.bak "s|$_FIXURLS|$_REPURLS|g" "$ROOTDIR/nginx/html/static/js/"*.js
+    rm "$ROOTDIR/nginx/html/static/js/"*.bak
+
 }
 
 
@@ -123,8 +118,6 @@ movetowww() {
     echo "resetting repo nginx/html to head"
     git reset "nginx/html"; git checkout "nginx/html"
 
-
-    [ -d "/var/www/html" ] && sudo rm -r "/var/www/html/"
     sudo cp -r "$ROOTDIR/nginx/html" "/var/www/html"
 
     sudo systemctl restart nginx
