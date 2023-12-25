@@ -48,16 +48,6 @@ npmapi() {
     cd $FRONTDIR && npm start && cd $ROOTDIR
 }
 
-dc () {
-    if [ "$1" = "rebuild" ]; then
-        docker compose stop
-        docker compose build
-        docker compose up -d
-    else
-        docker compose $@
-    fi
-}
-
 
 automigrate() {
     cd $APIDIR

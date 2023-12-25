@@ -74,6 +74,7 @@ export const GoalCreateBtn: React.FC<{
         // Set the new goal text with the template text
         let newGoalText = template.text;
         handleAddGoal(newGoalText, templateId);
+        handleClose();
       }
     });
   };
