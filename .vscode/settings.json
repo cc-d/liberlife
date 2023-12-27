@@ -1,19 +1,14 @@
 {
-    "[python]": {
-        "editor.defaultFormatter": "ms-python.black-formatter",
-        "editor.formatOnSave": true,
-    },
-    "python.analysis.extraPaths": [
-        "./api/venv/lib/python3.11/site-packages"
-    ],
-    "python.defaultInterpreterPath": "/Users/mym2/liberlife/api/venv/bin/python",
-    "workbench.colorCustomizations": {
-        "sideBarSectionHeader.background": "#2E8B57"
-    },
-    "python.testing.pytestArgs": [
-        "api"
-    ],
-    "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true,
-
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true
+  },
+  "python.analysis.extraPaths": ["./api/venv/lib/python3.11/site-packages"],
+  "python.defaultInterpreterPath": "/Users/mym2/liberlife/api/venv/bin/python",
+  "workbench.colorCustomizations": {
+    "sideBarSectionHeader.background": "#2E8B57"
+  },
+  "python.testing.pytestArgs": ["api"],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true
 }

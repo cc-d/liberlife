@@ -55,18 +55,15 @@ export const sortTasks = (a: GoalTaskOut, b: GoalTaskOut) => {
   const statusOrder = ['in progress', 'not started', 'completed'];
   const aStatus = statusOrder.indexOf(a.status);
   const bStatus = statusOrder.indexOf(b.status);
-  if (aStatus < bStatus) {
-    return -1;
-  } else if (aStatus > bStatus) {
-    return 1;
-  } else {
-    if (a.text < b.text) {
-      return -1;
-    } else if (a.text > b.text) {
-      return 1;
+
+  if (aStatus === 2 || bStatus === 2) {
+    if (aStatus === bStatus) {
+      return a.text.localeCompare(b.text);
     } else {
-      return 0;
+      return aStatus === 2 ? 1 : -1;
     }
+  } else {
+    return a.text.localeCompare(b.text);
   }
 };
 
