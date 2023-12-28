@@ -63,9 +63,12 @@ if [ -d "$HOME/.pyenv" ]; then
     fi
 fi
 
-if [ -d "$HOME/.nvm" ]; then
+if [ -s "$HOME/.nvm/nvm.sh" ]; then
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
     nvm use 20
 fi
+
 
 alias pytestargs='pytest tests -s -vv --show-capture=all -x --cov --cov-report=term-missing'
 
