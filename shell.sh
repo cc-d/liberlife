@@ -121,12 +121,14 @@ movetowww() {
         mkdir "$ROOTDIR/nginx/html"
 
     echo "resetting repo nginx/html to head"
-    git reset "nginx/html"; git checkout "nginx/html"
+    git reset "nginx/html"; git checkout nginx/html
 
-    sudo cp -r "$ROOTDIR/nginx/html" "/var/www/html"
+    sudo cp -r "$ROOTDIR/nginx/html" /var/www/html
 
     # echo current git commit hash to build.txt
-    sudo chmod 755 "/var/www/html/build.txt"
+    sudo chmod -R 755 /var/www/html/
+    sudo chown -R www-data:www-data /var/www/html/
+
     _WWWREVHASH="$(git rev-parse HEAD)"
     echo "$_WWWREVHASH" > "/var/www/html/build.txt"
 
