@@ -127,7 +127,7 @@ movetowww() {
 
     # echo current git commit hash to build.txt
     sudo chmod -R 755 /var/www/html/
-    sudo chown -R www-data:www-data /var/www/html/
+    sudo chown -R cary: /var/www/html/
 
     _WWWREVHASH="$(git rev-parse HEAD)"
     echo "$_WWWREVHASH" > "/var/www/html/build.txt"
