@@ -56,12 +56,10 @@ export const sortTasks = (a: GoalTaskOut, b: GoalTaskOut) => {
   const aStatus = statusOrder.indexOf(a.status);
   const bStatus = statusOrder.indexOf(b.status);
 
-  if (aStatus === 2 || bStatus === 2) {
-    if (aStatus === bStatus) {
-      return a.text.localeCompare(b.text);
-    } else {
-      return aStatus === 2 ? 1 : -1;
-    }
+  if (aStatus === 2 && bStatus !== 2) {
+    return 1;
+  } else if (aStatus !== 2 && bStatus === 2) {
+    return -1;
   } else {
     return a.text.localeCompare(b.text);
   }
