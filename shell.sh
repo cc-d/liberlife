@@ -130,7 +130,7 @@ movetowww() {
     sudo chown -R cary: /var/www/html/
 
     _WWWREVHASH="$(git rev-parse HEAD)"
-    echo "$_WWWREVHASH" > "/var/www/html/build.txt"
+    echo "$_WWWREVHASH" >> "/var/www/html/build.txt"
 
     sudo systemctl restart nginx
 }
