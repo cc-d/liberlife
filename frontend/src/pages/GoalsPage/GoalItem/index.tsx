@@ -53,15 +53,36 @@ const getLongestStr = (goal: GoalOut): number => {
 
 export const sortTasks = (a: GoalTaskOut, b: GoalTaskOut) => {
   const statusOrder = ['in progress', 'not started', 'completed'];
+  const [aStat, bStat] = [a.status, b.status].map((status) =>
+    status.toLowerCase().replace(' ', '').replace('_', '').trim()
+  );
   const aStatus = statusOrder.indexOf(a.status);
   const bStatus = statusOrder.indexOf(b.status);
 
-  if (aStatus === 2 && bStatus !== 2) {
-    return 1;
-  } else if (aStatus !== 2 && bStatus === 2) {
-    return -1;
-  } else {
+  const clog = (a: GoalTaskOut, b: GoalTaskOut, msg?: string) => {
+    const msgStr = msg ? ` (${msg})` : '';
+    console.log(a, a?.text, a?.status, b, b?.text, b?.status, msgStr);
+  };
+
+  if (
+    ![aStat, bStat].includes('completed') ||
+    (aStat === bStat && aStatus === bStatus)
+  ) {
+    // alphabetical
+    clog(a, b, 'first if');
     return a.text.localeCompare(b.text);
+  } else if (aStat === 'completed') {
+    clog(a, b, 'second if');
+    return 1;
+  } else if (bStat === 'completed') {
+    clog(a, b, 'third if');
+    return -1;
+  } else if (aStatus === bStatus) {
+    clog(a, b, 'fourth if');
+    return a.text.localeCompare(b.text);
+  } else {
+    clog(a, b, 'else');
+    return 0;
   }
 };
 
