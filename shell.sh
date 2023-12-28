@@ -127,7 +127,8 @@ movetowww() {
 
     # echo current git commit hash to build.txt
     sudo chmod 755 "/var/www/html/build.txt"
-    echo "$(git rev-parse HEAD)" >> "/var/www/html/build.txt"
+    _WWWREVHASH="$(git rev-parse HEAD)"
+    echo "$_WWWREVHASH" > "/var/www/html/build.txt"
 
     sudo systemctl restart nginx
 }
