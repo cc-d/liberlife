@@ -1,5 +1,6 @@
 from alembic import op
 import sqlalchemy as sa
+from typing import Union, Sequence
 
 
 # revision identifiers, used by Alembic.
