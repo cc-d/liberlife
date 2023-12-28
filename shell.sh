@@ -91,6 +91,8 @@ runbuild() {
     mv "/tmp/.env.bak" "$FRONTDIR/.env"
     rm -r "$ROOTDIR/nginx/html"
     sudo mv "$FRONTDIR/build" "$ROOTDIR/nginx/html"
+    echo "$(date)" > "$ROOTDIR/nginx/html/build.txt"
+
     fixhtmlinjs
 }
 
@@ -122,6 +124,8 @@ movetowww() {
     git reset "nginx/html"; git checkout "nginx/html"
 
     sudo cp -r "$ROOTDIR/nginx/html" "/var/www/html"
+
+    # timestamp of last build
 
     sudo systemctl restart nginx
 }
