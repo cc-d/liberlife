@@ -126,7 +126,7 @@ movetowww() {
     sudo cp -r "$ROOTDIR/nginx/html" "/var/www/html"
 
     # echo current git commit hash to build.txt
-    echo "$(git rev-parse HEAD)" >> "/var/www/html/build.txt"
+    sudo echo "$(git rev-parse HEAD)" >> "/var/www/html/build.txt"
 
     sudo systemctl restart nginx
 }
