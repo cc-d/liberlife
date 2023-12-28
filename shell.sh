@@ -72,6 +72,16 @@ fi
 
 alias pytestargs='pytest tests -s -vv --show-capture=all -x --cov --cov-report=term-missing'
 
+dateandcomhash() {
+    [ -e "$1" ] && \
+        echo "no file arg included. usage: dateandcomhash  /example/path" \
+        && return 1
+
+    _DANDC_COMHASH="$(git rev-parse HEAD)"
+    echo "$(date)" > "$1"
+    echo "$_DANDC_COMHASH" >> "$1"
+}
+
 runbuild() {
     if ! nc -z localhost 8999; then
         echo "uvicorn not running"
@@ -91,9 +101,8 @@ runbuild() {
     mv "/tmp/.env.bak" "$FRONTDIR/.env"
     rm -r "$ROOTDIR/nginx/html"
     sudo mv "$FRONTDIR/build" "$ROOTDIR/nginx/html"
-    echo "$(date)" > "$ROOTDIR/nginx/html/build.txt"
-
     fixhtmlinjs
+    dateandcomhash "$ROOTDIR/nginx/html/build.txt"
 }
 
 fixhtmlinjs() {
@@ -128,9 +137,6 @@ movetowww() {
     # echo current git commit hash to build.txt
     sudo chmod -R 755 /var/www/html/
     sudo chown -R cary: /var/www/html/
-
-    _WWWREVHASH="$(git rev-parse HEAD)"
-    echo "$_WWWREVHASH" >> "/var/www/html/build.txt"
 
     sudo systemctl restart nginx
 }
