@@ -13,6 +13,7 @@ import SnapsPage from '../pages/SnapsPage';
 import TemplatesPage from '../pages/TemplatesPage';
 import DemoPage from '../pages/DemoPage';
 import { GBoardTypes } from '../pages/GoalsPage';
+import BuildInfo from '../components/BuildInfo';
 function App() {
   return (
     <ThemeProvider>
@@ -41,6 +42,7 @@ function App() {
                 <Route path="/login" element={<LogRegPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
               </Routes>
+              <BuildInfo />
             </Container>
           </NavBarProvider>
         </Router>

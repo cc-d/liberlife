@@ -73,13 +73,15 @@ fi
 alias pytestargs='pytest tests -s -vv --show-capture=all -x --cov --cov-report=term-missing'
 
 dateandcomhash() {
-    [ -e "$1" ] && \
+    echo "attempting dateandcomhash with input: $0 $1 $2"
+    [ -z "$1" ] && \
         echo "no file arg included. usage: dateandcomhash  /example/path" \
         && return 1
 
     _DANDC_COMHASH="$(git rev-parse HEAD)"
     echo "$(date)" > "$1"
     echo "$_DANDC_COMHASH" >> "$1"
+    echo "successfully dateandcomhash'd $1"
 }
 
 runbuild() {
@@ -103,7 +105,11 @@ runbuild() {
     sudo mv "$FRONTDIR/build" "$ROOTDIR/nginx/html"
     fixhtmlinjs
     dateandcomhash "$ROOTDIR/nginx/html/build.txt"
+    cp "$ROOTDIR/nginx/html/build.txt" "$ROOTDIR/frontend/public/build.txt"
 }
+
+# i keep mixing these up
+alias buildrun='runbuild';
 
 fixhtmlinjs() {
     if [ "$REACT_APP_API_BASEURL" = "https://life.liberfy.ai/api" ]; then
