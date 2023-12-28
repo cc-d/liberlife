@@ -89,6 +89,9 @@ class CommonGoal(CommonTemplate):
     archived: Mapped[bool] = mapped_column(
         Boolean, default=False, nullable=False
     )
+    tasks_locked: Mapped[bool] = mapped_column(
+        Boolean, default=False, nullable=False
+    )
 
 
 class Goal(CommonGoal):
@@ -99,9 +102,6 @@ class Goal(CommonGoal):
         back_populates="goal",
         cascade="all, delete-orphan",
         lazy='joined',
-    )
-    tasks_locked: Mapped[bool] = mapped_column(
-        Boolean, default=False, nullable=False
     )
 
 
