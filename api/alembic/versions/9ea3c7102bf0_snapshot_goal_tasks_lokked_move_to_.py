@@ -1,4 +1,5 @@
 from alembic import op
+from sqlalchemy.sql import text
 import sqlalchemy as sa
 from typing import Union, Sequence
 
@@ -50,8 +51,9 @@ def downgrade() -> None:
 
 def column_exists(table_name: str, column_name: str) -> bool:
     conn = op.get_bind()
-    result = conn.execute(
+    query = text(
         "SELECT EXISTS (SELECT 1 FROM information_schema.columns WHERE"
         f" table_name = '{table_name}' AND column_name = '{column_name}')"
     )
+    result = conn.execute(query)
     return result.scalar()
