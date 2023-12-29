@@ -130,18 +130,22 @@ fixhtmlinjs() {
 
 
 movetowww() {
-    [ -d "$ROOTDIR/nginx/html" ] && \
-        echo "nginx html exists at $ROOTDIR/nginx/html deleting" && \
-        sudo rm -r "$ROOTDIR/nginx/html"
+    _WWW_REPOHTML="$ROOTDIR/nginx/html"
+    _WWW_NGINXHTML="/var/www/html"
+
+    [ -d "$_WWW_NGINXHTML" ] && \
+        echo "nginx html exists at nginx/html deleting" && \
+        sudo rm -r "$_WWW_REPOHTML" && \
+        mkdir $_WWW_REPOHTML
 
     echo "resetting repo nginx/html to head"
     git reset "nginx/html"; git checkout nginx/html
 
-    sudo cp -r "$ROOTDIR/nginx/html" /var/www/html
+    sudo cp -r "nginx/html" "$_WWW_NGINXHTML"
 
     # echo current git commit hash to build.txt
-    sudo chmod -R 755 /var/www/html/
-    sudo chown -R cary: /var/www/html/
+    sudo chmod -R 755 "$_WWW_NGINXHTML/"
+    sudo chown -R cary: "$_WWW_NGINXHTML/"
 
     sudo systemctl restart nginx
 }
