@@ -132,8 +132,7 @@ fixhtmlinjs() {
 movetowww() {
     [ -d "$ROOTDIR/nginx/html" ] && \
         echo "nginx html exists at $ROOTDIR/nginx/html deleting" && \
-        sudo rm -r "$ROOTDIR/nginx/html" && \
-        mkdir "$ROOTDIR/nginx/html"
+        sudo rm -r "$ROOTDIR/nginx/html"
 
     echo "resetting repo nginx/html to head"
     git reset "nginx/html"; git checkout nginx/html
