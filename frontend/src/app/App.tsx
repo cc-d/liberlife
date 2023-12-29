@@ -14,6 +14,8 @@ import TemplatesPage from '../pages/TemplatesPage';
 import DemoPage from '../pages/DemoPage';
 import { GBoardTypes } from '../pages/GoalsPage';
 import BuildInfo from '../components/BuildInfo';
+import Box from '@mui/material/Box';
+
 function App() {
   return (
     <ThemeProvider>
@@ -21,29 +23,37 @@ function App() {
         <CssBaseline />
         <Router>
           <NavBarProvider>
-            <NavBar />
-            <Container maxWidth={false} sx={{ p: 1.5 }} disableGutters>
-              <Routes>
-                <Route path="/demo" element={<DemoPage />} />
-                <Route
-                  path="/"
-                  element={<GoalsPage boardType={GBoardTypes.default} />}
-                />
-                <Route
-                  path="/archived"
-                  element={<GoalsPage boardType={GBoardTypes.archived} />}
-                />
-                <Route path="/snapshots" element={<SnapsPage />} />
-                <Route
-                  path="/snapshots/:uuid"
-                  element={<SnapshotGoalBoard />}
-                />
-                <Route path="/templates" element={<TemplatesPage />} />
-                <Route path="/login" element={<LogRegPage />} />
-                <Route path="/profile" element={<ProfilePage />} />
-              </Routes>
-              <BuildInfo />
-            </Container>
+            <Box
+              sx={{
+                minHeight: '97vh',
+                //border: '1px solid red',
+              }}
+            >
+              <NavBar />
+              <Container maxWidth={false} sx={{ p: 1.5 }} disableGutters>
+                <Routes>
+                  <Route path="/demo" element={<DemoPage />} />
+                  <Route
+                    path="/"
+                    element={<GoalsPage boardType={GBoardTypes.default} />}
+                  />
+                  <Route
+                    path="/archived"
+                    element={<GoalsPage boardType={GBoardTypes.archived} />}
+                  />
+                  <Route path="/snapshots" element={<SnapsPage />} />
+                  <Route
+                    path="/snapshots/:uuid"
+                    element={<SnapshotGoalBoard />}
+                  />
+                  <Route path="/templates" element={<TemplatesPage />} />
+                  <Route path="/login" element={<LogRegPage />} />
+                  <Route path="/profile" element={<ProfilePage />} />
+                </Routes>
+              </Container>
+            </Box>
+
+            <BuildInfo />
           </NavBarProvider>
         </Router>
       </AuthProvider>

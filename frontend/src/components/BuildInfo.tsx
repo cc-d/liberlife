@@ -32,10 +32,8 @@ export const BuildInfo: React.FC = () => {
   const bsArr = buildStr.replaceAll('\r\n', '\n').split('\n');
   const typoSX = {
     display: 'flex',
-    alignSelf: 'self-end',
     pr: 1,
-    pb: 1,
-    mb: 1,
+    alignItems: 'center',
   };
 
   return (
@@ -43,11 +41,12 @@ export const BuildInfo: React.FC = () => {
       sx={{
         display: 'flex',
         flexDirection: 'row',
-        flexWrap: 'wrap',
-        alignItems: 'center',
-        justifyContent: 'center',
+        flexGrow: 1,
         minWidth: '100%',
-        minHeight: '100px',
+        minHeight: '3vh',
+        maxHeight: '3vh',
+        //border: '1px solid pink',
+        justifyContent: 'center',
       }}
     >
       <Typography
