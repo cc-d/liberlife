@@ -134,7 +134,7 @@ movetowww() {
     _WWW_NGINXHTML="/var/www/html"
 
     [ -d "$_WWW_NGINXHTML" ] && \
-        echo "nginx html exists at nginx/html deleting" && \
+        echo "nginx html exists at $_WWW_REPOHTML deleting" && \
         sudo rm -r "$_WWW_REPOHTML" && \
         mkdir $_WWW_REPOHTML
 
