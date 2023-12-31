@@ -73,8 +73,17 @@ export const GoalCreateBtn: React.FC<{
       if (template.id.toString() === templateId) {
         // Set the new goal text with the template text
         let newGoalText = template.text;
+        if (template.use_todays_date) {
+          let curDate = new Date().toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+          });
+          newGoalText = `${curDate} ${newGoalText}`;
+        }
         handleAddGoal(newGoalText, templateId);
         handleClose();
+        return;
       }
     });
   };
