@@ -23,12 +23,7 @@ function App() {
         <CssBaseline />
         <Router>
           <NavBarProvider>
-            <Box
-              sx={{
-                minHeight: '97vh',
-                //border: '1px solid red',
-              }}
-            >
+            <Box sx={{ minHeight: '97vh' }}>
               <NavBar />
               <Container maxWidth={false} sx={{ p: 1.5 }} disableGutters>
                 <Routes>

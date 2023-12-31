@@ -90,7 +90,7 @@ const TemplateDialog: React.FC<{
                 }}
               />
 
-              <Typography>Use today's date?</Typography>
+              <Typography>Include today's date in title?</Typography>
             </>
           ) : null}
         </Box>
