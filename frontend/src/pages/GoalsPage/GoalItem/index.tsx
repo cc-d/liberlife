@@ -13,7 +13,6 @@ export interface GoalItemProps {
   goal: GoalOut;
   goals: GoalOut[];
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>;
-  handleGoalDelete: any;
   handleGoalUpdate: any;
   isSnapshot?: boolean;
 }
@@ -101,8 +100,8 @@ const GoalItem: React.FC<GoalItemProps> = ({
   goal,
   goals,
   setGoals,
-  handleGoalDelete,
   handleGoalUpdate,
+  isSnapshot = false,
 }) => {
   const [newTaskText, setNewTaskText] = useState<string>('');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -301,6 +300,8 @@ const GoalItem: React.FC<GoalItemProps> = ({
     >
       <GoalHeader
         goal={goal}
+        goals={goals}
+        setGoals={setGoals}
         isEditing={isEditing}
         editedText={editedText}
         setEditedText={setEditedText}
@@ -309,9 +310,9 @@ const GoalItem: React.FC<GoalItemProps> = ({
         handleMenuClick={handleMenuClick}
         handleMenuClose={handleMenuClose}
         startEdit={startEdit}
-        handleDelete={() => handleGoalDelete(goal.id)}
         anchorEl={anchorEl}
         handleArchive={handleArchive}
+        isSnapshot={isSnapshot}
       />
       <Divider sx={{ backgroundColor: theme.theme.palette.divider }} />
       <GoalTasks

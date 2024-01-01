@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Box,
   Typography,
@@ -16,9 +16,12 @@ import UnarchiveIcon from '@mui/icons-material/Unarchive';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import red from '@mui/material/colors/red';
 import { GoalOut } from '../../../api';
+import { actionUpdateGoal, actihandleGoalDelete } from '../../../utils/actions';
 
 interface GoalHeaderProps {
   goal: GoalOut;
+  goals: GoalOut[];
+  setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>;
   isEditing: boolean;
   editedText: string;
   setEditedText: (text: string) => void;
@@ -27,13 +30,15 @@ interface GoalHeaderProps {
   handleMenuClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   handleMenuClose: () => void;
   startEdit: () => void;
-  handleDelete: () => void;
   anchorEl: null | HTMLElement;
   handleArchive: () => void;
+  isSnapshot: boolean;
 }
 
 export const GoalHeader: React.FC<GoalHeaderProps> = ({
   goal,
+  goals,
+  setGoals,
   isEditing,
   editedText,
   setEditedText,
@@ -42,10 +47,14 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
   handleMenuClick,
   handleMenuClose,
   startEdit,
-  handleDelete,
   anchorEl,
   handleArchive,
+  isSnapshot,
 }) => {
+  const [confirm, setConfirm] = React.useState<boolean | null>(null);
+
+  confirm && !isSnapshot && actihandleGoalDelete(goals, setGoals, goal.id);
+
   const archText = goal.archived ? 'Unarchive' : 'Archive';
   const menuItemSX = {
     display: 'flex',
@@ -69,6 +78,8 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
     mr: 0.5,
     height: '36px',
   };
+
+  const conText = confirm === null ? 'Delete' : 'CONFIRM';
 
   return (
     <Box
@@ -182,9 +193,17 @@ export const GoalHeader: React.FC<GoalHeaderProps> = ({
               )}
               <Typography variant="body1">{archText}</Typography>
             </MenuItem>
-            <MenuItem onClick={handleDelete} sx={menuItemSX} disableGutters>
+            <MenuItem
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setConfirm(confirm === null ? false : true);
+              }}
+              sx={menuItemSX}
+              disableGutters
+            >
               <DeleteIcon sx={{ color: red[500], ...menuIconSX }} />
-              <Typography variant="body1">Delete</Typography>
+              <Typography variant="body1">{conText}</Typography>
             </MenuItem>
           </Menu>
         </>

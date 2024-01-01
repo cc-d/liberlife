@@ -53,7 +53,7 @@ export const GoalBoardElem: React.FC<GoalBoardElemProps> = ({
           goals={goals}
           setGoals={setGoals}
           handleGoalUpdate={handleGoalUpdate}
-          handleGoalDelete={handleGoalDelete}
+          isSnapshot={isSnapshot}
         />
       ))}
     </Box>

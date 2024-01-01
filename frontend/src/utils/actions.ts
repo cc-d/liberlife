@@ -55,12 +55,6 @@ export const actihandleGoalDelete = async (
   setGoals: React.Dispatch<React.SetStateAction<GoalOut[]>>,
   goalId: number
 ) => {
-  const confirmed = window.confirm(
-    'Are you sure you want to delete this goal?'
-  );
-  if (!confirmed) {
-    return;
-  }
   try {
     const response = await apios.delete(`/goals/${goalId}`);
     if (response.status === 200 || response.status === 204) {

@@ -16,7 +16,8 @@ import { GoalTemplateDB } from '../../api';
 import { useThemeContext } from '../../contexts/ThemeContext';
 import Task from '@mui/icons-material/Task';
 import { TemplateIcon } from '../../components/common';
-import { Delete } from '@mui/icons-material';
+import { Delete, DisabledByDefaultTwoTone } from '@mui/icons-material';
+import { isDisabled } from '@testing-library/user-event/dist/utils';
 
 const TemplateDialog: React.FC<{
   openDialog: boolean;
@@ -79,14 +80,17 @@ const TemplateDialog: React.FC<{
             <>
               <Checkbox
                 checked={useTodaysDate}
+                disabled={true}
                 onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  setCurrentTemplate({
-                    ...currentTemplate,
-                    use_todays_date: !useTodaysDate,
-                  });
-                  setUseTodaysDate(!useTodaysDate);
+                  return;
+                  /* commented out as it no longer should be updatable */
+                  //e.stopPropagation();
+                  //e.preventDefault();
+                  //setCurrentTemplate({
+                  //  ...currentTemplate,
+                  //  use_todays_date: !useTodaysDate,
+                  //});
+                  //setUseTodaysDate(!useTodaysDate);
                 }}
               />
 

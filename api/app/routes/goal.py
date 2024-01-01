@@ -118,7 +118,7 @@ async def update_goal(
 ):
     goal = _raise(goal, cur_user.id)
     for field, value in goal_update.model_dump().items():
-        if value is None:
+        if value is None or field == 'use_todays_date':
             continue
         setattr(goal, field, value)
     await async_addcomref(db, goal)
