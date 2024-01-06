@@ -17,9 +17,8 @@ server {
     listen 443 ssl;
     server_name life.liberfy.ai;
 
-    ssl_certificate /etc/letsencrypt/live/life.liberfy.ai/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/life.liberfy.ai/privkey.pem;
-
+    ssl_certificate /etc/letsencrypt/live/life.liberfy.ai-0001/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/life.liberfy.ai-0001/privkey.pem;
     # Routing for FastAPI Backend
     location /api/ {
         proxy_pass http://localhost:8999/;
