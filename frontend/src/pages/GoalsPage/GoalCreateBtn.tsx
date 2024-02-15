@@ -205,6 +205,7 @@ export const GoalCreateBtn: React.FC<{
           </Box>
         </MenuItem>
         {templates &&
+          templates !== undefined &&
           templates?.map &&
           templates.map((template: GoalTemplateDB) => (
             <MenuItem
