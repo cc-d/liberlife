@@ -6,13 +6,10 @@ import type { Body_oauth_login_u_oauth_login_post } from '../models/Body_oauth_l
 import type { Token } from '../models/Token';
 import type { UserIn } from '../models/UserIn';
 import type { UserOut } from '../models/UserOut';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-
 export class UserService {
-
     /**
      * Register
      * @param requestBody
@@ -32,7 +29,6 @@ export class UserService {
             },
         });
     }
-
     /**
      * Oauth Login
      * @param formData
@@ -52,7 +48,6 @@ export class UserService {
             },
         });
     }
-
     /**
      * Json Login
      * @param requestBody
@@ -72,7 +67,6 @@ export class UserService {
             },
         });
     }
-
     /**
      * Me
      * @returns UserOut Successful Response
@@ -84,5 +78,4 @@ export class UserService {
             url: '/u/me',
         });
     }
-
 }

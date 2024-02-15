@@ -2,9 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { SnapshotTaskOut } from './SnapshotTaskOut';
-
 export type SnapshotGoalOut = {
     created_on: string;
     updated_on: string;

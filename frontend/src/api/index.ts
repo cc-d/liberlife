@@ -55,5 +55,6 @@ export { $ValidationError } from './schemas/$ValidationError';
 
 export { DefaultService } from './services/DefaultService';
 export { GoalService } from './services/GoalService';
+export { RootService } from './services/RootService';
 export { SnapshotService } from './services/SnapshotService';
 export { UserService } from './services/UserService';

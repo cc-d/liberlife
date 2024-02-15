@@ -5,13 +5,10 @@
 import type { GoalTemplateDB } from '../models/GoalTemplateDB';
 import type { GoalTemplateIn } from '../models/GoalTemplateIn';
 import type { GoalTemplateUpdate } from '../models/GoalTemplateUpdate';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-
 export class DefaultService {
-
     /**
      * List Goal Templates
      * @returns GoalTemplateDB Successful Response
@@ -23,7 +20,6 @@ export class DefaultService {
             url: '/templates',
         });
     }
-
     /**
      * Create Goal Template
      * @param requestBody
@@ -43,7 +39,6 @@ export class DefaultService {
             },
         });
     }
-
     /**
      * Update Goal Template
      * @param templateId
@@ -68,7 +63,6 @@ export class DefaultService {
             },
         });
     }
-
     /**
      * Delete Goal Template
      * @param templateId
@@ -89,5 +83,4 @@ export class DefaultService {
             },
         });
     }
-
 }

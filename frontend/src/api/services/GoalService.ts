@@ -8,13 +8,10 @@ import type { GoalTaskIn } from '../models/GoalTaskIn';
 import type { GoalTaskOut } from '../models/GoalTaskOut';
 import type { GoalTaskUpdate } from '../models/GoalTaskUpdate';
 import type { GoalUpdate } from '../models/GoalUpdate';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-
 export class GoalService {
-
     /**
      * Create Goal
      * @param requestBody
@@ -34,7 +31,6 @@ export class GoalService {
             },
         });
     }
-
     /**
      * List Goals
      * @param archived
@@ -55,7 +51,6 @@ export class GoalService {
             },
         });
     }
-
     /**
      * Get Goal
      * @param goalId
@@ -76,7 +71,6 @@ export class GoalService {
             },
         });
     }
-
     /**
      * Update Goal
      * @param goalId
@@ -101,7 +95,6 @@ export class GoalService {
             },
         });
     }
-
     /**
      * Delete Goal
      * @param goalId
@@ -122,7 +115,6 @@ export class GoalService {
             },
         });
     }
-
     /**
      * Update Goal Notes
      * @param goalId
@@ -147,7 +139,6 @@ export class GoalService {
             },
         });
     }
-
     /**
      * Add Task To Goal
      * @param goalId
@@ -172,7 +163,6 @@ export class GoalService {
             },
         });
     }
-
     /**
      * List Tasks For Goal
      * @param goalId
@@ -193,7 +183,6 @@ export class GoalService {
             },
         });
     }
-
     /**
      * Get Task
      * @param taskId
@@ -217,7 +206,6 @@ export class GoalService {
             },
         });
     }
-
     /**
      * Update Task
      * @param taskId
@@ -245,7 +233,6 @@ export class GoalService {
             },
         });
     }
-
     /**
      * Delete Task
      * @param goalId
@@ -269,5 +256,4 @@ export class GoalService {
             },
         });
     }
-
 }

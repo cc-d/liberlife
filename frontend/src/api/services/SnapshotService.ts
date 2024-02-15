@@ -3,13 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { SnapshotOut } from '../models/SnapshotOut';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-
 export class SnapshotService {
-
     /**
      * List Snapshots
      * @returns SnapshotOut Successful Response
@@ -21,7 +18,6 @@ export class SnapshotService {
             url: '/snapshots',
         });
     }
-
     /**
      * Create Snapshot
      * @returns SnapshotOut Successful Response
@@ -33,7 +29,6 @@ export class SnapshotService {
             url: '/snapshots',
         });
     }
-
     /**
      * Get Snapshot
      * @param snapId
@@ -54,7 +49,6 @@ export class SnapshotService {
             },
         });
     }
-
     /**
      * Delete Snapshot
      * @param snapId
@@ -75,5 +69,4 @@ export class SnapshotService {
             },
         });
     }
-
 }

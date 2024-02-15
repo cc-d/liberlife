@@ -2,9 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { TemplateTaskDB } from './TemplateTaskDB';
-
 export type GoalTemplateDB = {
     id: number;
     text: string;

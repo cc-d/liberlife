@@ -2,9 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { TemplateTaskIn } from './TemplateTaskIn';
-
 export type GoalTemplateIn = {
     text: string;
     notes?: (string | null);

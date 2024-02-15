@@ -2,7 +2,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 export type Body_oauth_login_u_oauth_login_post = {
     grant_type?: (string | null);
     username: string;

@@ -2,10 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { GoalTaskOut } from './GoalTaskOut';
 import type { UserOut } from './UserOut';
-
 export type GoalOut = {
     created_on: string;
     updated_on: string;
