@@ -35,14 +35,14 @@ async def get_openapi():
     )
 
 
+for rter in ROUTERS:
+    app.include_router(rter)
+
+app = apply_cors_middleware(app)
+
+
 if (__name__) == "__main__":
     uvcmd = (
         f"uvicorn main:app --host {config.HOST} --port {config.PORT} --reload"
     )
     subprocess.run(uvcmd, shell=True)
-
-
-for rter in ROUTERS:
-    app.include_router(rter)
-
-app = apply_cors_middleware(app)
