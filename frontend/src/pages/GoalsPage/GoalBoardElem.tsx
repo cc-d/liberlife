@@ -46,16 +46,18 @@ export const GoalBoardElem: React.FC<GoalBoardElemProps> = ({
         mt: 1,
       }}
     >
-      {goals.map((goal: GoalOut) => (
-        <GoalItem
-          key={goal.id}
-          goal={goal}
-          goals={goals}
-          setGoals={setGoals}
-          handleGoalUpdate={handleGoalUpdate}
-          isSnapshot={isSnapshot}
-        />
-      ))}
+      {goals &&
+        goals?.map &&
+        goals.map((goal: GoalOut) => (
+          <GoalItem
+            key={goal.id}
+            goal={goal}
+            goals={goals}
+            setGoals={setGoals}
+            handleGoalUpdate={handleGoalUpdate}
+            isSnapshot={isSnapshot}
+          />
+        ))}
     </Box>
   );
 };
