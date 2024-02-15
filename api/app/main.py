@@ -12,9 +12,10 @@ from .routes import ROUTERS
 
 app = FastAPI(docs_url='/docs', redoc_url='/redoc', debug=config.DEBUG)
 
-router = APIRouter()
+router = APIRouter(
+    prefix="", tags=["root"], responses={404: {"description": "Not found"}}
+)
 
-app.include_router(router)
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -36,6 +37,7 @@ async def get_openapi():
     )
 
 
+app.include_router(router)
 for rter in ROUTERS:
     app.include_router(rter)
 
