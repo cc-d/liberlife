@@ -34,6 +34,7 @@ const GoalBoard: React.FC<GoalBoardProps> = ({
   // Memoize sorted goals
   const sortedGoals = useMemo(
     () =>
+      goals?.filter &&
       sortGoals(
         goals.filter((goal) => goal.archived === isArchived),
         sortOrder
