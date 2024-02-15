@@ -205,6 +205,7 @@ export const GoalCreateBtn: React.FC<{
           </Box>
         </MenuItem>
         {templates &&
+          templates?.map &&
           templates.map((template: GoalTemplateDB) => (
             <MenuItem
               key={template.id}
