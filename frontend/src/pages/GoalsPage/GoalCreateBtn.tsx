@@ -204,34 +204,35 @@ export const GoalCreateBtn: React.FC<{
             </Typography>
           </Box>
         </MenuItem>
-        {templates.map((template: GoalTemplateDB) => (
-          <MenuItem
-            key={template.id}
-            onClick={() => handleTemplateSelect(template.id.toString())}
-          >
-            <Box
-              sx={{
-                ...boxSX,
-              }}
+        {templates &&
+          templates.map((template: GoalTemplateDB) => (
+            <MenuItem
+              key={template.id}
+              onClick={() => handleTemplateSelect(template.id.toString())}
             >
-              <TemplateIcon
+              <Box
                 sx={{
-                  ...menuItemIconSX,
-                }}
-              />
-              <Typography
-                variant="body1"
-                sx={{
-                  flexGrow: 1,
-                  m: 0,
-                  p: 0,
+                  ...boxSX,
                 }}
               >
-                {template.text}
-              </Typography>
-            </Box>
-          </MenuItem>
-        ))}
+                <TemplateIcon
+                  sx={{
+                    ...menuItemIconSX,
+                  }}
+                />
+                <Typography
+                  variant="body1"
+                  sx={{
+                    flexGrow: 1,
+                    m: 0,
+                    p: 0,
+                  }}
+                >
+                  {template.text}
+                </Typography>
+              </Box>
+            </MenuItem>
+          ))}
       </Menu>
     </Box>
   );
