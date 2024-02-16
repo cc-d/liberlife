@@ -27,7 +27,7 @@ logging.basicConfig(
 @router.get('/')
 @router.get('/index')
 async def index():
-    return {'message': 'Hello, world!'}
+    return {'status': 'ok'}
 
 
 @router.get('/openapi.json')
