@@ -1,0 +1,20 @@
+[Unit]
+Description=LiberLife Service
+After=network.target
+
+[Service]
+Type=simple
+User=cary
+WorkingDirectory=/home/cary/liberlife
+Environment="LIBLIFE_ENV=prod"
+EnvironmentFile=/home/cary/liberlife/.envs/prod
+ExecStart=. ./home/cary/liberlife/.envs/prod && \
+    . ./home/cary/liberlife/.envs/prod && \
+    cd /home/cary/liberlife && \
+    uvicorn api.app.main:app --port $API_PORT --host $API_HOST --reload
+
+
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
