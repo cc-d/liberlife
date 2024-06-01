@@ -7,18 +7,9 @@ Type=simple
 User=cary
 WorkingDirectory=/home/cary/liberlife
 Environment="LIBLIFE_ENV=prod"
-Environment="VIRTUAL_ENV=/home/cary/liberlife/venv"
-Environment="PATH=$VIRTUAL_ENV/bin:$PATH"
-
-ExecStart="sh -c '. /home/cary/liberlife/venv/bin/activate && \\
-    . /home/cary/liberlife/shell.sh \\
-    . /home/cary/liberlife/.envs/prod.env && \\
-    . /home/cary/liberlife/venv/bin/activate && \\
-    uvistart'"
-
-Restart=no
-
-
+EnvironmentFile=/home/cary/liberlife/.envs/prod
+ExecStart=/bin/sh -c '. /home/cary/liberlife/shell.sh uvistart'
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
