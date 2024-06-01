@@ -8,8 +8,10 @@ User=cary
 WorkingDirectory=/home/cary/liberlife
 Environment="LIBLIFE_ENV=prod"
 ExecStart=/bin/sh -c ". /home/cary/liberlife/.envs/prod.env && \
+    echo "$LIBLIFE_ENV" && env && \
     cd /home/cary/liberlife && \
     uvicorn api.app.main:app --port $API_PORT --host $API_HOST --reload"
+
 Restart=never
 
 [Install]
