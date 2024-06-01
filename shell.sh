@@ -14,8 +14,14 @@ done
 
 uvistart() {
     cd $ROOTDIR
-    . "$APIDIR/venv/bin/activate"
 
+    if `which source` 1>/dev/null 2>&1; then
+        echo "Sourcing venv"
+        source "$APIDIR/venv/bin/activate"
+    else
+        echo ".ing venv"
+        . "$APIDIR/venv/bin/activate"
+    fi
 
 
 
