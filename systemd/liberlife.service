@@ -7,6 +7,9 @@ Type=simple
 User=cary
 WorkingDirectory=/home/cary/liberlife
 Environment="LIBLIFE_ENV=prod"
+Environment="VIRTUAL_ENV=/home/cary/liberlife/venv/bin"
+Environment="PATH=$VIRTUAL_ENV:$PATH"
+
 ExecStart=/bin/sh -c ". /home/cary/liberlife/.envs/prod.env && \
     echo "$LIBLIFE_ENV" && env && \
     cd /home/cary/liberlife && \
