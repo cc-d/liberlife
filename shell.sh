@@ -1,5 +1,6 @@
 #!/bin/sh
-ROOTDIR="/home/cary/liberlife"
+ROOTDIR=$(dirname $(realpath $0))
+export ROOTDIR
 APIDIR="$ROOTDIR/api"
 
 if [ -z "$LIBLIFE_ENV" ]; then
@@ -24,9 +25,7 @@ uvistart() {
     fi
 
 
-
-    echo "$PATH"
-    echo `env`
+    . "$APIDIR/.env"
 
 
     uvicorn api.app.main:app --port $API_PORT --host $API_HOST --reload
@@ -97,6 +96,7 @@ runbuild() {
     else
         echo "uvicorn already running"
     fi
+    echo "Running build/gentypes"
     gentypes
     mv "$ROOTDIR/frontend/.env" "/tmp/.env.bak"
     eval '(cd $ROOTDIR/frontend && npm run build)'
