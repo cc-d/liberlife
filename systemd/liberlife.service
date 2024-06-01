@@ -10,10 +10,13 @@ Environment="LIBLIFE_ENV=prod"
 Environment="VIRTUAL_ENV=/home/cary/liberlife/venv"
 Environment="PATH=$VIRTUAL_ENV/bin:$PATH"
 
-ExecStart=". ./home/cary/liberlife/shell.sh && \
+ExecStart=". ./home/cary/liberlife/venv/bin/activate && \
     . ./home/cary/liberlife/.envs/prod.env && \
-    . ./home/cary/liberlife/venv/bin/activate && \
-    uvistart"
+    . ./home/cary/liberlife/shell.sh && \
+    which python3 && \
+    which gunicorn && \
+    echo $LIBLIFE_ENV && \
+    env"
 
 Restart=never
 
