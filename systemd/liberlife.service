@@ -10,9 +10,9 @@ Environment="LIBLIFE_ENV=prod"
 Environment="VIRTUAL_ENV=/home/cary/liberlife/venv"
 Environment="PATH=$VIRTUAL_ENV/bin:$PATH"
 
-ExecStart="/home/cary/liberlife/venv/bin/activate \
+ExecStart="sh -c '/home/cary/liberlife/venv/bin/activate \
     /home/cary/liberlife/shell.sh \
-    echo `env`"
+    echo `env`'"
 
 Restart=never
 
