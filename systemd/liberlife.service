@@ -6,9 +6,7 @@ After=network.target
 Type=simple
 User=cary
 WorkingDirectory=/home/cary/liberlife
-ExecStart=/bin/sh -c '. /home/cary/liberlife/.envs/prod.env &&
-    . /home/cary/liberlife/venv/bin/activate &&
-    /home/cary/liberlife/shell.sh uvistart'
+ExecStart=/bin/sh -c '. /home/cary/liberlife/.envs/prod.env && . /home/cary/liberlife/venv/bin/activate && /home/cary/liberlife/shell.sh uvistart'
 Restart=on-failure
 RestartSec=5
 
