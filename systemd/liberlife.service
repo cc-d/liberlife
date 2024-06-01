@@ -7,12 +7,12 @@ Type=simple
 User=cary
 WorkingDirectory=/home/cary/liberlife
 Environment="LIBLIFE_ENV=prod"
-Environment="VIRTUAL_ENV=/home/cary/liberlife/venv/bin"
-Environment="PATH=$VIRTUAL_ENV:$PATH"
+
 
 ExecStart=/bin/sh -c ". /home/cary/liberlife/.envs/prod.env && \
     echo "$LIBLIFE_ENV" && env && \
     cd /home/cary/liberlife && \
+    . /home/cary/liberlife/venv/bin/activate && \
     uvicorn api.app.main:app --port $API_PORT --host $API_HOST --reload"
 
 Restart=never
