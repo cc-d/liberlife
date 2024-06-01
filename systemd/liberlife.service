@@ -10,6 +10,7 @@ Environment="LIBLIFE_ENV=prod"
 ExecStart=/bin/sh -c ". /home/cary/liberlife/.envs/prod.env && \
     cd /home/cary/liberlife && \
     uvicorn api.app.main:app --port $API_PORT --host $API_HOST --reload"
+Restart=never
 
 [Install]
 WantedBy=multi-user.target
