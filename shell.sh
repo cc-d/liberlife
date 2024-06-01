@@ -14,7 +14,7 @@ uvistart() {
     else
         . "$APIDIR/venv/bin/activate"
     fi
-    exec uvicorn api.app.main:app --port $API_PORT --host $API_HOST --reload
+    exec uvicorn api.app.main:app --port "$API_PORT" --host "$API_HOST" --reload
 }
 
 gentypes() {
