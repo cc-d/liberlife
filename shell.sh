@@ -1,48 +1,39 @@
 #!/bin/sh
-ROOTDIR="$HOME/liberlife"
-FRONTDIR="$ROOTDIR/frontend"
+ROOTDIR="/home/cary/liberlife"
 APIDIR="$ROOTDIR/api"
+ENVDIR="$ROOTDIR/.envs/prod"
 
-if [ -z "$LIBLIFE_ENV" ]; then
-    export LIBLIFE_ENV="dev"
+if [ -f "$ENVDIR" ]; then
+    . "$ENVDIR"
 fi
-
-if [ -z "$LIBLIFE_ENV" ]; then
-    exit 1
-fi
-
-for l in $(cat "$ROOTDIR/.envs/$LIBLIFE_ENV.env" | grep -v "^#" | grep -v "^$"); do
-    echo "export $l"
-    export $l
-done
 
 uvistart() {
     cd $ROOTDIR
     if [ ! -z "$VIRTUAL_ENV" ]; then
-        echo "venv already created"
+        echo "venv already activated"
     else
         . "$APIDIR/venv/bin/activate"
     fi
-    uvicorn api.app.main:app --port $API_PORT --host $API_HOST --reload
+    exec uvicorn api.app.main:app --port $API_PORT --host $API_HOST --reload
 }
 
 gentypes() {
     BASE="http://$API_HOST:$API_PORT"
     OPENAPI_URL="$BASE/openapi.json"
-    echo "generating types url: $OPENAPI_URL"
+    echo "Generating types from: $OPENAPI_URL"
     npx openapi-typescript-codegen generate \
         --exportSchemas true \
         --input "$OPENAPI_URL" \
-        --output "$FRONTDIR/src/api/"
+        --output "$ROOTDIR/frontend/src/api/"
 }
 
 npmapi() {
     gentypes
-    echo "copying $LIBLIFE_ENV.env to $FRONTDIR/.env"
-    cp "$ROOTDIR/.envs/$LIBLIFE_ENV.env" "$FRONTDIR/.env"
-    echo "PORT=$REACT_APP_PORT" >> "$FRONTDIR/.env"
-    echo "HOST=$REACT_APP_HOST" >> "$FRONTDIR/.env"
-    cd $FRONTDIR && npm start && cd $ROOTDIR
+    echo "Copying $LIBLIFE_ENV.env to $ROOTDIR/frontend/.env"
+    cp "$ROOTDIR/.envs/$LIBLIFE_ENV.env" "$ROOTDIR/frontend/.env"
+    echo "PORT=$REACT_APP_PORT" >> "$ROOTDIR/frontend/.env"
+    echo "HOST=$REACT_APP_HOST" >> "$ROOTDIR/frontend/.env"
+    cd $ROOTDIR/frontend && npm start && cd $ROOTDIR
 }
 
 automigrate() {
@@ -68,14 +59,14 @@ fi
 alias pytestargs='pytest tests -s -vv --show-capture=all -x --cov --cov-report=term-missing'
 
 dateandcomhash() {
-    echo "attempting dateandcomhash with input: $0 $1 $2"
+    echo "Attempting dateandcomhash with input: $0 $1 $2"
     [ -z "$1" ] && \
-        echo "no file arg included. usage: dateandcomhash  /example/path" \
+        echo "No file argument included. Usage: dateandcomhash /example/path" \
         && return 1
     _DANDC_COMHASH="$(git rev-parse HEAD)"
     echo "$(date)" > "$1"
     echo "$_DANDC_COMHASH" >> "$1"
-    echo "successfully dateandcomhash'd $1"
+    echo "Successfully dateandcomhash'd $1"
 }
 
 runbuild() {
@@ -84,7 +75,7 @@ runbuild() {
         eval "uvistart" &
         pid=$!
         until nc -z localhost 8999; do
-            echo "waiting for uvicorn to start"
+            echo "Waiting for uvicorn to start"
             sleep 1
         done
         wait $pid
@@ -92,11 +83,11 @@ runbuild() {
         echo "uvicorn already running"
     fi
     gentypes
-    mv "$FRONTDIR/.env" "/tmp/.env.bak"
-    eval '(cd $FRONTDIR && npm run build)'
-    mv "/tmp/.env.bak" "$FRONTDIR/.env"
+    mv "$ROOTDIR/frontend/.env" "/tmp/.env.bak"
+    eval '(cd $ROOTDIR/frontend && npm run build)'
+    mv "/tmp/.env.bak" "$ROOTDIR/frontend/.env"
     rm -r "$ROOTDIR/nginx/html"
-    sudo mv "$FRONTDIR/build" "$ROOTDIR/nginx/html"
+    sudo mv "$ROOTDIR/frontend/build" "$ROOTDIR/nginx/html"
     fixhtmlinjs
     dateandcomhash "$ROOTDIR/nginx/html/build.txt"
     cp "$ROOTDIR/nginx/html/build.txt" "$ROOTDIR/frontend/public/build.txt"
@@ -107,15 +98,15 @@ alias buildrun='runbuild'
 
 fixhtmlinjs() {
     if [ "$REACT_APP_API_BASEURL" = "https://life.liberfy.ai/api" ]; then
-        echo "using prod url"
+        echo "Using prod URL"
         _FIXURLS="https://life.liberfy.ai/api"
         _REPURLS="http://localhost:8999"
     else
-        echo "using local url"
+        echo "Using local URL"
         _FIXURLS="http://localhost:8999"
         _REPURLS="https://life.liberfy.ai/api"
     fi
-    echo "fixing urls in js files: $_FIXURLS -> $_REPURLS"
+    echo "Fixing URLs in JS files: $_FIXURLS -> $_REPURLS"
     sed -i.bak "s|$_FIXURLS|$_REPURLS|g" "$ROOTDIR/nginx/html/static/js/"*.js
     rm "$ROOTDIR/nginx/html/static/js/"*.bak
 }
@@ -124,10 +115,10 @@ movetowww() {
     WWW_REPOHTML="$ROOTDIR/nginx/html"
     WWW_NGINXHTML="/var/www/html"
     if [ -d "$WWW_NGINXHTML" ]; then
-        echo "nginx html exists at $WWW_NGINXHTML deleting"
+        echo "nginx HTML exists at $WWW_NGINXHTML deleting"
         sudo rm -r "$WWW_NGINXHTML"
     fi
-    echo "resetting repo nginx/html to head"
+    echo "Resetting repo nginx/html to head"
     git reset "nginx/html"
     git checkout nginx/html
     sudo cp -r "$WWW_REPOHTML" "$WWW_NGINXHTML"

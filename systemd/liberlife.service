@@ -6,9 +6,9 @@ After=network.target
 Type=simple
 User=cary
 WorkingDirectory=/home/cary/liberlife
-Environment="LIBLIFE_ENV=prod"
-EnvironmentFile=/home/cary/liberlife/.envs/prod.env
-ExecStart=/bin/sh -c '. /home/cary/liberlife/shell.sh uvistart'
+ExecStart=/bin/sh -c '/home/cary/liberlife/shell.sh uvistart'
 Restart=on-failure
+RestartSec=5
+
 [Install]
 WantedBy=multi-user.target
