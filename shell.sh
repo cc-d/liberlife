@@ -1,11 +1,16 @@
 #!/bin/sh
 ROOTDIR="/home/cary/liberlife"
 APIDIR="$ROOTDIR/api"
-ENVDIR="$ROOTDIR/.envs/prod"
 
-if [ -f "$ENVDIR" ]; then
-    . "$ENVDIR"
+if [ -z "$LIBLIFE_ENV" ]; then
+    export LIBLIFE_ENV="dev"
 fi
+
+for l in $(cat "$ROOTDIR/.envs/$LIBLIFE_ENV.env" | grep -v "^#" | grep -v "^$"); do
+    echo "export $l"
+    export $l
+done
+
 
 uvistart() {
     cd $ROOTDIR
@@ -17,7 +22,7 @@ uvistart() {
 
     echo "$PATH"
     echo `env`
-    echo `which uvicorn`
+    echo `which uvicorn`q
 
     uvicorn api.app.main:app --port "$API_PORT" --host "$API_HOST" --reload
 }
