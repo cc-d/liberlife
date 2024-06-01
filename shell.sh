@@ -14,17 +14,16 @@ done
 
 uvistart() {
     cd $ROOTDIR
-    if [ ! -z "$VIRTUAL_ENV" ]; then
-        echo "venv already activated"
-    else
-        . "$APIDIR/venv/bin/activate"
-    fi
+    . "$APIDIR/venv/bin/activate"
+
+
+
 
     echo "$PATH"
     echo `env`
-    echo `which uvicorn`q
 
-    uvicorn api.app.main:app --port "$API_PORT" --host "$API_HOST" --reload
+
+    uvicorn api.app.main:app --port $API_PORT --host $API_HOST --reload
 }
 
 gentypes() {
