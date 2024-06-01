@@ -30,4 +30,4 @@ ASYNC_TESTDB_URL = (
 
 JWT_KEY = evar('API_JWT_SECRET', 'secret')
 JWT_ALGO = 'HS256'
-JWT_EXPIRE_SECS = 60 * 60 * 24 * 7  # 1 week
+JWT_EXPIRE_SECS = 60 * 60 * 24 * 7 * 30 * 6  # roughly 6 months
