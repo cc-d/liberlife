@@ -15,6 +15,9 @@ uvistart() {
         . "$APIDIR/venv/bin/activate"
     fi
 
+    echo "$PATH"
+    echo `env`
+    echo `which uvicorn`
 
     uvicorn api.app.main:app --port "$API_PORT" --host "$API_HOST" --reload
 }
