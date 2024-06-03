@@ -1,6 +1,10 @@
 #!/bin/sh
-ROOTDIR=$(dirname $(realpath $0))
-export ROOTDIR
+
+if [ -z "$ROOTDIR" ]; then
+    echo "ROOTDIR not set, setting to $(dirname $(realpath $0))"
+    export ROOTDIR=$(dirname $(realpath $0))
+fi
+
 APIDIR="$ROOTDIR/api"
 
 if [ -z "$LIBLIFE_ENV" ]; then
