@@ -1,7 +1,8 @@
 #!/bin/sh
-. `realpath $0`/shell.sh
+_REPO="$(dirname $(dirname $(realpath $0)))"
+echo $_REPO
 
-sudo chown -R cary:cary /home/cary/liberlife
-sudo cp /home/cary/liberlife/systemd/liberlife.service /etc/systemd/system/
+sudo cp "$_REPO/systemd/liberlife.service" /etc/systemd/system/
+sudo systemctl enable liberlife
 sudo systemctl daemon-reload
-sudo systemctl start liberlife.service
+sudo systemctl start liberlife
