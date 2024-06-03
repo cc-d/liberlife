@@ -28,10 +28,6 @@ uvistart() {
         . "$APIDIR/venv/bin/activate"
     fi
 
-
-    . "$APIDIR/.env"
-
-
     uvicorn api.app.main:app --port $API_PORT --host $API_HOST --reload
 }
 
