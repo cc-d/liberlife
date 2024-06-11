@@ -189,7 +189,7 @@ const NavBar: React.FC = () => {
                 navigate('');
               }}
             >
-              LiberLife
+              life.liberfy.ai
             </Typography>
           </Box>
 

@@ -1,5 +1,7 @@
 #!/bin/sh
 
+nvm use 20;
+
 if [ -z "$ROOTDIR" ]; then
     echo "ROOTDIR not set, setting to $(dirname $(realpath $0))"
     export ROOTDIR=$(dirname $(realpath $0))
