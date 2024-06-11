@@ -1,10 +1,20 @@
 #!/bin/sh
 
+if [ -d "/home/cary/.nvm" ]; then
+    export NVM_DIR="/home/cary/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+fi
+
 nvm use 20;
 
 if [ -z "$ROOTDIR" ]; then
-    echo "ROOTDIR not set, setting to $(dirname $(realpath $0))"
-    export ROOTDIR=$(dirname $(realpath $0))
+    if [ -d "/home/cary/liberlife" ]; then
+        echo "ROOTDIR not set, setting to /home/cary/liberlife"
+        export ROOTDIR="/home/cary/liberlife"
+    else
+        echo "ROOTDIR not set, setting to $(dirname $(realpath $0))"
+        export ROOTDIR=$(dirname $(realpath $0))
+    fi
 fi
 
 APIDIR="$ROOTDIR/api"
