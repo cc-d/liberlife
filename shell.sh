@@ -17,6 +17,7 @@ if [ -z "$ROOTDIR" ]; then
     fi
 fi
 
+
 APIDIR="$ROOTDIR/api"
 
 if [ -z "$LIBLIFE_ENV" ]; then
