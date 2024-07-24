@@ -1,0 +1,17 @@
+[Unit]
+Description=LiberLife Service
+After=network.target
+
+[Service]
+Type=simple
+User=cary
+Environment="LIBLIFE_ENV=prod"
+Environment="ROOTDIR=/home/cary/liberlife"
+EnvironmentFile=/home/cary/liberlife/.envs/prod.env
+WorkingDirectory=/home/cary/liberlife
+ExecStart=/bin/sh -c '. /home/cary/liberlife/.envs/prod.env; . /home/cary/liberlife/venv/bin/activate; . /home/cary/liberlife/shell.sh; uvistart'
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
