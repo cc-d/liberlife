@@ -5,9 +5,9 @@ __pycache__/
 *.egg-info
 dist/
 *.log
-api/venv/
 *.db.sqlite3
 *.sqlite3
+vevn/
 
 # React / Node artifacts
 frontend/node_modules/
