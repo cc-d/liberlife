@@ -1,18 +1,20 @@
+#!/bin/sh
+
 ROOT_DIR=`dirname $(realpath $0)`
-FRONT_DIR=`$ROOT_DIR/frontend`
+FRONT_DIR="$ROOT_DIR/frontend"
 API_DIR="$ROOT_DIR/api"
 
 NGINX_DIR="$ROOT_DIR/nginx"
 HTML_DIR="$NGINX_DIR/html"
-PUBLIC_DIR=
 
 if [ -z "$LIBLIFE_ENV" ]; then
-    export LIBLIFE_ENV="dev"
+    LIBLIFE_ENV="dev"
 fi
 
-set -a
-ENVFILE="$API_DIR/$LIBLIFE_ENV.env"
-set +a
+
+for l in $(cat "$API_DIR/envs/$LIBLIFE_ENV.env" | grep -vE "^$"); do
+    export $l;
+done
 
 uvistart() {
     if [ -d "$API_DIR/venv" ]; then
@@ -22,23 +24,21 @@ uvistart() {
     uvicorn api.app.main:app --port $API_PORT --host $API_HOST --reload
 }
 
-# fetch absolute repo root _DIR
-FRONT_DIR="$(dirname $(realpath $0))/frontend"
-set -a
-. $FRONT_DIR
-set +a
+for l in $(cat "$FRONT_DIR/envs/$LIBLIFE_ENV.env" | grep -vE "^$"); do
+    export $l;
+done
+
 
 build_types() {
 
-    echo "Generating types from: $OPENAPIURL"
+    API_BASE="http://localhost:$API_PORT"
+    OPEN_API_URL="$API_BASE/openapi.json"
+    echo "Generating types from: $OPEN_API_URL"
 
     npx openapi-typescript-codegen generate \
         --exportSchemas true \
-        --input "$OPENAPIURL" \
+        --input "$OPEN_API_URL" \
         --output "$ROOT_DIR/frontend/src/api/"
-
-    echo "$(date)" > "$FRONT_DIR/build.txt"
-    echo "$(git rev-parse HEAD)" >> "$FRONT_DIR/build.txt"
 }
 
 
@@ -55,22 +55,31 @@ build_frontend() {
 
     npm ci --omit=dev
 
-    BASE="http://$API_HOST:$API_PORT"
-    OPENAPIURL="$BASE/openapi.json"
-
-    npx openapi-typescript-codegen generate \
-        --exportSchemas true \
-        --input "$OPENAPIURL" \
-        --output "$ROOT_DIR/frontend/src/api/"
-
     echo "$(date)" > "$FRONT_DIR/build.txt"
     echo "$(git rev-parse HEAD)" >> "$FRONT_DIR/build.txt"
 
     if [ "$REACT_APP_API_BASEURL" = "https://life.liberfy.ai/api" ]; then
-        _FIXURLS="http://localhost:8999"
-        _REPURLS="https://life.liberfy.ai/api"
-        sed -i.bak "s|$_FIXURLS|$_REPURLS|g" "$ROOTDIR/nginx/html/static/js/*.js"
+        FIX_URLS="$BASE"
+        REP_URLS="https://life.liberfy.ai/api"
+        sed -i.bak "s|$FIX_URLS|$REP_URLS|g" "$ROOT_DIR/nginx/html/static/js/*.js"
     fi
 
 }
 
+while [ $# -gt 0 ]; do
+    case $1 in
+        build_types)
+            shift
+            build_types
+            ;;
+        build_types)
+            shift
+            build_types
+            ;;
+      *)
+        echo "Invalid option: $1" >&2
+        exit 1
+        ;;
+
+    esac
+done
